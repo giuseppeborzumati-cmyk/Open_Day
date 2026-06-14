@@ -217,6 +217,21 @@
     </div>
   </div>
 
+  <!-- MODALE CUSTOM: CONFERMA CANCELLAZIONE UTENTE (Ripristinato) -->
+  <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
+      <p class="text-sm text-slate-500 mt-2">Questa operazione eliminerà definitivamente la prenotazione per <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
+        <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODALE CUSTOM: INTERFACCIA DI CONFERMA / SICUREZZA DOCENTE (Sostituisce alert/confirm nativi) -->
   <div id="adminConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
@@ -559,7 +574,7 @@
                       <i data-lucide="check-check" class="w-6 h-6"></i>
                     </div>
                     <div>
-                      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Accesso Autorizzato - AMMESMO</span>
+                      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Accesso Autorizzato - AMMESSO</span>
                       <h4 id="scanResultName" class="text-2xl font-extrabold text-indigo-950 mt-2">Nome Studente</h4>
                       <p id="scanResultCode" class="text-sm font-mono font-bold text-sky-600 mt-1">CODICE</p>
                     </div>
@@ -797,7 +812,8 @@
     window.openCancelModal = function() { document.getElementById('cancelModal').classList.remove('hidden'); }
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Interfaccia Custom Confirm
+    // Interfaccia Custom Confirm con protezione re-entry
+    let isConfirming = false;
     window.showAdminConfirm = function(title, message, requiresInputText, onConfirmCallback) {
       document.getElementById('adminConfirmTitle').innerText = title;
       document.getElementById('adminConfirmMessage').innerText = message;
@@ -815,12 +831,18 @@
       document.getElementById('adminConfirmModal').classList.remove('hidden');
       
       document.getElementById('btnAdminConfirmAction').onclick = async () => {
+        if (isConfirming) return;
         if (requiresInputText && inputField.value.trim().toUpperCase() !== 'ELIMINA') {
           showToast("Digitazione non corretta. Inserisci 'ELIMINA' per sbloccare.", "error");
           return;
         }
+        isConfirming = true;
         closeModal('adminConfirmModal');
-        await onConfirmCallback();
+        try {
+          await onConfirmCallback();
+        } finally {
+          isConfirming = false;
+        }
       };
     }
 
@@ -1376,6 +1398,11 @@
         document.getElementById('confirmCancelModal').classList.remove('hidden');
 
         document.getElementById('btnConfirmDelete').onclick = async () => {
+          // PROTEZIONE CONTRO EVENTUALI COMPORTAMENTI RE-ENTRY / DOPPIO CLIC
+          if (!state.pendingDeleteId) return;
+          const deleteId = state.pendingDeleteId;
+          state.pendingDeleteId = null; // Svuota immediatamente la variabile di stato per prevenire re-entry
+
           try {
             // Invio payload conforme a doPost dello script di cancellazione fornito
             const cancelPayload = {
@@ -1396,11 +1423,10 @@
               console.warn("GAS cancellazione chiamato.");
             }
 
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', state.pendingDeleteId));
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deleteId));
             showToast("Prenotazione annullata con successo ed email di notifica inviata.", "success");
             closeModal('confirmCancelModal');
             document.getElementById('cancelForm').reset();
-            state.pendingDeleteId = null;
           } catch (err) {
             console.error(err);
             showToast("Errore durante l'annullamento della prenotazione.", "error");
