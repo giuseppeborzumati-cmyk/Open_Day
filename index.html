@@ -217,7 +217,7 @@
     </div>
   </div>
 
-  <!-- MODALE CUSTOM: CONFERMA CANCELLAZIONE UTENTE (Ripristinato) -->
+  <!-- MODALE CUSTOM: CONFERMA CANCELLAZIONE UTENTE -->
   <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
       <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -283,7 +283,7 @@
         </div>
 
         <div class="relative z-10 text-left flex-1">
-          <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie 2025</span>
+          <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mt-4 mb-4 leading-tight">
             Sei in terza media? Costruisci il tuo futuro al Primo Levi
           </h2>
@@ -336,11 +336,11 @@
             <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
               <div class="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Nome dello Studente *</label>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Nome dello Studente Referente *</label>
                   <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Mario">
                 </div>
                 <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Cognome dello Studente *</label>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Cognome dello Studente Referente *</label>
                   <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Rossi">
                 </div>
               </div>
@@ -356,22 +356,28 @@
                 </div>
               </div>
 
-              <!-- Selezione Indirizzo di Studio e Accompagnatori -->
-              <div class="grid sm:grid-cols-2 gap-4">
+              <!-- Selezione Indirizzo di Studio, Alunni e Accompagnatori (MANUALI) -->
+              <div class="space-y-4">
                 <div>
                   <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
                   <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
                     <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Numero di Accompagnatori *</label>
-                  <select required id="accompanyingPersons" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
-                    <option value="0">Solo Alunno (Nessun accompagnatore - 1 Posto)</option>
-                    <option value="1">Alunno + 1 Accompagnatore (2 Posti Totali)</option>
-                    <option value="2">Alunno + 2 Accompagnatori (3 Posti Totali)</option>
-                    <option value="3">Alunno + 3 Accompagnatori (4 Posti Totali)</option>
-                  </select>
+                
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Numero Alunni da prenotare *</label>
+                    <input required type="number" min="1" max="10" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="1" oninput="calculateTotalFormSeats()">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Numero di Accompagnatori *</label>
+                    <input required type="number" min="0" max="20" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="0" oninput="calculateTotalFormSeats()">
+                  </div>
+                </div>
+
+                <div class="text-right text-slate-500 text-sm font-bold">
+                  Posti totali calcolati per questa prenotazione: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span>
                 </div>
               </div>
 
@@ -566,7 +572,7 @@
                   <tr class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
                     <th class="p-4 border-b">Stato / Check-in</th>
                     <th class="p-4 border-b">Codice</th>
-                    <th class="p-4 border-b">Cognome e Nome (Accompagnatori)</th>
+                    <th class="p-4 border-b">Cognome e Nome (Alunni & Accompagnatori)</th>
                     <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
                     <th class="p-4 border-b">Colloquio Sostegno</th>
                     <th class="p-4 border-b">Data</th>
@@ -1037,23 +1043,18 @@
       });
     }
 
-    // Seeding Date D'Esempio per il 2025 (Da testo fornito)
+    // Seeding Date D'Esempio per il 2025
     async function seedExampleDates() {
       const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
       if (querySnapshot.empty) {
         const defaultSessions = [
-          // 15 Novembre 2025
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna (Edificio Nord)", maxSeats: 50 },
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "SISTEMA MODA (SM)", aula: "Laboratorio Moda", maxSeats: 45 },
           { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
           { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 },
-
-          // 29 Novembre 2025
           { date: "2025-11-29", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna", maxSeats: 50 },
           { date: "2025-11-29", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
-
-          // 13 Dicembre 2025
           { date: "2025-12-13", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
           { date: "2025-12-13", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 }
         ];
@@ -1064,7 +1065,7 @@
       }
     }
 
-    // Calcolo complessivo posti occupati per un ID sessione (Somma alunno + accompagnatori per ogni prenotazione)
+    // Calcolo complessivo posti occupati per un ID sessione
     function getOccupiedSeats(sessionId) {
       return state.registrations
         .filter(r => r.dateId === sessionId)
@@ -1107,7 +1108,19 @@
       });
     }
 
-    // Calcolo e spedizione promemoria prima della data dell'evento (Configurabile)
+    window.calculateTotalFormSeats = function() {
+      const numAlunni = parseInt(document.getElementById('numAlunni').value || 1);
+      const numAccompagnatori = parseInt(document.getElementById('numAccompagnatori').value || 0);
+      const total = numAlunni + numAccompagnatori;
+      
+      const label = document.getElementById('lblTotalFormSeats');
+      if (label) {
+        label.innerText = total;
+      }
+      return total;
+    }
+
+    // Automa invio promemoria automatici
     async function checkAndTriggerAutomaticReminders() {
       const today = new Date();
       const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
@@ -1118,6 +1131,10 @@
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays <= daysBeforeSetting && diffDays >= 0 && !reg.reminderSent) {
+          
+          // IMPOSTA SUBITO LOCALE PER EVITARE LOOP DURANTE IL FETCH
+          reg.reminderSent = true; 
+
           try {
             const base64Pdf = await generateReceiptPDF({
               nome: reg.nome,
@@ -1126,6 +1143,7 @@
               telefono: reg.telefono,
               studyPath: reg.studyPath || 'N/D',
               supportRequired: reg.supportRequired || false,
+              numAlunni: reg.numAlunni || 1,
               accompanyingPersons: reg.accompanyingPersons || 0,
               totalPeople: reg.totalPeople || 1,
               dataEvento: new Date(reg.dateStr).toLocaleDateString('it-IT'),
@@ -1154,6 +1172,7 @@
             console.log(`Promemoria autogestito inviato per: ${reg.code}`);
           } catch (err) {
             console.error("Errore automa promemoria:", err);
+            reg.reminderSent = false; // rollback se fallisce
           }
         }
       }
@@ -1196,7 +1215,7 @@
 
       pdfDoc.setTextColor(51, 65, 85);
       pdfDoc.setFontSize(12);
-      pdfDoc.text("Dettagli Partecipante (Studente Terza Media):", 20, 60);
+      pdfDoc.text("Dettagli Partecipante (Studente Referente Terza Media):", 20, 60);
       
       pdfDoc.setFont("Helvetica", "bold");
       pdfDoc.setFontSize(14);
@@ -1216,7 +1235,7 @@
       pdfDoc.text("INDIRIZZO RICHIESTO: " + data.studyPath, 25, 119);
       
       // Indicazione dettagliata del totale persone caricate
-      pdfDoc.text("POSTI PRENOTATI: " + data.totalPeople + " (Alunno + " + data.accompanyingPersons + " Accompagnatori)", 25, 128);
+      pdfDoc.text("POSTI PRENOTATI: " + data.totalPeople + " (" + (data.numAlunni || 1) + " Alunni + " + data.accompanyingPersons + " Accompagnatori)", 25, 128);
       
       const colloquioText = data.supportRequired ? "Sì, Richiesto (al termine)" : "No, non richiesto";
       pdfDoc.text("COLLOQUIO SOSTEGNO/INCLUSIONE: " + colloquioText, 25, 137);
@@ -1272,7 +1291,7 @@
 
         sessionsForThisDate.forEach(s => {
           totalSeats += s.maxSeats;
-          occupiedSeats += getOccupiedSeats(s.id); // Somma persone reali (alunno + accompagnatori)
+          occupiedSeats += getOccupiedSeats(s.id); 
         });
 
         const availableSeats = totalSeats - occupiedSeats;
@@ -1340,6 +1359,7 @@
           }).join('');
       }
 
+      calculateTotalFormSeats();
       bookingCard.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -1355,10 +1375,13 @@
       document.getElementById('bookingForm').reset();
     }
 
-    // Invio della Prenotazione
+    // Invio della Prenotazione (PULSANTE BLOCCATO PER EVITARE DOPPIO CLICK)
     window.handleBooking = async function(e) {
       e.preventDefault();
       
+      const btn = document.getElementById('submitBookingBtn');
+      if (btn.disabled) return; // SE E' GIA' IN CORSO, FERMATI QUI
+
       const privacyChecked = document.getElementById('privacyConsent').checked;
       if (!privacyChecked) {
         showToast("È necessario accettare il trattamento dei dati personali per registrarsi.", "error");
@@ -1374,51 +1397,44 @@
       const sessionObj = state.dates.find(d => d.id === selectedSessionId);
       if (!sessionObj) return;
 
-      const btn = document.getElementById('submitBookingBtn');
-      btn.disabled = true;
-      btn.innerText = "Registrazione in corso...";
-
       const studentName = document.getElementById('studentName').value.trim();
       const studentSurname = document.getElementById('studentSurname').value.trim();
       const parentEmail = document.getElementById('parentEmail').value.trim();
       const parentPhone = document.getElementById('parentPhone').value.trim();
       const supportRequired = document.getElementById('supportRequired').checked;
       
-      // Lettura accompagnatori e calcolo carichi sul totale posti
-      const accompanyingPersons = parseInt(document.getElementById('accompanyingPersons').value || 0);
-      const totalPeople = 1 + accompanyingPersons;
+      const numAlunni = parseInt(document.getElementById('numAlunni').value || 1);
+      const accompanyingPersons = parseInt(document.getElementById('numAccompagnatori').value || 0);
+      const totalPeople = numAlunni + accompanyingPersons;
 
-      // Verifica dinamica capienza residua per lo specifico pacchetto persone (Alunno + Accompagnatori)
       const occupiedSeats = getOccupiedSeats(sessionObj.id);
       const remainingSeats = sessionObj.maxSeats - occupiedSeats;
 
       if (totalPeople > remainingSeats) {
-        showToast(`Spiacenti! Rimangono solo ${remainingSeats} posti disponibili per questa sessione, ma hai richiesto la prenotazione per ${totalPeople} persone (Alunno + ${accompanyingPersons} accompagnatori). Ridurre il numero di accompagnatori o scegliere un'altra sessione.`, "error");
-        btn.disabled = false;
-        btn.innerText = "Conferma e Invia Ricevuta";
+        showToast(`Spiacenti! Rimangono solo ${remainingSeats} posti disponibili.`, "error");
         return;
       }
 
-      // Controllo duplicati: uno studente non può prenotare lo stesso indirizzo di studio su più date diverse
       const alreadyBookedSamePath = state.registrations.some(r => {
         const isSameStudent = (r.email.toLowerCase() === parentEmail.toLowerCase()) || 
                               (r.cognome.toLowerCase() === studentSurname.toLowerCase() && r.nome.toLowerCase() === studentName.toLowerCase());
         
         if (!isSameStudent) return false;
 
-        // Estrae il nome dell'indirizzo pulito (rimuove l'aula ad es. "RIM (Aula Magna)" diventa "RIM")
-        const existingCorePath = r.studyPath.split(' (')[0].trim().toUpperCase();
-        const newCorePath = sessionObj.studyPath.trim().toUpperCase();
+        const existingCorePath = (r.studyPath || '').split(' (')[0].trim().toUpperCase();
+        const newCorePath = (sessionObj.studyPath || '').split(' (')[0].trim().toUpperCase();
 
         return existingCorePath === newCorePath;
       });
 
       if (alreadyBookedSamePath) {
-        showToast(`Attenzione: Risulta già una prenotazione attiva per l'indirizzo "${sessionObj.studyPath}" a nome di questo studente o associata a questa email. Puoi prenotare un indirizzo differente, ma non lo stesso su più date.`, "error");
-        btn.disabled = false;
-        btn.innerText = "Conferma e Invia Ricevuta";
+        showToast(`Attenzione: Risulta già una prenotazione attiva per questo indirizzo.`, "error");
         return;
       }
+
+      // TUTTI I CONTROLLI PASSATI -> DISABILITA IL BOTTONE!
+      btn.disabled = true;
+      btn.innerText = "Registrazione in corso...";
 
       const uniqueCode = Math.random().toString(36).substring(2, 8).toUpperCase();
       const formattedDate = new Date(sessionObj.date).toLocaleDateString('it-IT');
@@ -1430,6 +1446,7 @@
         telefono: parentPhone,
         studyPath: `${sessionObj.studyPath} (Fascia: ${sessionObj.timeSlot} - Aula: ${sessionObj.aula})`,
         supportRequired: supportRequired,
+        numAlunni: numAlunni,
         accompanyingPersons: accompanyingPersons,
         totalPeople: totalPeople,
         dataEvento: formattedDate,
@@ -1439,7 +1456,6 @@
       try {
         const base64Pdf = await generateReceiptPDF(bookingPayload, uniqueCode, 'conferma');
         
-        // 1. Salvataggio su database Firebase con dettagli completi della sessione e stato "Registrato"
         const regRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', uniqueCode);
         await setDoc(regRef, {
           nome: studentName,
@@ -1448,10 +1464,11 @@
           telefono: parentPhone,
           studyPath: `${sessionObj.studyPath} (${sessionObj.aula})`,
           supportRequired: supportRequired,
+          numAlunni: numAlunni,
           accompanyingPersons: accompanyingPersons,
-          totalPeople: totalPeople, // Memorizza persone totali
+          totalPeople: totalPeople,
           code: uniqueCode,
-          dateId: sessionObj.id, // Collegato all'ID univoco della sessione
+          dateId: sessionObj.id,
           dateStr: sessionObj.date,
           timeSlot: sessionObj.timeSlot,
           timestamp: Date.now(),
@@ -1459,7 +1476,6 @@
           status: 'Registrato'
         });
 
-        // 2. Invio Email via Webhook ufficiale di conferma
         const emailPayload = {
           nome: studentName,
           cognome: studentSurname,
@@ -1491,13 +1507,12 @@
       } catch (err) {
         console.error("Booking Error:", err);
         showToast("Si è verificato un errore imprevisto.", "error");
-      } finally {
+        // Riattiva solo in caso di fallimento grave. Altrimenti lo lascio disabilitato.
         btn.disabled = false;
         btn.innerText = "Conferma e Invia Ricevuta";
-      }
+      } 
     }
 
-    // SVUOTAMENTO COMPLETO DATABASE PRENOTAZIONI CON BATCH PROMISE CORRETTO
     window.handleClearAllRegistrations = function() {
       showAdminConfirm(
         "Svuota Database", 
@@ -1524,10 +1539,12 @@
       );
     }
 
-    // Recupero della ricevuta (Rigenera il PDF, avvia lo scaricamento E re-invia la mail usando CONFIRM_SCRIPT_URL)
+    // Recupero della ricevuta (BLOCCO DOPPIO CLICK INCLUSO)
     window.handleRecovery = async function(e) {
       e.preventDefault();
       const inputBtn = document.getElementById('submitRecoveryBtn');
+      if (inputBtn.disabled) return;
+
       const term = document.getElementById('recoveryInput').value.trim().toUpperCase();
       if (!term) return;
 
@@ -1550,6 +1567,7 @@
             telefono: reg.telefono,
             studyPath: reg.studyPath || 'N/D',
             supportRequired: reg.supportRequired || false,
+            numAlunni: reg.numAlunni || 1,
             accompanyingPersons: reg.accompanyingPersons || 0,
             totalPeople: reg.totalPeople || 1,
             dataEvento: formattedDate,
@@ -1598,7 +1616,7 @@
           docConferma.text("Data Evento: " + formattedDate + " (" + reg.timeSlot + ")", 20, 96);
           docConferma.text("Indirizzo di studio: " + (reg.studyPath || 'N/D'), 20, 104);
           docConferma.text("Colloquio Sostegno: " + (reg.supportRequired ? 'Sì, Richiesto' : 'No'), 20, 112);
-          docConferma.text("Posti riservati: " + (reg.totalPeople || 1) + " (Studente + " + (reg.accompanyingPersons || 0) + " Accompagnatori)", 20, 120);
+          docConferma.text("Posti riservati: " + (reg.totalPeople || 1) + " (Alunni: " + (reg.numAlunni || 1) + " + " + (reg.accompanyingPersons || 0) + " Accompagnatori)", 20, 120);
           
           drawBarcode(docConferma, reg.code, 75, 130);
           docConferma.save("Ricevuta_Levi_" + reg.cognome + ".pdf");
@@ -1618,7 +1636,7 @@
       }
     }
 
-    // Richiesta di Annullamento Prenotazione (Chiamata a CANCEL_SCRIPT_URL + rimozione Firebase)
+    // Richiesta di Annullamento Prenotazione
     window.handleCancellation = async function(e) {
       e.preventDefault();
       const term = document.getElementById('cancelTerm').value.trim().toUpperCase();
@@ -1673,7 +1691,7 @@
       }
     }
 
-    // Invio Pergamena / Attestato di Partecipazione (ATTESTATO_SCRIPT_URL)
+    // Invio Pergamena / Attestato
     window.sendCertificateEmail = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
@@ -1712,7 +1730,6 @@
       );
     }
 
-    // Autenticazione Docenti
     window.handleLogin = function(e) {
       e.preventDefault();
       const pwd = document.getElementById('adminPasswordInput').value;
@@ -1726,7 +1743,6 @@
       }
     }
 
-    // Gestione Scambio Tab in Dashboard Amministrazione
     window.switchAdminTab = function(tabName) {
       const tabIscritti = document.getElementById('tabIscritti');
       const tabScanner = document.getElementById('tabScanner');
@@ -1760,7 +1776,6 @@
       }
     }
 
-    // Sincronizzazione ed Aggiornamento Sezione Amministratore
     function syncAdminView() {
       renderRegistrations();
       renderAdminDatesList();
@@ -1774,7 +1789,6 @@
       filterSelect.value = currentVal;
     }
 
-    // --- STRUMENTO DI SCANSIONE BARCODE INTEGRATO (WEBCAM + LETTORE HARDWARE ESTERNO) ---
     async function initWebcamDevices() {
       const cameraSelect = document.getElementById('cameraSourceSelect');
       cameraSelect.innerHTML = '<option value="">Lettura dispositivi video in corso...</option>';
@@ -1859,7 +1873,6 @@
       codeField.focus();
     }
 
-    // Processa la stringa scansionata: Cerca studente e lo autorizza in Firestore cambiando stato ad "Ammesso"
     async function processScannedCode(code) {
       const cleanedCode = code.trim().toUpperCase();
       const registration = state.registrations.find(r => r.code.toUpperCase() === cleanedCode);
@@ -1877,7 +1890,6 @@
             status: 'Ammesso'
           });
           
-          // Invia automaticamente l'attestato di partecipazione in tempo reale
           await sendCertificateEmailAuto(registration);
         } catch (err) {
           console.error("Errore aggiornamento stato in Ammesso:", err);
@@ -1890,7 +1902,7 @@
         document.getElementById('scanResultName').innerText = registration.cognome.toUpperCase() + " " + registration.nome.toUpperCase();
         document.getElementById('scanResultCode').innerText = cleanedCode;
         
-        const pathLabel = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato') + " [Posti: " + (registration.totalPeople || 1) + "]";
+        const pathLabel = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato') + " [Posti: " + (registration.totalPeople || 1) + " (" + (registration.numAlunni || 1) + " Alunni + " + (registration.accompanyingPersons || 0) + " acc.)]";
         document.getElementById('scanResultPath').innerText = pathLabel;
         document.getElementById('scanResultEvent').innerText = "Giorno: " + new Date(registration.dateStr).toLocaleDateString() + " (" + registration.timeSlot + ")";
         document.getElementById('scanResultSupport').innerText = "Richiesta Colloquio Sostegno: " + (registration.supportRequired ? "SÌ, RICHIESTO" : "NO");
@@ -1906,7 +1918,6 @@
       }
     }
 
-    // Funzione interna silenziosa per inviare automaticamente l'attestato via e-mail
     async function sendCertificateEmailAuto(reg) {
       if (!reg) return;
       if (reg.certificateSent) {
@@ -1920,7 +1931,6 @@
           cognome: reg.cognome
         };
 
-        // Chiamata webhook allo script dedicato della Pergamena (ATTESTATO_SCRIPT_URL)
         await fetch(ATTESTATO_SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
@@ -1928,7 +1938,6 @@
           body: JSON.stringify(payload)
         });
 
-        // Contrassegna lo stato come "Attestato Inviato"
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
           certificateSent: true,
           certificateSentAt: Date.now()
@@ -1940,7 +1949,6 @@
       }
     }
 
-    // Rendering Tabella Iscritti in tempo reale
     window.renderRegistrations = function() {
       const tbody = document.getElementById('registrationsTableBody');
       if (!tbody) return;
@@ -2001,7 +2009,6 @@
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Richiesto</span>`
           : `<span class="text-xs text-slate-400">No</span>`;
 
-        // Badge per lo stato dell'attestato
         const certificateBadgeHtml = r.certificateSent
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-full shadow-sm" title="Attestato Inviato"><i data-lucide="award" class="w-3.5 h-3.5"></i> Inviato</span>`
           : (currentStatus === 'Ammesso'
@@ -2017,7 +2024,7 @@
             <td class="p-4 font-mono font-bold text-sky-600">${r.code}</td>
             <td class="p-4">
               <div class="font-semibold text-indigo-950">${r.cognome} ${r.nome}</div>
-              <div class="text-xs text-slate-500 font-medium">Persone: <span class="text-indigo-900 font-bold">${r.totalPeople || 1}</span> (Alunno + ${r.accompanyingPersons || 0} acc.)</div>
+              <div class="text-xs text-slate-500 font-medium">Persone: <span class="text-indigo-900 font-bold">${r.totalPeople || 1}</span> (${r.numAlunni || 1} Alunni + ${r.accompanyingPersons || 0} acc.)</div>
               <div class="text-slate-400 text-xs mt-0.5">${r.email} | ${r.telefono || 'N/D'}</div>
             </td>
             <td class="p-4 font-bold text-slate-700 text-xs">${r.studyPath || 'N/D'}</td>
@@ -2045,7 +2052,6 @@
       lucide.createIcons();
     }
 
-    // Ammissione manuale
     window.admitParticipantManually = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
@@ -2055,7 +2061,6 @@
         });
         showToast("Stato aggiornato ad Ammesso con successo.", "success");
         
-        // Invia automaticamente l'attestato di partecipazione all'ammissione manuale
         await sendCertificateEmailAuto(reg);
       } catch (err) {
         console.error(err);
@@ -2063,7 +2068,6 @@
       }
     }
 
-    // Eliminazione iscritti lato Admin (Senza confirm browser nativo) - Triggera CANCEL_SCRIPT_URL prima di eliminare
     window.adminDeleteRegistration = function(id) {
       const targetReg = state.registrations.find(r => r.id === id);
       if (!targetReg) return;
@@ -2102,9 +2106,8 @@
       );
     }
 
-    // Esportazione CSV con indicazione dettagliata del totale persone
     window.exportToCSV = function() {
-      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato"];
+      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Alunni", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato"];
       
       const rows = state.registrations.map(r => {
         const eventDate = new Date(r.dateStr);
@@ -2119,6 +2122,7 @@
           r.timeSlot,
           r.cognome,
           r.nome,
+          r.numAlunni || 1,
           r.accompanyingPersons || 0,
           r.totalPeople || 1,
           r.email,
@@ -2139,7 +2143,6 @@
       showToast("Esportazione completata!", "success");
     }
 
-    // Salva il testo descrittivo del banner su Firebase
     window.saveBannerText = async function() {
       const text = document.getElementById('bannerTextarea').value.trim();
       if (!text) return;
@@ -2155,7 +2158,6 @@
       }
     }
 
-    // Salva la configurazione personalizzata dei giorni di preavviso per i promemoria automatici
     window.saveReminderDays = async function() {
       const daysInput = document.getElementById('reminderDaysInput');
       if (!daysInput) return;
@@ -2176,7 +2178,6 @@
       }
     }
 
-    // Creazione nuova data Open Day
     window.handleCreateDate = async function(e) {
       e.preventDefault();
       const dateVal = document.getElementById('newDateValue').value;
@@ -2205,7 +2206,6 @@
       }
     }
 
-    // Renderizza date nel pannello admin con calcolo dei posti reali occupati
     function renderAdminDatesList() {
       const container = document.getElementById('adminDatesList');
       if (state.dates.length === 0) {
@@ -2214,7 +2214,7 @@
       }
 
       container.innerHTML = state.dates.map(d => {
-        const registeredCount = getOccupiedSeats(d.id); // Calcolo basato sulle persone totali (alunno + accompagnatori)
+        const registeredCount = getOccupiedSeats(d.id); 
         const formattedDate = new Date(d.date).toLocaleDateString('it-IT');
 
         return `
@@ -2235,11 +2235,10 @@
       lucide.createIcons();
     }
 
-    // Eliminazione Data Open Day (Senza confirm browser nativo)
     window.adminDeleteDate = async function(id) {
       showAdminConfirm(
         "Rimuovi Data",
-        "L'eliminazione di questa data impedirà nuove registrazioni per questo giorno. Le prenotazioni esistenti non verranno cancellate.",
+        "L'eliminazione di questa data/sessione impedirà nuove registrazioni. Le prenotazioni esistenti non verranno cancellate.",
         false,
         async () => {
           try {
@@ -2253,7 +2252,6 @@
       );
     }
 
-    // Avvio iniziale applicazione
     window.onload = function() {
       startApp();
     };
