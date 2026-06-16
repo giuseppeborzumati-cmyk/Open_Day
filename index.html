@@ -329,6 +329,7 @@
               <div>
                 <p class="font-bold">Nota per la Contemporaneità delle Presentazioni:</p>
                 <p class="text-xs mt-1">Alcuni indirizzi si svolgono nella medesima fascia oraria in aule differenti, pertanto <strong>è possibile assistere ad una sola presentazione per turno d'orario</strong>. Si prega vivamente di non prenotare lo stesso indirizzo su più date diverse per consentire la massima partecipazione a tutti gli studenti.</p>
+                <p class="text-xs mt-1.5 font-bold text-red-700"><i data-lucide="shield-alert" class="inline w-3.5 h-3.5 mr-1"></i> Controllo automatico attivo: il sistema impedisce di prenotare lo stesso indirizzo su più date. È comunque consentito prenotare indirizzi differenti su date diverse.</p>
               </div>
             </div>
 
@@ -355,12 +356,23 @@
                 </div>
               </div>
 
-              <!-- Selezione Indirizzo di Studio DINAMICO basato sulla contemporaneità definita dall'Admin -->
-              <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
-                <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
-                  <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
-                </select>
+              <!-- Selezione Indirizzo di Studio e Accompagnatori -->
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
+                  <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
+                    <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Numero di Accompagnatori *</label>
+                  <select required id="accompanyingPersons" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
+                    <option value="0">Solo Alunno (Nessun accompagnatore - 1 Posto)</option>
+                    <option value="1">Alunno + 1 Accompagnatore (2 Posti Totali)</option>
+                    <option value="2">Alunno + 2 Accompagnatori (3 Posti Totali)</option>
+                    <option value="3">Alunno + 3 Accompagnatori (4 Posti Totali)</option>
+                  </select>
+                </div>
               </div>
 
               <!-- Opzione Inclusione / Sostegno scolastico -->
@@ -554,7 +566,7 @@
                   <tr class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
                     <th class="p-4 border-b">Stato / Check-in</th>
                     <th class="p-4 border-b">Codice</th>
-                    <th class="p-4 border-b">Cognome e Nome</th>
+                    <th class="p-4 border-b">Cognome e Nome (Accompagnatori)</th>
                     <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
                     <th class="p-4 border-b">Colloquio Sostegno</th>
                     <th class="p-4 border-b">Data</th>
@@ -1052,12 +1064,19 @@
       }
     }
 
+    // Calcolo complessivo posti occupati per un ID sessione (Somma alunno + accompagnatori per ogni prenotazione)
+    function getOccupiedSeats(sessionId) {
+      return state.registrations
+        .filter(r => r.dateId === sessionId)
+        .reduce((sum, r) => sum + (parseInt(r.totalPeople) || 1), 0);
+    }
+
     // Realtime listeners
     function setupRealtimeListeners() {
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), (snapshot) => {
-        snapshot.forEach(doc => {
-          if (doc.id === 'general') {
-            state.settings = doc.data();
+        snapshot.forEach(docObj => {
+          if (docObj.id === 'general') {
+            state.settings = docObj.data();
             document.getElementById('bannerText').innerText = state.settings.bannerText;
             document.getElementById('bannerTextarea').value = state.settings.bannerText;
             
@@ -1070,7 +1089,7 @@
 
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), (snapshot) => {
         const list = [];
-        snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach(docObj => list.push({ id: docObj.id, ...docObj.data() }));
         state.dates = list.sort((a, b) => new Date(a.date) - new Date(b.date));
         renderHomeDates();
         renderAdminDatesList();
@@ -1079,7 +1098,7 @@
 
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), (snapshot) => {
         const list = [];
-        snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach(docObj => list.push({ id: docObj.id, ...docObj.data() }));
         state.registrations = list.sort((a, b) => b.timestamp - a.timestamp);
         
         renderHomeDates();
@@ -1107,6 +1126,8 @@
               telefono: reg.telefono,
               studyPath: reg.studyPath || 'N/D',
               supportRequired: reg.supportRequired || false,
+              accompanyingPersons: reg.accompanyingPersons || 0,
+              totalPeople: reg.totalPeople || 1,
               dataEvento: new Date(reg.dateStr).toLocaleDateString('it-IT'),
               orarioEvento: reg.timeSlot
             }, reg.code, 'promemoria');
@@ -1194,9 +1215,11 @@
       pdfDoc.text("DATA OPEN DAY: " + data.dataEvento, 25, 110);
       pdfDoc.text("INDIRIZZO RICHIESTO: " + data.studyPath, 25, 119);
       
+      // Indicazione dettagliata del totale persone caricate
+      pdfDoc.text("POSTI PRENOTATI: " + data.totalPeople + " (Alunno + " + data.accompanyingPersons + " Accompagnatori)", 25, 128);
+      
       const colloquioText = data.supportRequired ? "Sì, Richiesto (al termine)" : "No, non richiesto";
-      pdfDoc.text("COLLOQUIO SOSTEGNO/INCLUSIONE: " + colloquioText, 25, 128);
-      pdfDoc.text("DURATA STIMATA EVENTO: Circa 2 Ore (Info + Visita)", 25, 137);
+      pdfDoc.text("COLLOQUIO SOSTEGNO/INCLUSIONE: " + colloquioText, 25, 137);
 
       pdfDoc.setFillColor(239, 68, 68);
       pdfDoc.rect(20, 150, 170, 10, 'F');
@@ -1249,7 +1272,7 @@
 
         sessionsForThisDate.forEach(s => {
           totalSeats += s.maxSeats;
-          occupiedSeats += state.registrations.filter(r => r.dateId === s.id).length;
+          occupiedSeats += getOccupiedSeats(s.id); // Somma persone reali (alunno + accompagnatori)
         });
 
         const availableSeats = totalSeats - occupiedSeats;
@@ -1307,7 +1330,7 @@
       } else {
         studySelect.innerHTML = '<option value="" disabled selected>-- Scegli l\'indirizzo e la fascia oraria di interesse --</option>' +
           sessionsForDate.map(s => {
-            const occupied = state.registrations.filter(r => r.dateId === s.id).length;
+            const occupied = getOccupiedSeats(s.id);
             const remaining = s.maxSeats - occupied;
             const isFull = remaining <= 0;
             
@@ -1360,6 +1383,42 @@
       const parentEmail = document.getElementById('parentEmail').value.trim();
       const parentPhone = document.getElementById('parentPhone').value.trim();
       const supportRequired = document.getElementById('supportRequired').checked;
+      
+      // Lettura accompagnatori e calcolo carichi sul totale posti
+      const accompanyingPersons = parseInt(document.getElementById('accompanyingPersons').value || 0);
+      const totalPeople = 1 + accompanyingPersons;
+
+      // Verifica dinamica capienza residua per lo specifico pacchetto persone (Alunno + Accompagnatori)
+      const occupiedSeats = getOccupiedSeats(sessionObj.id);
+      const remainingSeats = sessionObj.maxSeats - occupiedSeats;
+
+      if (totalPeople > remainingSeats) {
+        showToast(`Spiacenti! Rimangono solo ${remainingSeats} posti disponibili per questa sessione, ma hai richiesto la prenotazione per ${totalPeople} persone (Alunno + ${accompanyingPersons} accompagnatori). Ridurre il numero di accompagnatori o scegliere un'altra sessione.`, "error");
+        btn.disabled = false;
+        btn.innerText = "Conferma e Invia Ricevuta";
+        return;
+      }
+
+      // Controllo duplicati: uno studente non può prenotare lo stesso indirizzo di studio su più date diverse
+      const alreadyBookedSamePath = state.registrations.some(r => {
+        const isSameStudent = (r.email.toLowerCase() === parentEmail.toLowerCase()) || 
+                              (r.cognome.toLowerCase() === studentSurname.toLowerCase() && r.nome.toLowerCase() === studentName.toLowerCase());
+        
+        if (!isSameStudent) return false;
+
+        // Estrae il nome dell'indirizzo pulito (rimuove l'aula ad es. "RIM (Aula Magna)" diventa "RIM")
+        const existingCorePath = r.studyPath.split(' (')[0].trim().toUpperCase();
+        const newCorePath = sessionObj.studyPath.trim().toUpperCase();
+
+        return existingCorePath === newCorePath;
+      });
+
+      if (alreadyBookedSamePath) {
+        showToast(`Attenzione: Risulta già una prenotazione attiva per l'indirizzo "${sessionObj.studyPath}" a nome di questo studente o associata a questa email. Puoi prenotare un indirizzo differente, ma non lo stesso su più date.`, "error");
+        btn.disabled = false;
+        btn.innerText = "Conferma e Invia Ricevuta";
+        return;
+      }
 
       const uniqueCode = Math.random().toString(36).substring(2, 8).toUpperCase();
       const formattedDate = new Date(sessionObj.date).toLocaleDateString('it-IT');
@@ -1371,6 +1430,8 @@
         telefono: parentPhone,
         studyPath: `${sessionObj.studyPath} (Fascia: ${sessionObj.timeSlot} - Aula: ${sessionObj.aula})`,
         supportRequired: supportRequired,
+        accompanyingPersons: accompanyingPersons,
+        totalPeople: totalPeople,
         dataEvento: formattedDate,
         orarioEvento: sessionObj.timeSlot
       };
@@ -1387,6 +1448,8 @@
           telefono: parentPhone,
           studyPath: `${sessionObj.studyPath} (${sessionObj.aula})`,
           supportRequired: supportRequired,
+          accompanyingPersons: accompanyingPersons,
+          totalPeople: totalPeople, // Memorizza persone totali
           code: uniqueCode,
           dateId: sessionObj.id, // Collegato all'ID univoco della sessione
           dateStr: sessionObj.date,
@@ -1414,7 +1477,7 @@
             body: JSON.stringify(emailPayload)
           });
         } catch (scriptErr) {
-          console.warn("Conferma GAS Webhook inviata.");
+          console.warn("Conferma Webhook chiamata.");
         }
 
         document.getElementById('bookingCard').classList.add('hidden');
@@ -1487,6 +1550,8 @@
             telefono: reg.telefono,
             studyPath: reg.studyPath || 'N/D',
             supportRequired: reg.supportRequired || false,
+            accompanyingPersons: reg.accompanyingPersons || 0,
+            totalPeople: reg.totalPeople || 1,
             dataEvento: formattedDate,
             orarioEvento: reg.timeSlot
           };
@@ -1533,8 +1598,9 @@
           docConferma.text("Data Evento: " + formattedDate + " (" + reg.timeSlot + ")", 20, 96);
           docConferma.text("Indirizzo di studio: " + (reg.studyPath || 'N/D'), 20, 104);
           docConferma.text("Colloquio Sostegno: " + (reg.supportRequired ? 'Sì, Richiesto' : 'No'), 20, 112);
+          docConferma.text("Posti riservati: " + (reg.totalPeople || 1) + " (Studente + " + (reg.accompanyingPersons || 0) + " Accompagnatori)", 20, 120);
           
-          drawBarcode(docConferma, reg.code, 75, 125);
+          drawBarcode(docConferma, reg.code, 75, 130);
           docConferma.save("Ricevuta_Levi_" + reg.cognome + ".pdf");
 
           showToast("Ricevuta recuperata, scaricata e inviata via email con successo!", "success");
@@ -1823,7 +1889,9 @@
 
         document.getElementById('scanResultName').innerText = registration.cognome.toUpperCase() + " " + registration.nome.toUpperCase();
         document.getElementById('scanResultCode').innerText = cleanedCode;
-        document.getElementById('scanResultPath').innerText = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato');
+        
+        const pathLabel = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato') + " [Posti: " + (registration.totalPeople || 1) + "]";
+        document.getElementById('scanResultPath').innerText = pathLabel;
         document.getElementById('scanResultEvent').innerText = "Giorno: " + new Date(registration.dateStr).toLocaleDateString() + " (" + registration.timeSlot + ")";
         document.getElementById('scanResultSupport').innerText = "Richiesta Colloquio Sostegno: " + (registration.supportRequired ? "SÌ, RICHIESTO" : "NO");
         document.getElementById('scanResultContact').innerText = "Contatto: " + registration.email + " / " + (registration.telefono || 'N/D');
@@ -1949,6 +2017,7 @@
             <td class="p-4 font-mono font-bold text-sky-600">${r.code}</td>
             <td class="p-4">
               <div class="font-semibold text-indigo-950">${r.cognome} ${r.nome}</div>
+              <div class="text-xs text-slate-500 font-medium">Persone: <span class="text-indigo-900 font-bold">${r.totalPeople || 1}</span> (Alunno + ${r.accompanyingPersons || 0} acc.)</div>
               <div class="text-slate-400 text-xs mt-0.5">${r.email} | ${r.telefono || 'N/D'}</div>
             </td>
             <td class="p-4 font-bold text-slate-700 text-xs">${r.studyPath || 'N/D'}</td>
@@ -2033,9 +2102,9 @@
       );
     }
 
-    // Esportazione CSV
+    // Esportazione CSV con indicazione dettagliata del totale persone
     window.exportToCSV = function() {
-      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato"];
+      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato"];
       
       const rows = state.registrations.map(r => {
         const eventDate = new Date(r.dateStr);
@@ -2050,8 +2119,10 @@
           r.timeSlot,
           r.cognome,
           r.nome,
+          r.accompanyingPersons || 0,
+          r.totalPeople || 1,
           r.email,
-          r.telefono,
+          r.telefono || 'N/D',
           new Date(r.timestamp).toLocaleDateString(),
           diffDays < 0 ? "Passata" : diffDays,
           r.reminderSent ? "Sì" : "No"
@@ -2134,7 +2205,7 @@
       }
     }
 
-    // Renderizza date nel pannello admin
+    // Renderizza date nel pannello admin con calcolo dei posti reali occupati
     function renderAdminDatesList() {
       const container = document.getElementById('adminDatesList');
       if (state.dates.length === 0) {
@@ -2143,15 +2214,16 @@
       }
 
       container.innerHTML = state.dates.map(d => {
-        const registeredCount = state.registrations.filter(r => r.dateId === d.id).length;
+        const registeredCount = getOccupiedSeats(d.id); // Calcolo basato sulle persone totali (alunno + accompagnatori)
         const formattedDate = new Date(d.date).toLocaleDateString('it-IT');
 
         return `
           <div class="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm text-sm">
             <div>
               <p class="font-bold text-slate-800">${formattedDate} - <span class="font-semibold text-sky-600">${d.timeSlot}</span></p>
+              <p class="text-xs font-bold text-indigo-950 mt-0.5">${d.studyPath}</p>
               <p class="text-xs text-slate-500 mt-1">
-                Posti: <span class="font-bold text-indigo-950">${registeredCount}</span> su ${d.maxSeats} prenotati
+                Posti Occupati (Persone Reali): <span class="font-bold text-indigo-950">${registeredCount}</span> su ${d.maxSeats}
               </p>
             </div>
             <button onclick="adminDeleteDate('${d.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Rimuovi data">
