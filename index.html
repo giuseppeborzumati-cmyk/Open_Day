@@ -116,6 +116,7 @@
       background-color: #ef4444;
       box-shadow: 0 0 10px #f87171, 0 0 20px #ef4444;
       animation: laserMove 2s infinite ease-in-out;
+      z-index: 10;
     }
     @keyframes laserMove {
       0%, 100% { top: 5%; }
@@ -228,6 +229,31 @@
       <div class="flex gap-3 mt-6">
         <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
         <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE CUSTOM: AGGIUNGI DISPOSITIVO SCANNER (QR CODE ACCOPPIAMENTO) -->
+  <div id="addDeviceModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeModal('addDeviceModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="smartphone" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-xl font-bold text-indigo-950">Collega Smartphone Scanner</h3>
+      <p class="text-xs text-slate-500 mt-2">Scansiona questo QR Code con la fotocamera del tuo telefono per aprirlo come terminale di scansione portatile connesso via Cloud. Qualsiasi lettura aggiornerà questa pagina all'istante.</p>
+      
+      <!-- QR Code generato dinamicamente con l'indirizzo corrente -->
+      <div class="my-6 flex justify-center bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner border border-slate-100">
+        <img id="qrCodeDeviceLink" src="" alt="QR Accoppiamento" class="w-full h-full object-contain">
+      </div>
+      
+      <p class="text-[10px] text-slate-400 font-mono select-all break-all bg-slate-50 p-2 rounded-lg" id="lblDeviceUrl">-</p>
+
+      <div class="mt-6">
+        <button onclick="closeModal('addDeviceModal')" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">Chiudi Finestra</button>
       </div>
     </div>
   </div>
@@ -596,16 +622,22 @@
                 <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
                   <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-1">
                     <i data-lucide="camera" class="text-sky-600 w-5 h-5"></i>
-                    Seleziona Webcam / Fotocamera
+                    Seleziona Webcam / Fotocamera del PC
                   </h4>
                   <p class="text-xs text-slate-500 mb-3">Scegli il dispositivo video connesso per avviare il mirino di scansione laser.</p>
-                  <div class="flex gap-2">
-                    <select id="cameraSourceSelect" class="flex-grow p-2.5 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                  
+                  <div class="flex flex-col gap-2">
+                    <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-sky-500">
                       <option value="">Rilevamento fotocamere...</option>
                     </select>
-                    <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition shadow-sm">
-                      Avvia Scanner
-                    </button>
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                      <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
+                        Usa Selezionata
+                      </button>
+                      <button id="btnToggleCameraDirect" onclick="startWebcamDirectMobile()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
+                        Fotocamera Mobile (Rear)
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -619,20 +651,20 @@
                   <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 p-4 text-center">
                     <i data-lucide="scan" class="w-16 h-16 text-slate-700 mb-3 animate-pulse"></i>
                     <p class="text-sm font-bold">Scanner Webcam Spento</p>
-                    <p class="text-xs text-slate-600 mt-1 max-w-xs">Premi "Avvia Scanner" in alto oppure usa un lettore hardware USB inquadrando il campo di testo a destra.</p>
+                    <p class="text-xs text-slate-600 mt-1 max-w-xs">Inquadra il codice a barre o il QR Code per eseguire il check-in.</p>
                   </div>
                 </div>
               </div>
 
-              <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB -->
+              <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB + MULTI DISPOSITIVO -->
               <div class="space-y-6">
                 <!-- Lettura Hardware / Codice Manuale -->
                 <div class="glass-card p-6 rounded-2xl border border-slate-100">
                   <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-2">
                     <i data-lucide="keyboard" class="text-indigo-600 w-5 h-5"></i>
-                    Input Pistola Scanner USB / Manuale
+                    Input Pistola Scanner USB / Bluetooth
                   </h4>
-                  <p class="text-xs text-slate-500 mb-3">Mantieni il focus su questo campo se stai utilizzando una pistola scanner barcode hardware USB (la pistola invierà automaticamente il codice).</p>
+                  <p class="text-xs text-slate-500 mb-3">Mantieni il focus su questo campo se usi pistole scanner laser o se preferisci inserire il codice a mano.</p>
                   
                   <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
                     <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border border-slate-200 bg-white font-mono uppercase tracking-wider text-center text-lg outline-none focus:ring-2 focus:ring-indigo-500" placeholder="CODICE PRENOTAZIONE" autocomplete="off">
@@ -640,6 +672,29 @@
                       Invia
                     </button>
                   </form>
+                </div>
+
+                <!-- NUOVA SEZIONE: DISPOSITIVI SCANNER CLOUD COLLEGATI IN TEMPO REALE -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-100 space-y-4">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-indigo-950 flex items-center gap-2">
+                      <i data-lucide="cpu" class="text-indigo-600 w-5 h-5"></i>
+                      Scanner Cloud Associati
+                    </h4>
+                    <!-- Tasto Aggiungi Dispositivo per accoppiamento mobile -->
+                    <button onclick="openAddDeviceModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1 shadow-sm">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                      <span>Collega Telefono</span>
+                    </button>
+                  </div>
+                  <p class="text-xs text-slate-500">Collega uno o più smartphone esterni per scansionare simultaneamente all'ingresso. Le scansioni effettuate dai telefoni aggiornano questa pagina all'istante.</p>
+                  
+                  <!-- Lista dei terminali scanner connessi -->
+                  <div id="activeScannersList" class="space-y-2">
+                    <div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">
+                      Nessun telefono scanner esterno associato via Cloud.
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Scheda dell'Ultimo Alunno Scansionato -->
@@ -805,6 +860,14 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
+    // Generazione ID dispositivo per tracking degli scanner attivi
+    const deviceId = localStorage.getItem('openday_device_id') || 'scanner-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    localStorage.setItem('openday_device_id', deviceId);
+
+    // Rileva se è mobile
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const deviceName = isMobileDevice ? "Smartphone Mobile" : "PC Principale (" + navigator.platform + ")";
+
     // Endpoint Webhook
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec";
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
@@ -822,6 +885,7 @@
       },
       dates: [],
       registrations: [],
+      scanners: [], // Scanner portatili connessi in tempo reale
       selectedDate: null,
       pendingDeleteId: null,
       html5QrcodeScanner: null,
@@ -924,6 +988,22 @@
     window.openRecoveryModal = function() { document.getElementById('recoveryModal').classList.remove('hidden'); }
     window.openCancelModal = function() { document.getElementById('cancelModal').classList.remove('hidden'); }
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Apre il modale QR Code di accoppiamento per dispositivi esterni
+    window.openAddDeviceModal = function() {
+      const modal = document.getElementById('addDeviceModal');
+      const qrImg = document.getElementById('qrCodeDeviceLink');
+      const urlLabel = document.getElementById('lblDeviceUrl');
+      
+      // Costruiamo il link dell'app corrente per aprire la scansione su mobile
+      const currentUrl = window.location.href;
+      urlLabel.innerText = currentUrl;
+      
+      // Generazione dinamica QR Code di accoppiamento tramite API pubblica gratuita
+      qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(currentUrl);
+      
+      modal.classList.remove('hidden');
+    }
 
     // Interfaccia Custom Confirm
     let isConfirming = false;
@@ -1043,7 +1123,7 @@
       });
     }
 
-    // Seeding Date D'Esempio per il 2025
+    // Seeding Date D'Esempio per il 2025 (Da testo fornito)
     async function seedExampleDates() {
       const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
       if (querySnapshot.empty) {
@@ -1106,6 +1186,21 @@
         renderRegistrations();
         checkAndTriggerAutomaticReminders();
       });
+
+      // Ascolto dei dispositivi scanner Cloud attivi (heartbeat)
+      onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'scanners'), (snapshot) => {
+        const scannerList = [];
+        const now = Date.now();
+        snapshot.forEach(docObj => {
+          const scData = docObj.data();
+          // Mostra solo i dispositivi attivi negli ultimi 12 secondi
+          if (now - scData.lastActive < 12000) {
+            scannerList.push({ id: docObj.id, ...scData });
+          }
+        });
+        state.scanners = scannerList;
+        renderActiveScanners();
+      });
     }
 
     window.calculateTotalFormSeats = function() {
@@ -1120,6 +1215,55 @@
       return total;
     }
 
+    // Invio segnale di heartbeat per registrare questo terminale come attivo
+    async function sendScannerHeartbeat() {
+      if (!state.user || state.currentView !== 'admin') return;
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'scanners', deviceId), {
+          name: deviceName,
+          lastActive: Date.now(),
+          isMobile: isMobileDevice
+        });
+      } catch (err) {
+        console.error("Errore invio heartbeat dispositivo:", err);
+      }
+    }
+    // Avvia l'heartbeat continuo ogni 5 secondi
+    setInterval(sendScannerHeartbeat, 5000);
+
+    // Renderizza graficamente la lista degli scanner attivi
+    function renderActiveScanners() {
+      const container = document.getElementById('activeScannersList');
+      if (!container) return;
+
+      if (state.scanners.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">
+            Nessun telefono scanner esterno associato via Cloud.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.scanners.map(sc => {
+        const isCurrent = sc.id === deviceId;
+        const iconName = sc.isMobile ? 'smartphone' : 'monitor';
+        
+        return `
+          <div class="flex items-center justify-between p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="font-bold text-indigo-950">${sc.name} ${isCurrent ? '(Questo dispositivo)' : ''}</span>
+            </div>
+            <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-semibold">Attivo</span>
+          </div>
+        `;
+      }).join('');
+    }
+
     // Automa invio promemoria automatici
     async function checkAndTriggerAutomaticReminders() {
       const today = new Date();
@@ -1132,7 +1276,6 @@
 
         if (diffDays <= daysBeforeSetting && diffDays >= 0 && !reg.reminderSent) {
           
-          // IMPOSTA SUBITO LOCALE PER EVITARE LOOP DURANTE IL FETCH
           reg.reminderSent = true; 
 
           try {
@@ -1172,7 +1315,7 @@
             console.log(`Promemoria autogestito inviato per: ${reg.code}`);
           } catch (err) {
             console.error("Errore automa promemoria:", err);
-            reg.reminderSent = false; // rollback se fallisce
+            reg.reminderSent = false;
           }
         }
       }
@@ -1215,7 +1358,7 @@
 
       pdfDoc.setTextColor(51, 65, 85);
       pdfDoc.setFontSize(12);
-      pdfDoc.text("Dettagli Partecipante (Studente Referente Terza Media):", 20, 60);
+      pdfDoc.text("Dettagli Genitore / Studente Referente:", 20, 60);
       
       pdfDoc.setFont("Helvetica", "bold");
       pdfDoc.setFontSize(14);
@@ -1375,12 +1518,12 @@
       document.getElementById('bookingForm').reset();
     }
 
-    // Invio della Prenotazione (PULSANTE BLOCCATO PER EVITARE DOPPIO CLICK)
+    // Invio della Prenotazione
     window.handleBooking = async function(e) {
       e.preventDefault();
       
       const btn = document.getElementById('submitBookingBtn');
-      if (btn.disabled) return; // SE E' GIA' IN CORSO, FERMATI QUI
+      if (btn.disabled) return; 
 
       const privacyChecked = document.getElementById('privacyConsent').checked;
       if (!privacyChecked) {
@@ -1432,7 +1575,6 @@
         return;
       }
 
-      // TUTTI I CONTROLLI PASSATI -> DISABILITA IL BOTTONE!
       btn.disabled = true;
       btn.innerText = "Registrazione in corso...";
 
@@ -1502,12 +1644,11 @@
         document.getElementById('successRegCode').innerText = uniqueCode;
         successCard.scrollIntoView({ behavior: 'smooth' });
 
-        showToast("Registrazione completata e email inviata!", "success");
+        showToast("Registrazione completata e e-mail ufficiale inviata!", "success");
 
       } catch (err) {
         console.error("Booking Error:", err);
         showToast("Si è verificato un errore imprevisto.", "error");
-        // Riattiva solo in caso di fallimento grave. Altrimenti lo lascio disabilitato.
         btn.disabled = false;
         btn.innerText = "Conferma e Invia Ricevuta";
       } 
@@ -1539,7 +1680,7 @@
       );
     }
 
-    // Recupero della ricevuta (BLOCCO DOPPIO CLICK INCLUSO)
+    // Recupero della ricevuta
     window.handleRecovery = async function(e) {
       e.preventDefault();
       const inputBtn = document.getElementById('submitRecoveryBtn');
@@ -1636,7 +1777,7 @@
       }
     }
 
-    // Richiesta di Annullamento Prenotazione
+    // Richiesta di Annullamento Prenotazione (CANCEL_SCRIPT_URL)
     window.handleCancellation = async function(e) {
       e.preventDefault();
       const term = document.getElementById('cancelTerm').value.trim().toUpperCase();
@@ -1691,7 +1832,7 @@
       }
     }
 
-    // Invio Pergamena / Attestato
+    // Invio Pergamena / Attestato (ATTESTATO_SCRIPT_URL)
     window.sendCertificateEmail = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
@@ -1816,6 +1957,57 @@
       }
     }
 
+    // AVVIO DIRETTO DELLA FOTOCAMERA POSTERIORE PER MOBILE (FACINGMODE: ENVIRONMENT)
+    window.startWebcamDirectMobile = async function() {
+      if (state.isWebcamScanning) {
+        stopWebcamScanner();
+      }
+
+      document.getElementById('scannerPlaceholder').classList.add('hidden');
+      document.getElementById('scannerLaser').classList.remove('hidden');
+      
+      const directButton = document.getElementById('btnToggleCameraDirect');
+      directButton.innerText = "Arresta Fotocamera";
+      directButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+
+      state.html5QrcodeScanner = new Html5Qrcode("scannerView");
+      state.isWebcamScanning = true;
+
+      try {
+        // Avvio scansione 1D e 2D ottimizzata per smartphone
+        await state.html5QrcodeScanner.start(
+          { facingMode: "environment" }, // Forza l'uso della cam posteriore mobile
+          {
+            fps: 15,
+            qrbox: function(viewfinderWidth, viewFinderHeight) {
+              const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
+              const qrboxWidth = Math.floor(minEdge * 0.85);
+              return {
+                width: qrboxWidth,
+                height: Math.floor(qrboxWidth * 0.5) // Area rettangolare ottimizzata per i Barcode
+              };
+            },
+            // Configurazione dei formati abilitati (Barcode + QR Code simultanei)
+            formatsToSupport: [ 
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.EAN_13,
+              Html5QrcodeSupportedFormats.UPC_A
+            ]
+          },
+          (decodedText) => {
+            processScannedCode(decodedText);
+          },
+          (errorMessage) => {}
+        );
+      } catch (err) {
+        console.error("Avvio fallito con facingMode environment:", err);
+        showToast("Impossibile accedere alla fotocamera posteriore. Verifica i permessi del browser.", "error");
+        stopWebcamScanner();
+      }
+    }
+
     async function startWebcamScanner() {
       const selectedCameraId = document.getElementById('cameraSourceSelect').value;
       if (!selectedCameraId) {
@@ -1825,8 +2017,10 @@
 
       document.getElementById('scannerPlaceholder').classList.add('hidden');
       document.getElementById('scannerLaser').classList.remove('hidden');
-      document.getElementById('btnToggleCamera').innerText = "Arresta Scanner";
-      document.getElementById('btnToggleCamera').className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition shadow-sm";
+      
+      const regularButton = document.getElementById('btnToggleCamera');
+      regularButton.innerText = "Arresta Selezionata";
+      regularButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
 
       state.html5QrcodeScanner = new Html5Qrcode("scannerView");
       state.isWebcamScanning = true;
@@ -1836,7 +2030,21 @@
           selectedCameraId,
           {
             fps: 15,
-            qrbox: { width: 250, height: 130 }
+            qrbox: function(viewfinderWidth, viewFinderHeight) {
+              const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
+              const qrboxWidth = Math.floor(minEdge * 0.75);
+              return {
+                width: qrboxWidth,
+                height: Math.floor(qrboxWidth * 0.5)
+              };
+            },
+            formatsToSupport: [ 
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.EAN_13,
+              Html5QrcodeSupportedFormats.UPC_A
+            ]
           },
           (decodedText) => {
             processScannedCode(decodedText);
@@ -1855,8 +2063,13 @@
         state.html5QrcodeScanner.stop().then(() => {
           document.getElementById('scannerPlaceholder').classList.remove('hidden');
           document.getElementById('scannerLaser').classList.add('hidden');
-          document.getElementById('btnToggleCamera').innerText = "Avvia Scanner";
-          document.getElementById('btnToggleCamera').className = "px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition shadow-sm";
+          
+          document.getElementById('btnToggleCamera').innerText = "Usa Selezionata";
+          document.getElementById('btnToggleCamera').className = "px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+          
+          document.getElementById('btnToggleCameraDirect').innerText = "Fotocamera Mobile (Rear)";
+          document.getElementById('btnToggleCameraDirect').className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+          
           state.isWebcamScanning = false;
         }).catch(err => console.error("Errore stop scanner:", err));
       }
@@ -1890,6 +2103,7 @@
             status: 'Ammesso'
           });
           
+          // Invia automaticamente l'attestato di partecipazione in tempo reale
           await sendCertificateEmailAuto(registration);
         } catch (err) {
           console.error("Errore aggiornamento stato in Ammesso:", err);
