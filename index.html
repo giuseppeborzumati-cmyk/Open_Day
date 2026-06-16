@@ -19,7 +19,10 @@
   <!-- jsPDF per la generazione della ricevuta digitale PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <!-- html5-qrcode per la scansione del codice a barre tramite Webcam -->
+  <!-- qrious per la generazione istantanea di QR Code in locale nel PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+  <!-- html5-qrcode per la scansione del codice a barre e QR tramite fotocamera -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
@@ -416,7 +419,7 @@
                   </label>
                 </div>
                 <p class="text-xs text-slate-500 pl-8">
-                  Selezionando questa opzione, organizzeremo un colloquio conoscitivo individuale personalizzato subito dopo la fine della presentazione istituzionale e della visita.
+                  Selezionando questa opzione, organizzeremo un colloquio conoscitivo individual personalizzato subito dopo la fine della presentazione istituzionale e della visita.
                 </p>
               </div>
 
@@ -1518,7 +1521,7 @@
       document.getElementById('bookingForm').reset();
     }
 
-    // Invio della Prenotazione
+    // Invio della Prenotazione (PULSANTE BLOCCATO PER EVITARE DOPPIO CLICK)
     window.handleBooking = async function(e) {
       e.preventDefault();
       
@@ -1571,7 +1574,7 @@
       });
 
       if (alreadyBookedSamePath) {
-        showToast(`Attenzione: Risulta già una prenotazione attiva per questo indirizzo.`, "error");
+        showToast("Attenzione: Risulta già una prenotazione attiva per questo indirizzo.", "error");
         return;
       }
 
@@ -1680,7 +1683,7 @@
       );
     }
 
-    // Recupero della ricevuta
+    // Recupero della ricevuta (BLOCCO DOPPIO CLICK INCLUSO)
     window.handleRecovery = async function(e) {
       e.preventDefault();
       const inputBtn = document.getElementById('submitRecoveryBtn');
@@ -1777,7 +1780,7 @@
       }
     }
 
-    // Richiesta di Annullamento Prenotazione (CANCEL_SCRIPT_URL)
+    // Richiesta di Annullamento Prenotazione
     window.handleCancellation = async function(e) {
       e.preventDefault();
       const term = document.getElementById('cancelTerm').value.trim().toUpperCase();
@@ -1832,7 +1835,7 @@
       }
     }
 
-    // Invio Pergamena / Attestato (ATTESTATO_SCRIPT_URL)
+    // Invio Pergamena / Attestato
     window.sendCertificateEmail = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
@@ -2103,7 +2106,6 @@
             status: 'Ammesso'
           });
           
-          // Invia automaticamente l'attestato di partecipazione in tempo reale
           await sendCertificateEmailAuto(registration);
         } catch (err) {
           console.error("Errore aggiornamento stato in Ammesso:", err);
