@@ -36,7 +36,7 @@
       font-family: 'Outfit', sans-serif;
     }
     
-    /* --- ANIMAZIONE CAOTICA DELLE BOLLE DI SAPONE (SOPRA, SOTTO, DESTRA, SINISTRA) --- */
+    /* --- ANIMAZIONE CAOTICA DELLE BOLLE DI SAPONE --- */
     @keyframes driftAllAround {
       0%, 100% {
         transform: translate(0px, 0px) scale(0.8) rotate(0deg);
@@ -126,7 +126,7 @@
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative">
 
-  <!-- Sfondo animato con bolle di sapone sparpagliate ovunque -->
+  <!-- Sfondo animato -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
   <!-- INTERFACCIA 1: SITO PUBBLICO GENERALE -->
@@ -165,18 +165,169 @@
       </div>
     </nav>
 
+    <!-- Area Notifiche Custom -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MODALE CUSTOM: AUTO CHECK-IN DA QR CODE -->
+    <div id="autoCheckinModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-8 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200 shadow-2xl border border-white">
+        <div id="checkinLoading" class="space-y-4">
+          <div class="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <h3 class="text-xl font-bold text-indigo-950">Elaborazione Check-in...</h3>
+          <p class="text-sm text-slate-500">Verifica del codice e registrazione della presenza sul database scolastico.</p>
+        </div>
+        <div id="checkinSuccess" class="hidden space-y-4">
+          <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
+            <i data-lucide="check-check" class="w-12 h-12"></i>
+          </div>
+          <h3 class="text-2xl font-extrabold text-indigo-950">Presenza Confermata!</h3>
+          <p class="text-sm text-slate-600">Lo studente <strong id="checkinStudentName" class="text-indigo-950"></strong> è stato registrato come <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">AMMESSO</span>.</p>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-left text-xs text-slate-500 space-y-2">
+            <p id="checkinStudyPath"></p>
+            <p id="checkinSupport"></p>
+          </div>
+          <p class="text-xs text-emerald-600 font-semibold flex items-center justify-center gap-1">
+            <i data-lucide="award" class="w-4 h-4"></i> Pergamena di Benvenuto inviata via e-mail!
+          </p>
+          <button onclick="closeAutoCheckin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-md">
+            Chiudi Finestra
+          </button>
+        </div>
+        <div id="checkinError" class="hidden space-y-4">
+          <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto shadow-md">
+            <i data-lucide="alert-triangle" class="w-12 h-12"></i>
+          </div>
+          <h3 class="text-2xl font-extrabold text-indigo-950">Errore Check-in</h3>
+          <p id="checkinErrorMessage" class="text-sm text-red-600"></p>
+          <button onclick="closeAutoCheckin()" class="w-full py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition">
+            Chiudi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALE CUSTOM: RECUPERA RICEVUTA -->
+    <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
+        <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="download-cloud" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-indigo-950">Recupera la tua Ricevuta</h3>
+          <p class="text-sm text-slate-500 mt-1">Inserisci il codice di prenotazione o il cognome dello studente per riscaricare la ricevuta in PDF munita di QR Code e Barcode, e ricevere nuovamente la mail di conferma.</p>
+        </div>
+        <form onsubmit="handleRecovery(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Codice o Cognome Studente</label>
+            <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition" placeholder="Es. Rossi o AB12CD">
+          </div>
+          <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span>Invia Mail e Scarica PDF</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODALE CUSTOM: ANNULLA PRENOTAZIONE -->
+    <div id="cancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
+        <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="trash-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-indigo-950">Annulla Prenotazione</h3>
+          <p class="text-sm text-slate-500 mt-1">Inserisci il tuo codice di prenotazione o cognome per liberare il posto e ricevere l'email di annullamento.</p>
+        </div>
+        <form id="cancelForm" onsubmit="handleCancellation(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Codice Prenotazione o Cognome</label>
+            <input required type="text" id="cancelTerm" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-red-500 outline-none transition" placeholder="Codice o Cognome Studente">
+          </div>
+          <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="x-circle" class="w-5 h-5"></i>
+            <span>Conferma Annullamento</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODALE CUSTOM: CONFERMA CANCELLAZIONE UTENTE -->
+    <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
+        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
+        <p class="text-sm text-slate-500 mt-2">Questa operazione eliminerà definitivamente la prenotazione per <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
+        <div class="flex gap-3 mt-6">
+          <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
+          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALE CUSTOM: AGGIUNGI DISPOSITIVO SCANNER (QR CODE ACCOPPIAMENTO) -->
+    <div id="addDeviceModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
+        <button onclick="closeModal('addDeviceModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="smartphone" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-xl font-bold text-indigo-950">Collega Smartphone Scanner</h3>
+        <p class="text-xs text-slate-500 mt-2">Scansiona questo QR Code con la fotocamera del tuo telefono per aprirlo come terminale di scansione portatile connesso via Cloud. Qualsiasi lettura aggiornerà questa pagina all'istante.</p>
+        
+        <div class="my-6 flex justify-center bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner border border-slate-100">
+          <img id="qrCodeDeviceLink" src="" alt="QR Accoppiamento" class="w-full h-full object-contain">
+        </div>
+        
+        <p class="text-[10px] text-slate-400 font-mono select-all break-all bg-slate-50 p-2 rounded-lg" id="lblDeviceUrl">-</p>
+
+        <div class="mt-6">
+          <button onclick="closeModal('addDeviceModal')" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">Chiudi Finestra</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALE CUSTOM: INTERFACCIA DI CONFERMA / SICUREZZA DOCENTE -->
+    <div id="adminConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
+        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+        </div>
+        <h3 id="adminConfirmTitle" class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
+        <p id="adminConfirmMessage" class="text-sm text-slate-500 mt-2"></p>
+        
+        <div id="adminConfirmInputWrapper" class="mt-4 hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Digita 'ELIMINA' per confermare</label>
+          <input type="text" id="adminConfirmInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-center uppercase tracking-widest font-bold">
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Annulla</button>
+          <button id="btnAdminConfirmAction" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Conferma</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Contenuto Principale -->
     <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl relative z-10">
 
       <!-- Schermata Principale (Utente) -->
       <section id="sectionHome" class="space-y-8 animate-in fade-in duration-500">
-        
-        <!-- Sopra-Banner Introduttivo Dinamico -->
+        <!-- Banner Introduttivo -->
         <div class="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-xl border border-white/60 flex flex-col md:flex-row items-center gap-8">
           <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-200/40 rounded-full blur-2xl"></div>
           <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-pink-200/30 rounded-full blur-2xl"></div>
           
-          <!-- Grafica della Scuola in SVG a sinistra nel banner -->
           <div class="w-full md:w-1/3 flex justify-center relative z-10">
             <svg class="w-48 h-48 drop-shadow-lg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="20" y="70" width="160" height="100" rx="10" fill="#1e3a8a" />
@@ -266,7 +417,7 @@
                   </div>
                 </div>
 
-                <!-- Selezione Indirizzo di Studio, Alunni e Accompagnatori (MANUALI) -->
+                <!-- Selezione Indirizzo di Studio, Alunni e Accompagnatori -->
                 <div class="space-y-4">
                   <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
@@ -484,9 +635,9 @@
                       <th class="p-4 border-b">Codice</th>
                       <th class="p-4 border-b">Cognome e Nome (Alunni & Accompagnatori)</th>
                       <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
-                      <th class="p-4 border-b">Sostegno</th>
+                      <th class="p-4 border-b">Colloquio Sostegno</th>
                       <th class="p-4 border-b">Data</th>
-                      <th class="p-4 border-b text-center">Invia Pergamena (Uscita)</th>
+                      <th class="p-4 border-b text-center">Attestato (Pergamena)</th>
                       <th class="p-4 border-b text-center">Azioni</th>
                     </tr>
                   </thead>
@@ -497,11 +648,10 @@
               </div>
             </div>
 
-            <!-- TAB 2: SCANNER CHECK-IN (CAMERA INTEGRATA + LETTORE HARDWARE ESTERNO) -->
+            <!-- TAB 2: SCANNER CHECK-IN -->
             <div id="tabScanner" class="hidden space-y-6">
               <div class="grid md:grid-cols-2 gap-8">
-                
-                <!-- Pannello Sinistro: Camera / Lettore di Codici -->
+                <!-- Pannello Sinistro: Camera -->
                 <div class="space-y-4">
                   <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
                     <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-1">
@@ -537,7 +687,7 @@
                   </div>
                 </div>
 
-                <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB + MULTI DISPOSITIVO -->
+                <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB -->
                 <div class="space-y-6">
                   <!-- Lettura Hardware / Codice Manuale -->
                   <div class="glass-card p-6 rounded-2xl border border-slate-100">
@@ -604,7 +754,6 @@
                   </div>
 
                 </div>
-
               </div>
             </div>
 
@@ -719,7 +868,7 @@
   </div>
 
   <!-- INTERFACCIA 2: SCANNER ISOLATO PER STUDENTI E COLLABORATORI (?mode=scanner) -->
-  <div id="wrapperIsolatedScanner" class="hidden min-h-screen flex flex-col items-center justify-between p-4 relative">
+  <div id="wrapperIsolatedScanner" class="hidden min-h-screen flex flex-col items-center justify-between p-4 relative font-outfit">
     <!-- Header Isolata -->
     <header class="w-full max-w-xl flex justify-between items-center p-4 glass-card rounded-2xl relative z-20">
       <div class="flex items-center gap-3">
@@ -763,9 +912,8 @@
         <p class="text-[10px] text-slate-500 mt-1">La presenza sarà registrata e la Pergamena di Benvenuto inviata in tempo reale.</p>
       </div>
 
-      <!-- Area Camera preview GIGANTE e ottimizzata -->
+      <!-- Area Camera preview GIGANTE -->
       <div class="relative flex-grow w-full bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border-4 border-indigo-950 flex items-center justify-center">
-        <!-- Laser rosso animato -->
         <div id="isolatedScannerLaser" class="laser-line"></div>
         <div id="isolatedScannerView" class="w-full h-full"></div>
       </div>
@@ -793,7 +941,7 @@
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // Configurazione Firebase
+    // --- CONFIGURAZIONE FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDAQB-W-QTV1thVoCCifbdTFbpaYmAM4eQ",
       authDomain: "progetto-63fb3.firebaseapp.com",
@@ -804,30 +952,26 @@
       measurementId: "G-5FZC9N9FMG"
     };
 
-    // Inizializzazione Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-    // Generazione ID dispositivo per tracking degli scanner attivi
+    // Generazione ID dispositivo per tracking
     const deviceId = localStorage.getItem('openday_device_id') || 'scanner-' + Math.random().toString(36).substring(2, 8).toUpperCase();
     localStorage.setItem('openday_device_id', deviceId);
 
-    // Rileva se è mobile
     const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const deviceName = isMobileDevice ? "Smartphone Mobile" : "PC Principale (" + navigator.platform + ")";
 
-    // Endpoint Webhook
+    // --- ENDPOINT WEBHOOK ---
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec";
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec";
-    
-    // NUOVI SCRIPT DEDICATI PER LE DUE PERGAMENE DISTINTE
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbx8KLoNmY9YcjXhi1KFYkqv0WsGT5gqDQchKe6_IxpVpgBWG7taD2Z-AvbkTtGGLOnxJw/exec";
     const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
 
-    // Stato locale
+    // --- STATO LOCALE ---
     let state = {
       user: null,
       currentView: 'home',
@@ -838,40 +982,33 @@
       },
       dates: [],
       registrations: [],
-      scanners: [], // Scanner portatili connessi in tempo reale
+      scanners: [], 
       selectedDate: null,
       pendingDeleteId: null,
       html5QrcodeScanner: null,
       isWebcamScanning: false
     };
 
-    // Inizializzazione delle bolle
+    // --- ANIMAZIONI BOLLE ---
     function initBubbles() {
       const container = document.getElementById('bubbleContainer');
-      const numBubbles = 45;
-      for (let i = 0; i < numBubbles; i++) {
-        createBubble(container, true);
-      }
+      for (let i = 0; i < 45; i++) createBubble(container);
     }
 
-    function createBubble(container, startRandom = false) {
+    function createBubble(container) {
       const bubble = document.createElement('div');
       bubble.classList.add('bubble');
-      
       const size = Math.random() * 75 + 35;
       const startX = Math.random() * 100;
       const startY = Math.random() * 100;
-      
       const moveX = (Math.random() - 0.5) * 60;
       const moveY = (Math.random() - 0.5) * 60;
-      
       const duration = Math.random() * 22 + 12;
 
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
       bubble.style.left = `${startX}vw`;
       bubble.style.top = `${startY}vh`;
-      
       bubble.style.setProperty('--moveX', `${moveX}vw`);
       bubble.style.setProperty('--moveY', `${moveY}vh`);
       bubble.style.animation = `driftAllAround ${duration}s infinite ease-in-out`;
@@ -881,18 +1018,14 @@
       logoInside.alt = 'Levi Logo';
       logoInside.onerror = function() {
         this.onerror = null;
-        this.outerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-indigo-900 w-1/2 h-1/2 opacity-25">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        `;
+        this.outerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-indigo-900 w-1/2 h-1/2 opacity-25"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
       };
       
       bubble.appendChild(logoInside);
       container.appendChild(bubble);
     }
 
-    // Navigazione ed Azioni Pop-up
+    // --- NAVIGAZIONE ---
     window.navigateTo = function(target) {
       state.currentView = target;
       
@@ -902,19 +1035,13 @@
 
       if (target === 'home') {
         document.getElementById('sectionHome').classList.remove('hidden');
-        document.getElementById('adminButton').innerHTML = `
-          <i data-lucide="shield-alert" class="w-4 h-4"></i>
-          <span>Area Docenti</span>
-        `;
+        document.getElementById('adminButton').innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i><span>Area Docenti</span>`;
         stopWebcamScanner();
         lucide.createIcons();
       } else if (target === 'admin') {
         if (state.isAdminAuthed) {
           document.getElementById('sectionAdmin').classList.remove('hidden');
-          document.getElementById('adminButton').innerHTML = `
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-            <span>Esci Admin</span>
-          `;
+          document.getElementById('adminButton').innerHTML = `<i data-lucide="log-out" class="w-4 h-4"></i><span>Esci Admin</span>`;
           lucide.createIcons();
           syncAdminView();
         } else {
@@ -938,61 +1065,77 @@
       }
     }
 
-    window.openRecoveryModal = function() { document.getElementById('recoveryModal').classList.remove('hidden'); }
-    window.openCancelModal = function() { document.getElementById('cancelModal').classList.remove('hidden'); }
-    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+    // --- MODALI PUBBLICI ---
+    window.openRecoveryModal = function() { 
+      const modal = document.getElementById('recoveryModal');
+      if (modal) modal.classList.remove('hidden'); 
+    }
+    window.openCancelModal = function() { 
+      const modal = document.getElementById('cancelModal');
+      if (modal) modal.classList.remove('hidden'); 
+    }
+    window.closeModal = function(id) { 
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden'); 
+    }
 
     window.openAddDeviceModal = function() {
       const modal = document.getElementById('addDeviceModal');
       const qrImg = document.getElementById('qrCodeDeviceLink');
       const urlLabel = document.getElementById('lblDeviceUrl');
       
-      // Costruiamo il link dello scanner isolato (?mode=scanner)
       const currentUrl = window.location.origin + window.location.pathname + "?mode=scanner";
-      urlLabel.innerText = currentUrl;
+      if (urlLabel) urlLabel.innerText = currentUrl;
       
-      // Generazione dinamica QR Code di accoppiamento tramite API pubblica gratuita
-      qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(currentUrl);
-      modal.classList.remove('hidden');
+      if (qrImg) qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(currentUrl);
+      if (modal) modal.classList.remove('hidden');
     }
 
-    // Interfaccia Custom Confirm
-    let isConfirming = false;
+    // --- MODALE CONFERMA SICURA ---
     window.showAdminConfirm = function(title, message, requiresInputText, onConfirmCallback) {
-      document.getElementById('adminConfirmTitle').innerText = title;
-      document.getElementById('adminConfirmMessage').innerText = message;
+      const modalTitle = document.getElementById('adminConfirmTitle');
+      const modalMsg = document.getElementById('adminConfirmMessage');
+      if (modalTitle) modalTitle.innerText = title;
+      if (modalMsg) modalMsg.innerText = message;
       
       const inputWrapper = document.getElementById('adminConfirmInputWrapper');
       const inputField = document.getElementById('adminConfirmInput');
-      inputField.value = '';
+      if (inputField) inputField.value = '';
       
-      if (requiresInputText) {
-        inputWrapper.classList.remove('hidden');
-      } else {
-        inputWrapper.classList.add('hidden');
+      if (inputWrapper) {
+        if (requiresInputText) {
+          inputWrapper.classList.remove('hidden');
+        } else {
+          inputWrapper.classList.add('hidden');
+        }
       }
       
-      document.getElementById('adminConfirmModal').classList.remove('hidden');
+      const confirmModal = document.getElementById('adminConfirmModal');
+      if (confirmModal) confirmModal.classList.remove('hidden');
       
-      document.getElementById('btnAdminConfirmAction').onclick = async () => {
-        if (isConfirming) return;
-        if (requiresInputText && inputField.value.trim().toUpperCase() !== 'ELIMINA') {
-          showToast("Digitazione non corretta. Inserisci 'ELIMINA' per sbloccare.", "error");
-          return;
-        }
-        isConfirming = true;
-        closeModal('adminConfirmModal');
-        try {
-          await onConfirmCallback();
-        } finally {
-          isConfirming = false;
-        }
-      };
+      const confirmActionBtn = document.getElementById('btnAdminConfirmAction');
+      if (confirmActionBtn) {
+        confirmActionBtn.onclick = async () => {
+          if (isConfirming) return;
+          if (requiresInputText && inputField && inputField.value.trim().toUpperCase() !== 'ELIMINA') {
+            showToast("Digitazione non corretta. Inserisci 'ELIMINA' per sbloccare.", "error");
+            return;
+          }
+          isConfirming = true;
+          closeModal('adminConfirmModal');
+          try {
+            await onConfirmCallback();
+          } finally {
+            isConfirming = false;
+          }
+        };
+      }
     }
 
-    // Notifiche
+    // --- NOTIFICHE TOAST ---
     window.showToast = function(message, type = 'success') {
       const container = document.getElementById('toastContainer');
+      if (!container) return;
       const toast = document.createElement('div');
       toast.className = `p-4 rounded-2xl shadow-lg border text-sm font-semibold flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-sm glass-card relative z-50`;
       
@@ -1007,11 +1150,7 @@
         toast.classList.add('border-sky-100', 'text-sky-800');
       }
 
-      toast.innerHTML = `
-        <i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i>
-        <span>${message}</span>
-      `;
-
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i><span>${message}</span>`;
       container.appendChild(toast);
       lucide.createIcons();
 
@@ -1022,7 +1161,7 @@
       }, 5000);
     }
 
-    // Generazione Audio bip scansione
+    // --- AUDIO SCANSIONE ---
     function playAudioTone(success = true) {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1049,11 +1188,11 @@
           oscillator.stop(audioCtx.currentTime + 0.25);
         }
       } catch (err) {
-        console.warn("Audio Context non supportato o bloccato.", err);
+        console.warn("Audio bloccato.", err);
       }
     }
 
-    // Inizializzazione Firebase
+    // --- AVVIO APP ---
     async function startApp() {
       initBubbles();
       lucide.createIcons();
@@ -1061,8 +1200,7 @@
       try {
         await signInAnonymously(auth);
       } catch (err) {
-        console.error("Firebase Auth Error: ", err);
-        showToast("Errore di connessione.", "error");
+        showToast("Errore di connessione a Firebase.", "error");
       }
 
       onAuthStateChanged(auth, (user) => {
@@ -1071,7 +1209,6 @@
           setupRealtimeListeners();
           seedExampleDates();
 
-          // Gestione della modalità router via query string
           const urlParams = new URLSearchParams(window.location.search);
           const mode = urlParams.get('mode');
           const checkinCode = urlParams.get('checkin');
@@ -1079,10 +1216,11 @@
           if (mode === 'scanner') {
             setupIsolatedScannerMode();
           } else {
-            document.getElementById('wrapperMainSite').classList.remove('hidden');
-            document.getElementById('wrapperIsolatedScanner').classList.add('hidden');
+            const wrapMain = document.getElementById('wrapperMainSite');
+            const wrapScanner = document.getElementById('wrapperIsolatedScanner');
+            if (wrapMain) wrapMain.classList.remove('hidden');
+            if (wrapScanner) wrapScanner.classList.add('hidden');
             
-            // Esegue il check-in se rileva il parametro 'checkin' nell'URL
             if (checkinCode) {
               executeAutoCheckin(checkinCode.toUpperCase());
             }
@@ -1091,15 +1229,15 @@
       });
     }
 
-    // Seeding Date D'Esempio per il 2025
+    // --- SEEDING DATE ---
     async function seedExampleDates() {
       const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
       if (querySnapshot.empty) {
         const defaultSessions = [
-          { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna (Edificio Nord)", maxSeats: 50 },
+          { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna", maxSeats: 50 },
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "SISTEMA MODA (SM)", aula: "Laboratorio Moda", maxSeats: 45 },
-          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
+          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "LICEO Scienze Applicate (LSA) & LICEO Economico (LSE)", aula: "Aula Magna", maxSeats: 150 },
           { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 }
         ];
 
@@ -1109,21 +1247,22 @@
       }
     }
 
-    // Calcolo complessivo posti occupati per un ID sessione
     function getOccupiedSeats(sessionId) {
       return state.registrations
         .filter(r => r.dateId === sessionId)
         .reduce((sum, r) => sum + (parseInt(r.totalPeople) || 1), 0);
     }
 
-    // Realtime listeners
+    // --- LISTENER FIREBASE IN TEMPO REALE ---
     function setupRealtimeListeners() {
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), (snapshot) => {
         snapshot.forEach(docObj => {
           if (docObj.id === 'general') {
             state.settings = docObj.data();
-            document.getElementById('bannerText').innerText = state.settings.bannerText;
-            document.getElementById('bannerTextarea').value = state.settings.bannerText;
+            const bannerTxt = document.getElementById('bannerText');
+            const bannerTxtarea = document.getElementById('bannerTextarea');
+            if (bannerTxt) bannerTxt.innerText = state.settings.bannerText;
+            if (bannerTxtarea) bannerTxtarea.value = state.settings.bannerText;
             
             const rDays = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
             const inputEl = document.getElementById('reminderDaysInput');
@@ -1151,7 +1290,6 @@
         checkAndTriggerAutomaticReminders();
       });
 
-      // Ascolto dei dispositivi scanner Cloud attivi (heartbeat)
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'scanners'), (snapshot) => {
         const scannerList = [];
         const now = Date.now();
@@ -1170,18 +1308,14 @@
       const numAlunni = parseInt(document.getElementById('numAlunni').value || 1);
       const numAccompagnatori = parseInt(document.getElementById('numAccompagnatori').value || 0);
       const total = numAlunni + numAccompagnatori;
-      
       const label = document.getElementById('lblTotalFormSeats');
-      if (label) {
-        label.innerText = total;
-      }
+      if (label) label.innerText = total;
       return total;
     }
 
-    // Invio segnale di heartbeat per registrare questo terminale come attivo
+    // --- HEARTBEAT SCANNER CLOUD ---
     async function sendScannerHeartbeat() {
       if (!state.user) return;
-      // Invia heartbeat sia in admin che nella modalità scanner isolata sbloccata
       const isScannerModeActive = document.getElementById('wrapperIsolatedScanner') && !document.getElementById('scannerActiveView').classList.contains('hidden');
       if (state.currentView === 'admin' || isScannerModeActive) {
         try {
@@ -1190,24 +1324,17 @@
             lastActive: Date.now(),
             isMobile: isMobileDevice
           });
-        } catch (err) {
-          console.error("Errore invio heartbeat dispositivo:", err);
-        }
+        } catch (err) { }
       }
     }
     setInterval(sendScannerHeartbeat, 5000);
 
-    // Renderizza graficamente la lista degli scanner attivi
     function renderActiveScanners() {
       const container = document.getElementById('activeScannersList');
       if (!container) return;
 
       if (state.scanners.length === 0) {
-        container.innerHTML = `
-          <div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">
-            Nessun telefono scanner esterno associato via Cloud.
-          </div>
-        `;
+        container.innerHTML = `<div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">Nessun telefono scanner esterno associato via Cloud.</div>`;
         return;
       }
 
@@ -1228,7 +1355,7 @@
       }).join('');
     }
 
-    // Automa invio promemoria automatici
+    // --- INVIO PROMEMORIA ---
     async function checkAndTriggerAutomaticReminders() {
       const today = new Date();
       const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
@@ -1274,16 +1401,14 @@
               reminderSent: true,
               reminderSentAt: Date.now()
             });
-
-            console.log(`Promemoria autogestito inviato per: ${reg.code}`);
           } catch (err) {
-            console.error("Errore automa promemoria:", err);
             reg.reminderSent = false;
           }
         }
       }
     }
 
+    // --- DISEGNO CODICI PDF ---
     function drawBarcode(docObj, code, x, y) {
       docObj.setFont("Courier", "bold");
       docObj.setFontSize(10);
@@ -1300,19 +1425,11 @@
       }
     }
 
-    // Generatore QR Code tramite libreria QRious
     function drawQRCode(docObj, code, x, y) {
       try {
-        const qr = new QRious({
-          value: code,
-          size: 200,
-          level: 'H'
-        });
-        const qrDataUrl = qr.toDataURL('image/png');
-        docObj.addImage(qrDataUrl, 'PNG', x, y, 32, 32);
-      } catch (err) {
-        console.error("Errore generazione QR Code:", err);
-      }
+        const qr = new QRious({ value: code, size: 200, level: 'H' });
+        docObj.addImage(qr.toDataURL('image/png'), 'PNG', x, y, 32, 32);
+      } catch (err) {}
     }
 
     async function generateReceiptPDF(data, code, type = 'conferma') {
@@ -1329,9 +1446,7 @@
       
       pdfDoc.setFont("Helvetica", "normal");
       pdfDoc.setFontSize(13);
-      const headerSubtitle = type === 'conferma' 
-        ? "CONFERMA DI PRENOTAZIONE - TERZE MEDIE" 
-        : "PROMEMORIA PRENOTAZIONE OPEN DAY";
+      const headerSubtitle = type === 'conferma' ? "CONFERMA DI PRENOTAZIONE - TERZE MEDIE" : "PROMEMORIA PRENOTAZIONE OPEN DAY";
       pdfDoc.text(headerSubtitle, 105, 32, { align: "center" });
 
       pdfDoc.setTextColor(51, 65, 85);
@@ -1365,13 +1480,8 @@
       pdfDoc.setFontSize(13);
       pdfDoc.text(`CODICE PRENOTAZIONE ED ACCREDITO`, 105, 157, { align: "center" });
 
-      // CODICE A BARRE (1D) A SINISTRA
       drawBarcode(pdfDoc, code, 25, 167);
-
-      // LINK CHECK-IN UNICO PER ACCREDITO RAPIDO DA MOBILES
       const checkInUrl = window.location.origin + window.location.pathname + "?checkin=" + code;
-
-      // QR CODE (2D) A DESTRA
       drawQRCode(pdfDoc, checkInUrl, 150, 163);
 
       pdfDoc.setTextColor(100, 116, 139);
@@ -1383,7 +1493,6 @@
         : "PROMEMORIA: Ti ricordiamo che la tua partecipazione all'evento è prevista tra pochissimi giorni. Qualora fossi impossibilitato a partecipare, ti preghiamo di effettuare tempestivamente la disdetta autonoma dal sito.";
       
       pdfDoc.text(disclaimer, 105, 215, { align: "center", maxWidth: 160 });
-
       pdfDoc.setTextColor(148, 163, 184);
       pdfDoc.setFont("Helvetica", "bold");
       pdfDoc.setFontSize(10);
@@ -1392,12 +1501,17 @@
       return pdfDoc.output('datauristring').split(',')[1];
     }
 
-    // FUNZIONE DI CHECK-IN AUTOMATICA SUL CLOUD ALLA SCANSIONE DEL QR CODE DA TELEFONO
+    // --- CHECKIN AUTOMATICO ---
     async function executeAutoCheckin(code) {
-      document.getElementById('autoCheckinModal').classList.remove('hidden');
-      document.getElementById('checkinLoading').classList.remove('hidden');
-      document.getElementById('checkinSuccess').classList.add('hidden');
-      document.getElementById('checkinError').classList.add('hidden');
+      const autoChModal = document.getElementById('autoCheckinModal');
+      const checkLoading = document.getElementById('checkinLoading');
+      const checkSuccess = document.getElementById('checkinSuccess');
+      const checkError = document.getElementById('checkinError');
+
+      if (autoChModal) autoChModal.classList.remove('hidden');
+      if (checkLoading) checkLoading.classList.remove('hidden');
+      if (checkSuccess) checkSuccess.classList.add('hidden');
+      if (checkError) checkError.classList.add('hidden');
 
       let attempts = 0;
       while (!db && attempts < 50) {
@@ -1412,18 +1526,20 @@
         if (regSnap.exists()) {
           const regData = regSnap.data();
           
-          // Segna come Ammesso
           await updateDoc(regRef, { status: 'Ammesso' });
           playAudioTone(true);
 
-          // Invia automaticamente l'attestato DI ENTRATA (Pergamena 1)
           await sendCertificateEmailAuto(regData, 'entrata');
 
-          document.getElementById('checkinLoading').classList.add('hidden');
-          document.getElementById('checkinSuccess').classList.remove('hidden');
-          document.getElementById('checkinStudentName').innerText = `${regData.cognome} ${regData.nome}`;
-          document.getElementById('checkinStudyPath').innerHTML = `<strong>Indirizzo:</strong> ${regData.studyPath || 'N/D'}`;
-          document.getElementById('checkinSupport').innerHTML = `<strong>Sostegno:</strong> ${regData.supportRequired ? 'SÌ' : 'NO'}`;
+          if (checkLoading) checkLoading.classList.add('hidden');
+          if (checkSuccess) checkSuccess.classList.remove('hidden');
+          const studentNameEl = document.getElementById('checkinStudentName');
+          const studyPathEl = document.getElementById('checkinStudyPath');
+          const supportEl = document.getElementById('checkinSupport');
+          
+          if (studentNameEl) studentNameEl.innerText = `${regData.cognome} ${regData.nome}`;
+          if (studyPathEl) studyPathEl.innerHTML = `<strong>Indirizzo:</strong> ${regData.studyPath || 'N/D'}`;
+          if (supportEl) supportEl.innerHTML = `<strong>Sostegno:</strong> ${regData.supportRequired ? 'SÌ' : 'NO'}`;
           
           lucide.createIcons();
         } else {
@@ -1431,42 +1547,38 @@
         }
       } catch (err) {
         playAudioTone(false);
-        document.getElementById('checkinLoading').classList.add('hidden');
-        document.getElementById('checkinError').classList.remove('hidden');
-        document.getElementById('checkinErrorMessage').innerText = err.message;
+        if (checkLoading) checkLoading.classList.add('hidden');
+        if (checkError) checkError.classList.remove('hidden');
+        const errorMsgEl = document.getElementById('checkinErrorMessage');
+        if (errorMsgEl) errorMsgEl.innerText = err.message;
         lucide.createIcons();
       }
     }
 
     window.closeAutoCheckin = function() {
-      document.getElementById('autoCheckinModal').classList.add('hidden');
+      const autoChModal = document.getElementById('autoCheckinModal');
+      if (autoChModal) autoChModal.classList.add('hidden');
       const url = new URL(window.location);
       url.searchParams.delete('checkin');
       window.history.replaceState({}, document.title, url.pathname);
     }
 
+    // --- HOME DATES ---
     function renderHomeDates() {
       const container = document.getElementById('datesGrid');
       if (state.dates.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-2 text-center p-8 text-slate-500 glass-card rounded-2xl">
-            Caricamento delle date disponibili...
-          </div>
-        `;
+        container.innerHTML = `<div class="col-span-2 text-center p-8 text-slate-500 glass-card rounded-2xl">Caricamento delle date disponibili...</div>`;
         return;
       }
 
       const uniqueDays = [];
       state.dates.forEach(d => {
-        if (!uniqueDays.includes(d.date)) {
-          uniqueDays.push(d.date);
-        }
+        if (!uniqueDays.includes(d.date)) uniqueDays.push(d.date);
       });
 
       container.innerHTML = uniqueDays.map(dateStr => {
         const sessionsForThisDate = state.dates.filter(d => d.date === dateStr);
-        let totalSeats = 0;
-        let occupiedSeats = 0;
+        let totalSeats = 0, occupiedSeats = 0;
 
         sessionsForThisDate.forEach(s => {
           totalSeats += s.maxSeats;
@@ -1476,30 +1588,15 @@
         const availableSeats = totalSeats - occupiedSeats;
         const isFull = availableSeats <= 0;
         const isSelected = state.selectedDate === dateStr;
-
-        const formattedDate = new Date(dateStr).toLocaleDateString('it-IT', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
+        const formattedDate = new Date(dateStr).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
         return `
-          <div 
-            onclick="${isFull ? '' : `selectDate('${dateStr}')`}" 
-            class="glass-card p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden group ${
-              isFull ? 'opacity-60 cursor-not-allowed border-transparent' : 
-              isSelected ? 'border-sky-500 ring-4 ring-sky-100 shadow-lg scale-[1.02] cursor-pointer' : 
-              'border-transparent hover:border-sky-300 hover:shadow-md cursor-pointer'
-            }"
-          >
-            <div class="absolute right-3 top-3 opacity-10 group-hover:opacity-20 transition-all">
-              <i data-lucide="calendar" class="w-16 h-16 text-sky-500"></i>
-            </div>
+          <div onclick="${isFull ? '' : `selectDate('${dateStr}')`}" class="glass-card p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden group ${isFull ? 'opacity-60 cursor-not-allowed border-transparent' : isSelected ? 'border-sky-500 ring-4 ring-sky-100 shadow-lg scale-[1.02] cursor-pointer' : 'border-transparent hover:border-sky-300 hover:shadow-md cursor-pointer'}">
+            <div class="absolute right-3 top-3 opacity-10 group-hover:opacity-20 transition-all"><i data-lucide="calendar" class="w-16 h-16 text-sky-500"></i></div>
             <div class="text-xs font-bold text-sky-600 uppercase tracking-widest">Open Day Scolastico</div>
             <div class="text-xl font-bold text-indigo-950 mt-1 capitalize">${formattedDate}</div>
-            
             <div class="mt-5 flex items-center justify-between">
-              <span class="text-xs font-semibold px-3 py-1 rounded-full ${isFull ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">
-                ${isFull ? 'Posti Esauriti' : `${availableSeats} posti disponibili`}
-              </span>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full ${isFull ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">${isFull ? 'Posti Esauriti' : `${availableSeats} posti disponibili`}</span>
             </div>
           </div>
         `;
@@ -1515,46 +1612,49 @@
       const successCard = document.getElementById('successCard');
       const studySelect = document.getElementById('studyPathSelect');
       
-      successCard.classList.add('hidden');
-      bookingCard.classList.remove('hidden');
+      if (successCard) successCard.classList.add('hidden');
+      if (bookingCard) bookingCard.classList.remove('hidden');
 
       const formattedDate = new Date(dateStr).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-      document.getElementById('selectedDateTitle').innerText = "Iscrizione Open Day del " + formattedDate;
+      const selDateTitle = document.getElementById('selectedDateTitle');
+      if (selDateTitle) selDateTitle.innerText = "Iscrizione Open Day del " + formattedDate;
 
       const sessionsForDate = state.dates.filter(d => d.date === dateStr);
 
-      if (sessionsForDate.length === 0) {
-        studySelect.innerHTML = '<option value="" disabled selected>Nessun indirizzo configurato per oggi.</option>';
-      } else {
-        studySelect.innerHTML = '<option value="" disabled selected>-- Scegli l\'indirizzo e la fascia oraria di interesse --</option>' +
-          sessionsForDate.map(s => {
-            const occupied = getOccupiedSeats(s.id);
-            const remaining = s.maxSeats - occupied;
-            const isFull = remaining <= 0;
-            
-            return `<option value="${s.id}" ${isFull ? 'disabled' : ''}>
-              ${s.timeSlot} | ${s.studyPath} (${s.aula}) ${isFull ? '[POSTI ESAURITI]' : `[${remaining} posti liberi]`}
-            </option>`;
-          }).join('');
+      if (studySelect) {
+        if (sessionsForDate.length === 0) {
+          studySelect.innerHTML = '<option value="" disabled selected>Nessun indirizzo configurato per oggi.</option>';
+        } else {
+          studySelect.innerHTML = '<option value="" disabled selected>-- Scegli l\'indirizzo e la fascia oraria di interesse --</option>' +
+            sessionsForDate.map(s => {
+              const occupied = getOccupiedSeats(s.id);
+              const remaining = s.maxSeats - occupied;
+              const isFull = remaining <= 0;
+              return `<option value="${s.id}" ${isFull ? 'disabled' : ''}>${s.timeSlot} | ${s.studyPath} (${s.aula}) ${isFull ? '[POSTI ESAURITI]' : `[${remaining} posti liberi]`}</option>`;
+            }).join('');
+        }
       }
 
       calculateTotalFormSeats();
-      bookingCard.scrollIntoView({ behavior: 'smooth' });
+      if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth' });
     }
 
     window.closeBookingForm = function() {
       state.selectedDate = null;
-      document.getElementById('bookingCard').classList.add('hidden');
+      const bookingCard = document.getElementById('bookingCard');
+      if (bookingCard) bookingCard.classList.add('hidden');
       renderHomeDates();
     }
 
     window.resetBookingFlow = function() {
       closeBookingForm();
-      document.getElementById('successCard').classList.add('hidden');
-      document.getElementById('bookingForm').reset();
+      const successCard = document.getElementById('successCard');
+      if (successCard) successCard.classList.add('hidden');
+      const bookingForm = document.getElementById('bookingForm');
+      if (bookingForm) bookingForm.reset();
     }
 
-    // Invio della Prenotazione
+    // --- INVIO PRENOTAZIONE ---
     window.handleBooking = async function(e) {
       e.preventDefault();
       
@@ -1676,11 +1776,14 @@
           console.warn("Conferma Webhook chiamata.");
         }
 
-        document.getElementById('bookingCard').classList.add('hidden');
+        const bookingCard = document.getElementById('bookingCard');
         const successCard = document.getElementById('successCard');
-        successCard.classList.remove('hidden');
-        document.getElementById('successRegCode').innerText = uniqueCode;
-        successCard.scrollIntoView({ behavior: 'smooth' });
+        const successRegCode = document.getElementById('successRegCode');
+
+        if (bookingCard) bookingCard.classList.add('hidden');
+        if (successCard) successCard.classList.remove('hidden');
+        if (successRegCode) successRegCode.innerText = uniqueCode;
+        if (successCard) successCard.scrollIntoView({ behavior: 'smooth' });
 
         showToast("Registrazione completata e e-mail ufficiale inviata!", "success");
 
@@ -1692,11 +1795,9 @@
       } 
     }
 
+    // --- AZIONI ADMIN ---
     window.handleClearAllRegistrations = function() {
-      showAdminConfirm(
-        "Svuota Database", 
-        "Sei sicuro di voler eliminare DEFINITIVAMENTE tutte le prenotazioni registrate? Questa azione non è reversibile.", 
-        true, 
+      showAdminConfirm("Svuota Database", "Sei sicuro di voler eliminare DEFINITIVAMENTE tutte le prenotazioni registrate? Questa azione non è reversibile.", true, 
         async () => {
           showToast("Svuotamento database in corso...", "info");
           try {
@@ -1707,18 +1808,15 @@
             }
             const deletePromises = idsToDelete.map(id => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id)));
             await Promise.all(deletePromises);
-            
             showToast("Svuotamento completato! Rimosse " + idsToDelete.length + " registrazioni.", "success");
             syncAdminView();
           } catch (err) {
-            console.error("Errore durante lo svuotamento:", err);
             showToast("Impossibile svuotare il database delle prenotazioni.", "error");
           }
         }
       );
     }
 
-    // Recupero della ricevuta
     window.handleRecovery = async function(e) {
       e.preventDefault();
       const inputBtn = document.getElementById('submitRecoveryBtn');
@@ -1727,10 +1825,7 @@
       const term = document.getElementById('recoveryInput').value.trim().toUpperCase();
       if (!term) return;
 
-      const reg = state.registrations.find(r => 
-        r.code.toUpperCase() === term || 
-        r.cognome.toUpperCase() === term
-      );
+      const reg = state.registrations.find(r => r.code.toUpperCase() === term || r.cognome.toUpperCase() === term);
 
       if (reg) {
         inputBtn.disabled = true;
@@ -1754,26 +1849,11 @@
           };
 
           const base64Pdf = await generateReceiptPDF(bookingPayload, reg.code, 'conferma');
-
-          const emailPayload = {
-            nome: reg.nome,
-            cognome: reg.cognome,
-            email: reg.email,
-            codice_prenotazione: reg.code,
-            pdfBase64: base64Pdf,
-            type: 'conferma'
-          };
+          const emailPayload = { nome: reg.nome, cognome: reg.cognome, email: reg.email, codice_prenotazione: reg.code, pdfBase64: base64Pdf, type: 'conferma' };
 
           try {
-            await fetch(CONFIRM_SCRIPT_URL, {
-              method: "POST",
-              mode: "no-cors",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(emailPayload)
-            });
-          } catch (scriptErr) {
-            console.warn("GAS Webhook chiamato per reinvio.");
-          }
+            await fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(emailPayload) });
+          } catch (scriptErr) {}
 
           const docConferma = new jsPDF();
           docConferma.setFillColor(30, 41, 59);
@@ -1804,8 +1884,7 @@
           closeModal('recoveryModal');
           document.getElementById('recoveryInput').value = '';
         } catch (pdfErr) {
-          console.error("Errore recupero prenotazione:", pdfErr);
-          showToast("Errore durante la rigenerazione o l'invio della ricevuta.", "error");
+          showToast("Errore durante la rigenerazione della ricevuta.", "error");
         } finally {
           inputBtn.disabled = false;
           inputBtn.innerText = "Invia Mail e Scarica PDF";
@@ -1815,123 +1894,80 @@
       }
     }
 
-    // Richiesta di Annullamento Prenotazione
     window.handleCancellation = async function(e) {
       e.preventDefault();
       const term = document.getElementById('cancelTerm').value.trim().toUpperCase();
       if (!term) return;
 
-      const targetReg = state.registrations.find(r => 
-        r.code.toUpperCase() === term || 
-        r.cognome.toUpperCase() === term
-      );
+      const targetReg = state.registrations.find(r => r.code.toUpperCase() === term || r.cognome.toUpperCase() === term);
 
       if (targetReg) {
         state.pendingDeleteId = targetReg.id;
-        document.getElementById('confirmCancelStudentName').innerText = targetReg.nome + " " + targetReg.cognome;
+        const confirmNameEl = document.getElementById('confirmCancelStudentName');
+        if (confirmNameEl) confirmNameEl.innerText = targetReg.nome + " " + targetReg.cognome;
         closeModal('cancelModal');
-        document.getElementById('confirmCancelModal').classList.remove('hidden');
+        const confirmCancelM = document.getElementById('confirmCancelModal');
+        if (confirmCancelM) confirmCancelM.classList.remove('hidden');
 
-        document.getElementById('btnConfirmDelete').onclick = async () => {
-          if (!state.pendingDeleteId) return;
-          const deleteId = state.pendingDeleteId;
-          state.pendingDeleteId = null;
-
-          try {
-            const cancelPayload = {
-              email: targetReg.email,
-              cognome: targetReg.cognome,
-              nome: targetReg.nome,
-              codice_prenotazione: targetReg.code
-            };
+        const btnConfirmD = document.getElementById('btnConfirmDelete');
+        if (btnConfirmD) {
+          btnConfirmD.onclick = async () => {
+            if (!state.pendingDeleteId) return;
+            const deleteId = state.pendingDeleteId;
+            state.pendingDeleteId = null;
 
             try {
-              await fetch(CANCEL_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(cancelPayload)
-              });
-            } catch (err) {
-              console.warn("GAS cancellazione chiamato.");
-            }
+              const cancelPayload = { email: targetReg.email, cognome: targetReg.cognome, nome: targetReg.nome, codice_prenotazione: targetReg.code };
+              try {
+                await fetch(CANCEL_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cancelPayload) });
+              } catch (err) {}
 
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deleteId));
-            showToast("Prenotazione annullata con successo ed email di notifica inviata.", "success");
-            closeModal('confirmCancelModal');
-            document.getElementById('cancelForm').reset();
-          } catch (err) {
-            console.error(err);
-            showToast("Errore durante l'annullamento della prenotazione.", "error");
-          }
-        };
+              await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deleteId));
+              showToast("Prenotazione annullata con successo ed email inviata.", "success");
+              closeModal('confirmCancelModal');
+              const cancelF = document.getElementById('cancelForm');
+              if (cancelF) cancelF.reset();
+            } catch (err) {
+              showToast("Errore durante l'annullamento della prenotazione.", "error");
+            }
+          };
+        }
       } else {
         showToast("Nessuna prenotazione attiva associata ai dati forniti.", "error");
       }
     }
 
-    // INVIA PERGAMENA 2 (USCITA / CONCLUSIONE) MANUALE DAL PANNELLO DOCENTI
+    // --- INVIO MANUALE PERGAMENA USCITA (Ora non più automatica) ---
     window.sendCertificateEmail = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
 
-      showAdminConfirm(
-        "Invia Pergamena di Conclusione",
-        `Inviare la Pergamena di fine evento all'alunno ${reg.nome} ${reg.cognome} via e-mail?`,
-        false,
+      showAdminConfirm("Invia Pergamena di Conclusione", `Inviare la Pergamena di fine evento all'alunno ${reg.nome} ${reg.cognome} via e-mail?`, false,
         async () => {
           showToast("Generazione ed invio certificato finale in corso...", "info");
           try {
-            const payload = {
-              email: reg.email,
-              nome: reg.nome,
-              cognome: reg.cognome
-            };
-
-            // ESEGUE IL FETCH SULL'URL DI USCITA (PERGAMENA 2)
-            await fetch(ATTESTATO_USCITA_URL, {
-              method: "POST",
-              mode: "no-cors",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-            });
-
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
-              certificate2Sent: true,
-              certificate2SentAt: Date.now()
-            });
-
+            const payload = { email: reg.email, nome: reg.nome, cognome: reg.cognome };
+            await fetch(ATTESTATO_USCITA_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), { certificate2Sent: true, certificate2SentAt: Date.now() });
             showToast(`Pergamena di Conclusione inviata a ${reg.nome} ${reg.cognome}!`, "success");
           } catch (err) {
-            console.error("Errore invio certificato finale:", err);
             showToast("Errore durante l'invio della pergamena.", "error");
           }
         }
       );
     }
 
-    // Funzione interna per inviare automaticamente la Pergamena 1 (Entrata)
+    // --- INVIO AUTOMATICO PERGAMENA ENTRATA (Restaurata e limitata a entrata) ---
     async function sendCertificateEmailAuto(reg, type = 'entrata') {
       if (!reg) return;
-      
-      const isAlreadySent = type === 'entrata' ? reg.certificate1Sent : reg.certificate2Sent;
-      if (isAlreadySent) return;
+      if (type === 'entrata' && reg.certificate1Sent) return;
+      if (type === 'uscita' && reg.certificate2Sent) return;
 
       try {
-        const payload = {
-          email: reg.email,
-          nome: reg.nome,
-          cognome: reg.cognome
-        };
-
+        const payload = { email: reg.email, nome: reg.nome, cognome: reg.cognome };
         const targetUrl = type === 'entrata' ? ATTESTATO_ENTRATA_URL : ATTESTATO_USCITA_URL;
 
-        await fetch(targetUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+        await fetch(targetUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 
         const updateData = {};
         if (type === 'entrata') {
@@ -1941,12 +1977,9 @@
           updateData.certificate2Sent = true;
           updateData.certificate2SentAt = Date.now();
         }
-
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), updateData);
-        showToast(`Pergamena d'Ingresso inviata a ${reg.nome} ${reg.cognome}!`, "success");
-      } catch (err) {
-        console.error("Impossibile inviare la pergamena automatica:", err);
-      }
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code || reg.id), updateData);
+        showToast(`Pergamena ${type} inviata a ${reg.nome} ${reg.cognome}!`, "success");
+      } catch (err) {}
     }
 
     window.handleLogin = function(e) {
@@ -1954,7 +1987,7 @@
       const pwd = document.getElementById('adminPasswordInput').value;
       if (pwd === 'admin') {
         state.isAdminAuthed = true;
-        showToast("Accesso Docente autorizzato con successo.", "success");
+        showToast("Accesso Docente autorizzato.", "success");
         navigateTo('admin');
         document.getElementById('adminPasswordInput').value = '';
       } else {
@@ -1966,31 +1999,34 @@
       const tabIscritti = document.getElementById('tabIscritti');
       const tabScanner = document.getElementById('tabScanner');
       const tabSettings = document.getElementById('tabSettings');
-      
       const tabIscrittiBtn = document.getElementById('tabIscrittiBtn');
       const tabScannerBtn = document.getElementById('tabScannerBtn');
       const tabSettingsBtn = document.getElementById('tabSettingsBtn');
 
-      tabIscritti.classList.add('hidden');
-      tabScanner.classList.add('hidden');
-      tabSettings.classList.add('hidden');
+      if (tabIscritti) tabIscritti.classList.add('hidden');
+      if (tabScanner) tabScanner.classList.add('hidden');
+      if (tabSettings) tabSettings.classList.add('hidden');
 
-      tabIscrittiBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition";
-      tabScannerBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition";
-      tabSettingsBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition";
+      const inactiveClass = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition";
+      const activeClass = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition";
+
+      if (tabIscrittiBtn) tabIscrittiBtn.className = inactiveClass;
+      if (tabScannerBtn) tabScannerBtn.className = inactiveClass;
+      if (tabSettingsBtn) tabSettingsBtn.className = inactiveClass;
 
       if (tabName === 'iscritti') {
-        tabIscritti.classList.remove('hidden');
-        tabIscrittiBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition";
+        if (tabIscritti) tabIscritti.classList.remove('hidden');
+        if (tabIscrittiBtn) tabIscrittiBtn.className = activeClass;
         stopWebcamScanner();
       } else if (tabName === 'scanner') {
-        tabScanner.classList.remove('hidden');
-        tabScannerBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition";
+        if (tabScanner) tabScanner.classList.remove('hidden');
+        if (tabScannerBtn) tabScannerBtn.className = activeClass;
         initWebcamDevices();
-        setTimeout(() => document.getElementById('manualBarcodeField').focus(), 300);
+        const manualB = document.getElementById('manualBarcodeField');
+        if (manualB) setTimeout(() => manualB.focus(), 300);
       } else if (tabName === 'settings') {
-        tabSettings.classList.remove('hidden');
-        tabSettingsBtn.className = "flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition";
+        if (tabSettings) tabSettings.classList.remove('hidden');
+        if (tabSettingsBtn) tabSettingsBtn.className = activeClass;
         stopWebcamScanner();
       }
     }
@@ -2002,50 +2038,48 @@
 
     function updateFilterOptions() {
       const filterSelect = document.getElementById('filterDateSelect');
+      if (!filterSelect) return;
       const currentVal = filterSelect.value;
       filterSelect.innerHTML = '<option value="all">Tutte le date</option>' + 
-        state.dates.map(d => "<option value=\"" + d.id + "\">" + new Date(d.date).toLocaleDateString('it-IT') + " - " + d.timeSlot + " | " + d.studyPath + "</option>").join('');
+        state.dates.map(d => `<option value="${d.id}">${new Date(d.date).toLocaleDateString('it-IT')} - ${d.timeSlot} | ${d.studyPath}</option>`).join('');
       filterSelect.value = currentVal;
     }
 
+    // --- SCANNER PC / MOBILE ---
     async function initWebcamDevices() {
       const cameraSelect = document.getElementById('cameraSourceSelect');
+      if (!cameraSelect) return;
       cameraSelect.innerHTML = '<option value="">Lettura dispositivi video in corso...</option>';
-
       try {
         const devices = await Html5Qrcode.getCameras();
         if (devices && devices.length > 0) {
-          cameraSelect.innerHTML = devices.map(camera => 
-            "<option value=\"" + camera.id + "\">" + (camera.label || "Fotocamera " + camera.id) + "</option>"
-          ).join('');
+          cameraSelect.innerHTML = devices.map(camera => `<option value="${camera.id}">${camera.label || "Fotocamera " + camera.id}</option>`).join('');
         } else {
           cameraSelect.innerHTML = '<option value="">Nessun dispositivo video trovato</option>';
         }
       } catch (err) {
-        console.error("Errore lettura dispositivi video:", err);
         cameraSelect.innerHTML = '<option value="">Impossibile leggere i dispositivi (Permessi?)</option>';
       }
     }
 
     window.toggleWebcamScanner = function() {
-      if (state.isWebcamScanning) {
-        stopWebcamScanner();
-      } else {
-        startWebcamScanner();
-      }
+      if (state.isWebcamScanning) stopWebcamScanner();
+      else startWebcamScanner();
     }
 
     window.startWebcamDirectMobile = async function() {
-      if (state.isWebcamScanning) {
-        stopWebcamScanner();
-      }
-
-      document.getElementById('scannerPlaceholder').classList.add('hidden');
-      document.getElementById('scannerLaser').classList.remove('hidden');
+      if (state.isWebcamScanning) stopWebcamScanner();
+      
+      const placeH = document.getElementById('scannerPlaceholder');
+      const laser = document.getElementById('scannerLaser');
+      if (placeH) placeH.classList.add('hidden');
+      if (laser) laser.classList.remove('hidden');
       
       const directButton = document.getElementById('btnToggleCameraDirect');
-      directButton.innerText = "Arresta Fotocamera";
-      directButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+      if (directButton) {
+        directButton.innerText = "Arresta Fotocamera";
+        directButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+      }
 
       state.html5QrcodeScanner = new Html5Qrcode("scannerView");
       state.isWebcamScanning = true;
@@ -2057,45 +2091,35 @@
             fps: 15,
             qrbox: function(viewfinderWidth, viewFinderHeight) {
               const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
-              const qrboxWidth = Math.floor(minEdge * 0.85);
-              return {
-                width: qrboxWidth,
-                height: Math.floor(qrboxWidth * 0.85) // Quadrato perfetto per il QR Code
-              };
+              return { width: Math.floor(minEdge * 0.85), height: Math.floor(minEdge * 0.85) };
             },
             formatsToSupport: [ 
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.UPC_A
+              Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39, Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.UPC_A
             ]
           },
-          (decodedText) => {
-            processScannedCode(decodedText);
-          },
+          (decodedText) => processScannedCode(decodedText),
           (errorMessage) => {}
         );
       } catch (err) {
-        console.error("Avvio fallito con facingMode environment:", err);
-        showToast("Impossibile accedere alla fotocamera posteriore. Verifica i permessi del browser.", "error");
+        showToast("Impossibile accedere alla fotocamera posteriore.", "error");
         stopWebcamScanner();
       }
     }
 
     async function startWebcamScanner() {
       const selectedCameraId = document.getElementById('cameraSourceSelect').value;
-      if (!selectedCameraId) {
-        showToast("Seleziona una fotocamera dall'elenco prima di avviare.", "error");
-        return;
-      }
+      if (!selectedCameraId) { showToast("Seleziona una fotocamera.", "error"); return; }
 
-      document.getElementById('scannerPlaceholder').classList.add('hidden');
-      document.getElementById('scannerLaser').classList.remove('hidden');
+      const placeH = document.getElementById('scannerPlaceholder');
+      const laser = document.getElementById('scannerLaser');
+      if (placeH) placeH.classList.add('hidden');
+      if (laser) laser.classList.remove('hidden');
       
       const regularButton = document.getElementById('btnToggleCamera');
-      regularButton.innerText = "Arresta Selezionata";
-      regularButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+      if (regularButton) {
+        regularButton.innerText = "Arresta Selezionata";
+        regularButton.className = "px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+      }
 
       state.html5QrcodeScanner = new Html5Qrcode("scannerView");
       state.isWebcamScanning = true;
@@ -2107,28 +2131,15 @@
             fps: 15,
             qrbox: function(viewfinderWidth, viewFinderHeight) {
               const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
-              const qrboxWidth = Math.floor(minEdge * 0.75);
-              return {
-                width: qrboxWidth,
-                height: Math.floor(qrboxWidth * 0.75)
-              };
+              return { width: Math.floor(minEdge * 0.75), height: Math.floor(minEdge * 0.75) };
             },
-            formatsToSupport: [ 
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.UPC_A
-            ]
+            formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39, Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.UPC_A ]
           },
-          (decodedText) => {
-            processScannedCode(decodedText);
-          },
+          (decodedText) => processScannedCode(decodedText),
           (errorMessage) => {}
         );
       } catch (err) {
-        console.error("Inizializzazione fallita per Html5Qrcode:", err);
-        showToast("Impossibile accedere alla webcam selezionata.", "error");
+        showToast("Impossibile accedere alla webcam.", "error");
         stopWebcamScanner();
       }
     }
@@ -2136,14 +2147,16 @@
     function stopWebcamScanner() {
       if (state.html5QrcodeScanner && state.isWebcamScanning) {
         state.html5QrcodeScanner.stop().then(() => {
-          document.getElementById('scannerPlaceholder').classList.remove('hidden');
-          document.getElementById('scannerLaser').classList.add('hidden');
+          const placeH = document.getElementById('scannerPlaceholder');
+          const laser = document.getElementById('scannerLaser');
+          if (placeH) placeH.classList.remove('hidden');
+          if (laser) laser.classList.add('hidden');
           
-          document.getElementById('btnToggleCamera').innerText = "Usa Selezionata";
-          document.getElementById('btnToggleCamera').className = "px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+          const btnC = document.getElementById('btnToggleCamera');
+          if (btnC) { btnC.innerText = "Usa Selezionata"; btnC.className = "px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm"; }
           
-          document.getElementById('btnToggleCameraDirect').innerText = "Fotocamera Mobile (Rear)";
-          document.getElementById('btnToggleCameraDirect').className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm";
+          const btnCD = document.getElementById('btnToggleCameraDirect');
+          if (btnCD) { btnCD.innerText = "Fotocamera Mobile (Rear)"; btnCD.className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm"; }
           
           state.isWebcamScanning = false;
         }).catch(err => console.error("Errore stop scanner:", err));
@@ -2155,7 +2168,6 @@
       const codeField = document.getElementById('manualBarcodeField');
       const code = codeField.value.trim().toUpperCase();
       if (!code) return;
-
       processScannedCode(code);
       codeField.value = '';
       codeField.focus();
@@ -2171,42 +2183,40 @@
 
       if (registration) {
         playAudioTone(true);
-        showToast("Accesso Autorizzato per " + registration.nome + " " + registration.cognome + "!", "success");
+        showToast("Accesso Autorizzato!", "success");
 
         try {
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', registration.id), {
-            status: 'Ammesso'
-          });
-          
-          // Invia la pergamena di entrata 1 automaticamente
-          await sendCertificateEmailAuto(registration, 'entrata');
-        } catch (err) {
-          console.error("Errore aggiornamento stato in Ammesso:", err);
-        }
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', registration.id), { status: 'Ammesso' });
+          await sendCertificateEmailAuto(registration, 'entrata'); // MANDA SOLO QUELLA DI ENTRATA IN AUTOMATICO
+        } catch (err) {}
 
-        emptyCard.classList.add('hidden');
-        successCard.classList.remove('hidden');
-        resultBox.className = "glass-card p-6 rounded-3xl border-2 border-emerald-500 text-center min-h-[200px] bg-emerald-50/10 transition-all duration-300";
+        if (emptyCard) emptyCard.classList.add('hidden');
+        if (successCard) successCard.classList.remove('hidden');
+        if (resultBox) resultBox.className = "glass-card p-6 rounded-3xl border-2 border-emerald-500 text-center min-h-[200px] bg-emerald-50/10 transition-all duration-300";
 
-        document.getElementById('scanResultName').innerText = registration.cognome.toUpperCase() + " " + registration.nome.toUpperCase();
-        document.getElementById('scanResultCode').innerText = cleanedCode;
-        
-        const pathLabel = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato') + " [Posti: " + (registration.totalPeople || 1) + " (" + (registration.numAlunni || 1) + " Alunni + " + (registration.accompanyingPersons || 0) + " acc.)]";
-        document.getElementById('scanResultPath').innerText = pathLabel;
-        document.getElementById('scanResultEvent').innerText = "Giorno: " + new Date(registration.dateStr).toLocaleDateString() + " (" + registration.timeSlot + ")";
-        document.getElementById('scanResultSupport').innerText = "Richiesta Colloquio Sostegno: " + (registration.supportRequired ? "SÌ, RICHIESTO" : "NO");
-        document.getElementById('scanResultContact').innerText = "Contatto: " + registration.email + " / " + (registration.telefono || 'N/D');
+        const resName = document.getElementById('scanResultName');
+        const resCode = document.getElementById('scanResultCode');
+        const resPath = document.getElementById('scanResultPath');
+        const resEvent = document.getElementById('scanResultEvent');
+        const resSupport = document.getElementById('scanResultSupport');
+        const resContact = document.getElementById('scanResultContact');
 
+        if (resName) resName.innerText = registration.cognome.toUpperCase() + " " + registration.nome.toUpperCase();
+        if (resCode) resCode.innerText = cleanedCode;
+        if (resPath) resPath.innerText = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato') + " [Posti: " + (registration.totalPeople || 1) + "]";
+        if (resEvent) resEvent.innerText = "Giorno: " + new Date(registration.dateStr).toLocaleDateString() + " (" + registration.timeSlot + ")";
+        if (resSupport) resSupport.innerText = "Richiesta Colloquio Sostegno: " + (registration.supportRequired ? "SÌ" : "NO");
+        if (resContact) resContact.innerText = "Contatto: " + registration.email;
       } else {
         playAudioTone(false);
-        showToast("Codice di prenotazione non valido.", "error");
-
-        emptyCard.classList.remove('hidden');
-        successCard.classList.add('hidden');
-        resultBox.className = "glass-card p-6 rounded-3xl border-2 border-red-500 text-center min-h-[200px] bg-red-50/10 transition-all duration-300";
+        showToast("Codice non valido.", "error");
+        if (emptyCard) emptyCard.classList.remove('hidden');
+        if (successCard) successCard.classList.add('hidden');
+        if (resultBox) resultBox.className = "glass-card p-6 rounded-3xl border-2 border-red-500 text-center min-h-[200px] bg-red-50/10 transition-all duration-300";
       }
     }
 
+    // --- RENDER TABELLA E DOCENTI ---
     window.renderRegistrations = function() {
       const tbody = document.getElementById('registrationsTableBody');
       if (!tbody) return;
@@ -2222,51 +2232,28 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colSpan="8" class="p-8 text-center text-slate-400 font-medium">Nessun iscritto trovato per i criteri selezionati.</td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colSpan="8" class="p-8 text-center text-slate-400 font-medium">Nessun iscritto trovato.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(r => {
         const eventDate = new Date(r.dateStr);
-        const today = new Date();
-        const diffTime = eventDate - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+        const diffDays = Math.ceil((eventDate - new Date()) / (1000 * 60 * 60 * 24));
         const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
-        
-        let badgeHtml = '';
-        if (diffDays < 0) {
-          badgeHtml = `<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i> Concluso</span>`;
-        } else if (diffDays <= daysBeforeSetting) {
-          badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-100 px-3 py-1 rounded-full animate-pulse\"><i data-lucide=\"bell\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
-        } else if (diffDays <= (daysBeforeSetting + 3)) {
-          badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full\"><i data-lucide=\"bell-ring\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
-        } else {
-          badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full\"><i data-lucide=\"check\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
-        }
-
         const currentStatus = r.status || 'Registrato';
+        
         const statusBadgeHtml = currentStatus === 'Ammesso'
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-white bg-emerald-600 px-3 py-1.5 rounded-full shadow-sm"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Ammesso</span>`
           : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-full"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Registrato</span>`;
 
         const formattedDate = new Date(r.dateStr).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
-        
-        const supportBadgeHtml = r.supportRequired
-          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Richiesto</span>`
-          : `<span class="text-xs text-slate-400">No</span>`;
+        const supportBadgeHtml = r.supportRequired ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Richiesto</span>` : `<span class="text-xs text-slate-400">No</span>`;
 
-        // Colonna Certificato Finale (Pergamena 2 di uscita)
+        // PULSANTE INVIO MANUALE DELLA PERGAMENA DI USCITA
         const certificateBadgeHtml = r.certificate2Sent
-          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-full shadow-sm" title="Attestato Inviato"><i data-lucide="award" class="w-3.5 h-3.5"></i> Inviato</span>`
+          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-full shadow-sm"><i data-lucide="award" class="w-3.5 h-3.5"></i> Inviata</span>`
           : (currentStatus === 'Ammesso'
-              ? `<button onclick="sendCertificateEmail('${r.id}')" class="px-4 py-2 bg-gradient-to-tr from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-[10px] rounded-xl shadow-md transition transform hover:scale-[1.03] flex items-center justify-center gap-1.5">
-                  <i data-lucide="gift" class="w-3.5 h-3.5"></i> Spedisci Pergamena Uscita
-                </button>`
+              ? `<button onclick="sendCertificateEmail('${r.id}')" class="px-4 py-2 bg-gradient-to-tr from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-[10px] rounded-xl shadow-md transition transform hover:scale-[1.03] flex items-center justify-center gap-1.5"><i data-lucide="gift" class="w-3.5 h-3.5"></i> Spedisci Pergamena Uscita</button>`
               : `<span class="text-[10px] text-slate-400 italic">Non Ammesso</span>`
             );
 
@@ -2274,28 +2261,15 @@
           <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-all">
             <td class="p-4">${statusBadgeHtml}</td>
             <td class="p-4 font-mono font-bold text-sky-600">${r.code}</td>
-            <td class="p-4">
-              <div class="font-semibold text-indigo-950">${r.cognome} ${r.nome}</div>
-              <div class="text-xs text-slate-500 font-medium">Persone: <span class="text-indigo-900 font-bold">${r.totalPeople || 1}</span> (${r.numAlunni || 1} Alunni + ${r.accompanyingPersons || 0} acc.)</div>
-              <div class="text-slate-400 text-xs mt-0.5">${r.email} | ${r.telefono || 'N/D'}</div>
-            </td>
+            <td class="p-4"><div class="font-semibold text-indigo-950">${r.cognome} ${r.nome}</div><div class="text-xs text-slate-500">Persone: <span class="text-indigo-900 font-bold">${r.totalPeople || 1}</span></div></td>
             <td class="p-4 font-bold text-slate-700 text-xs">${r.studyPath || 'N/D'}</td>
             <td class="p-4">${supportBadgeHtml}</td>
-            <td class="p-4 text-xs font-semibold text-slate-700">
-              <span class="block">${formattedDate}</span>
-              <span class="text-slate-400 block text-[10px]">${r.timeSlot}</span>
-            </td>
+            <td class="p-4 text-xs font-semibold text-slate-700"><span class="block">${formattedDate}</span><span class="text-slate-400 block text-[10px]">${r.timeSlot}</span></td>
             <td class="p-4 text-center">${certificateBadgeHtml}</td>
             <td class="p-4 text-center">
               <div class="flex gap-2 justify-center">
-                ${currentStatus !== 'Ammesso' ? `
-                  <button onclick="admitParticipantManually('${r.id}')" class="p-2 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition" title="Segna come Ammesso">
-                    <i data-lucide="check-square" class="w-4.5 h-4.5"></i>
-                  </button>
-                ` : ''}
-                <button onclick="adminDeleteRegistration('${r.id}')" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition" title="Cancella iscritto">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
+                ${currentStatus !== 'Ammesso' ? `<button onclick="admitParticipantManually('${r.id}')" class="p-2 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition" title="Segna come Ammesso"><i data-lucide="check-square" class="w-4.5 h-4.5"></i></button>` : ''}
+                <button onclick="adminDeleteRegistration('${r.id}')" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition" title="Cancella iscritto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
               </div>
             </td>
           </tr>
@@ -2304,97 +2278,62 @@
       lucide.createIcons();
     }
 
-    // Ammissione manuale
     window.admitParticipantManually = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
       try {
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), {
-          status: 'Ammesso'
-        });
-        showToast("Stato aggiornato ad Ammesso con successo.", "success");
-        
-        // Spedisce la prima pergamena
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), { status: 'Ammesso' });
+        showToast("Stato aggiornato ad Ammesso.", "success");
         await sendCertificateEmailAuto(reg, 'entrata');
       } catch (err) {
-        console.error(err);
         showToast("Errore durante l'aggiornamento.", "error");
       }
     }
 
-    // Esportazione CSV
+    window.adminDeleteRegistration = function(id) {
+      const targetReg = state.registrations.find(r => r.id === id);
+      if (!targetReg) return;
+      showAdminConfirm("Elimina Iscrizione", `Cancellare l'iscrizione per ${targetReg.nome} ${targetReg.cognome}?`, false,
+        async () => {
+          try {
+            try {
+              await fetch(CANCEL_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: targetReg.email, cognome: targetReg.cognome, nome: targetReg.nome, codice_prenotazione: targetReg.code }) });
+            } catch (err) {}
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id));
+            showToast("Iscritto rimosso con successo.", "success");
+          } catch (err) {
+            showToast("Errore durante l'eliminazione.", "error");
+          }
+        }
+      );
+    }
+
     window.exportToCSV = function() {
-      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Alunni", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato", "Pergamena Ingresso", "Pergamena Uscita"];
-      
-      const rows = state.registrations.map(r => {
-        const eventDate = new Date(r.dateStr);
-        const today = new Date();
-        const diffTime = eventDate - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        return [
-          r.code,
-          r.status || 'Registrato',
-          r.dateStr,
-          r.timeSlot,
-          r.cognome,
-          r.nome,
-          r.numAlunni || 1,
-          r.accompanyingPersons || 0,
-          r.totalPeople || 1,
-          r.email,
-          r.telefono || 'N/D',
-          new Date(r.timestamp).toLocaleDateString(),
-          diffDays < 0 ? "Passata" : diffDays,
-          r.reminderSent ? "Sì" : "No",
-          r.certificate1Sent ? "Inviata" : "No",
-          r.certificate2Sent ? "Inviata" : "No"
-        ].map(cell => "\"" + String(cell).replace(/"/g, '""') + "\"").join(",");
-      });
-
-      const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
+      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Alunni", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Pergamena Ingresso", "Pergamena Uscita"];
+      const rows = state.registrations.map(r => [r.code, r.status || 'Registrato', r.dateStr, r.timeSlot, r.cognome, r.nome, r.numAlunni || 1, r.accompanyingPersons || 0, r.totalPeople || 1, r.email, r.telefono || 'N/D', r.certificate1Sent ? "Sì" : "No", r.certificate2Sent ? "Sì" : "No"].map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","));
+      const blob = new Blob(["\uFEFF" + [headers.join(","), ...rows].join("\n")], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
-      link.href = url;
-      link.download = "iscritti_openday_primolevi_" + Date.now() + ".csv";
+      link.href = URL.createObjectURL(blob);
+      link.download = `iscritti_openday_${Date.now()}.csv`;
       link.click();
-      showToast("Esportazione completata!", "success");
     }
 
     window.saveBannerText = async function() {
       const text = document.getElementById('bannerTextarea').value.trim();
       if (!text) return;
       try {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { 
-          ...state.settings,
-          bannerText: text 
-        });
-        showToast("Banner introduttivo aggiornato con successo!", "success");
-      } catch (err) {
-        console.error(err);
-        showToast("Errore di salvataggio.", "error");
-      }
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { ...state.settings, bannerText: text });
+        showToast("Banner aggiornato!", "success");
+      } catch (err) {}
     }
 
     window.saveReminderDays = async function() {
-      const daysInput = document.getElementById('reminderDaysInput');
-      if (!daysInput) return;
-      const days = parseInt(daysInput.value);
-      if (isNaN(days) || days < 1) {
-        showToast("Inserisci un numero valido di giorni (minimo 1).", "error");
-        return;
-      }
+      const days = parseInt(document.getElementById('reminderDaysInput').value);
+      if (isNaN(days) || days < 1) return;
       try {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), {
-          ...state.settings,
-          reminderDaysBefore: days
-        });
-        showToast("Giorni di preavviso promemoria aggiornati!", "success");
-      } catch (err) {
-        console.error("Errore durante il salvataggio dei giorni:", err);
-        showToast("Impossibile salvare i giorni di promemoria.", "error");
-      }
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { ...state.settings, reminderDaysBefore: days });
+        showToast("Giorni aggiornati!", "success");
+      } catch (err) {}
     }
 
     window.handleCreateDate = async function(e) {
@@ -2406,61 +2345,54 @@
       const maxSeats = parseInt(document.getElementById('newDateMaxSeats').value);
 
       if (!dateVal || !timeSlot || !studyPath || !aula || isNaN(maxSeats)) return;
-
       try {
-        const newRef = doc(db, 'artifacts', appId, 'public', 'data', 'dates', Math.random().toString(36).substring(2, 10));
-        await setDoc(newRef, {
-          date: dateVal,
-          timeSlot: timeSlot,
-          studyPath: studyPath,
-          aula: aula,
-          maxSeats: maxSeats
-        });
-
-        showToast("Nuova data creata con successo!", "success");
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', Math.random().toString(36).substring(2, 10)), { date: dateVal, timeSlot: timeSlot, studyPath: studyPath, aula: aula, maxSeats: maxSeats });
+        showToast("Sessione aggiunta!", "success");
         document.getElementById('newDateForm').reset();
-      } catch (err) {
-        console.error(err);
-        showToast("Errore durante la creazione della data.", "error");
-      }
+      } catch (err) {}
     }
 
     function renderAdminDatesList() {
       const container = document.getElementById('adminDatesList');
+      if (!container) return;
       if (state.dates.length === 0) {
         container.innerHTML = '<p class="text-xs text-slate-500 italic">Nessuna data configurata.</p>';
         return;
       }
-
-      container.innerHTML = state.dates.map(d => {
-        const registeredCount = getOccupiedSeats(d.id); 
-        const formattedDate = new Date(d.date).toLocaleDateString('it-IT');
-
-        return `
-          <div class="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm text-sm">
-            <div>
-              <p class="font-bold text-slate-800">${formattedDate} - <span class="font-semibold text-sky-600">${d.timeSlot}</span></p>
-              <p class="text-xs font-bold text-indigo-950 mt-0.5">${d.studyPath}</p>
-              <p class="text-xs text-slate-500 mt-1">
-                Posti Occupati (Persone Reali): <span class="font-bold text-indigo-950">${registeredCount}</span> su ${d.maxSeats}
-              </p>
-            </div>
-            <button onclick="adminDeleteDate('${d.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Rimuovi data">
-              <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
-            </button>
+      container.innerHTML = state.dates.map(d => `
+        <div class="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm text-sm">
+          <div>
+            <p class="font-bold text-slate-800">${new Date(d.date).toLocaleDateString('it-IT')} - <span class="font-semibold text-sky-600">${d.timeSlot}</span></p>
+            <p class="text-xs font-bold text-indigo-950 mt-0.5">${d.studyPath}</p>
+            <p class="text-xs text-slate-500 mt-1">Posti Occupati (Persone): <span class="font-bold text-indigo-950">${getOccupiedSeats(d.id)}</span> su ${d.maxSeats}</p>
           </div>
-        `;
-      }).join('');
+          <button onclick="adminDeleteDate('${d.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"><i data-lucide="trash-2" class="w-4.5 h-4.5"></i></button>
+        </div>
+      `).join('');
       lucide.createIcons();
     }
 
-    // --- LOGICA SPECIALE PER LA MODALITÀ SCANNER ISOLATA (?mode=scanner) ---
+    window.adminDeleteDate = async function(id) {
+      showAdminConfirm("Rimuovi Data", "Eliminare questa sessione?", false, async () => {
+        try {
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
+          showToast("Sessione eliminata.", "success");
+        } catch (err) {}
+      });
+    }
+
+    // --- MODALITÀ SCANNER ISOLATA ---
     function setupIsolatedScannerMode() {
-      document.getElementById('wrapperMainSite').classList.add('hidden');
-      document.getElementById('wrapperIsolatedScanner').classList.remove('hidden');
-      document.getElementById('scannerLockScreen').classList.remove('hidden');
-      document.getElementById('scannerActiveView').classList.add('hidden');
-      document.getElementById('lblIsolatedDeviceId').innerText = deviceId;
+      const wrapMain = document.getElementById('wrapperMainSite');
+      const wrapScanner = document.getElementById('wrapperIsolatedScanner');
+      const lockScreen = document.getElementById('scannerLockScreen');
+      const activeView = document.getElementById('scannerActiveView');
+      if (wrapMain) wrapMain.classList.add('hidden');
+      if (wrapScanner) wrapScanner.classList.remove('hidden');
+      if (lockScreen) lockScreen.classList.remove('hidden');
+      if (activeView) activeView.classList.add('hidden');
+      const devLbl = document.getElementById('lblIsolatedDeviceId');
+      if (devLbl) devLbl.innerText = deviceId;
       lucide.createIcons();
     }
 
@@ -2472,95 +2404,62 @@
 
     window.handleIsolatedLogin = function(e) {
       e.preventDefault();
-      const pwd = document.getElementById('isolatedPasswordInput').value;
-      if (pwd === 'admin') {
-        showToast("Scanner sbloccato con successo!", "success");
+      if (document.getElementById('isolatedPasswordInput').value === 'admin') {
         document.getElementById('scannerLockScreen').classList.add('hidden');
         document.getElementById('scannerActiveView').classList.remove('hidden');
-        
-        // Avvia immediatamente la fotocamera posteriore del cellulare
         startWebcamIsolatedMobile();
       } else {
-        showToast("Password errata. Riprova.", "error");
+        showToast("Password errata.", "error");
       }
     }
 
     async function startWebcamIsolatedMobile() {
-      const feedback = document.getElementById('isolatedScanFeedback');
       state.html5QrcodeScanner = new Html5Qrcode("isolatedScannerView");
       state.isWebcamScanning = true;
-
       try {
-        await state.html5QrcodeScanner.start(
-          { facingMode: "environment" },
-          {
-            fps: 20,
-            qrbox: function(viewfinderWidth, viewFinderHeight) {
-              const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
-              const qrboxSize = Math.floor(minEdge * 0.82);
-              return {
-                width: qrboxSize,
-                height: qrboxSize // Quadrato per QR Code
-              };
-            },
-            formatsToSupport: [ 
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39
-            ]
-          },
-          (decodedText) => {
-            // Se scansiona il link completo (?checkin=XXXXXX), estrae solo il codice
-            let finalCode = decodedText.trim().toUpperCase();
-            if (decodedText.includes('?checkin=')) {
-              const parts = decodedText.split('?checkin=');
-              if (parts.length > 1) {
-                finalCode = parts[1].split('&')[0].trim().toUpperCase();
-              }
-            }
-            processScannedCodeIsolated(finalCode);
-          },
-          (errorMessage) => {}
-        );
-      } catch (err) {
-        console.error("Scanner mobile isolato KO:", err);
-        showToast("Impossibile avviare la fotocamera posteriore.", "error");
-      }
+        await state.html5QrcodeScanner.start({ facingMode: "environment" }, {
+          fps: 20, qrbox: function(w, h) { const m = Math.min(w, h); return { width: Math.floor(m*0.82), height: Math.floor(m*0.82) }; },
+          formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ]
+        }, (text) => {
+          let code = text.trim().toUpperCase();
+          if (text.includes('?checkin=')) {
+            const parts = text.split('?checkin=');
+            if (parts.length > 1) code = parts[1].split('&')[0].trim().toUpperCase();
+          }
+          processScannedCodeIsolated(code);
+        }, () => {});
+      } catch (err) {}
     }
 
     async function processScannedCodeIsolated(code) {
-      const feedback = document.getElementById('isolatedScanFeedback');
-      feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
-      feedback.classList.add('bg-indigo-100', 'text-indigo-800');
-      feedback.innerText = "Verifica del codice " + code + "...";
+      const fb = document.getElementById('isolatedScanFeedback');
+      if (fb) {
+        fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
+        fb.classList.add('bg-indigo-100', 'text-indigo-800');
+        fb.innerText = "Verifica del codice " + code + "...";
+      }
 
-      const registration = state.registrations.find(r => r.code.toUpperCase() === code);
+      const reg = state.registrations.find(r => r.code.toUpperCase() === code);
 
-      if (registration) {
+      if (reg) {
         playAudioTone(true);
-        feedback.className = "p-4 rounded-2xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 animate-pulse";
-        feedback.innerHTML = `<i data-lucide="check" class="inline w-4 h-4 mr-1"></i> AMMESSO: ${registration.cognome.toUpperCase()} ${registration.nome.toUpperCase()}`;
-        
-        try {
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', registration.id), {
-            status: 'Ammesso'
-          });
-          // Spedisce la pergamena 1 di benvenuto
-          await sendCertificateEmailAuto(registration, 'entrata');
-        } catch (err) {
-          console.error(err);
+        if (fb) {
+          fb.className = "p-4 rounded-2xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 animate-pulse";
+          fb.innerHTML = `<i data-lucide="check" class="inline w-4 h-4 mr-1"></i> AMMESSO: ${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
         }
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), { status: 'Ammesso' });
+          await sendCertificateEmailAuto(reg, 'entrata');
+        } catch (err) {}
       } else {
         playAudioTone(false);
-        feedback.className = "p-4 rounded-2xl text-center font-bold text-sm bg-red-100 text-red-800";
-        feedback.innerHTML = `<i data-lucide="x" class="inline w-4 h-4 mr-1"></i> Codice non valido!`;
+        if (fb) {
+          fb.className = "p-4 rounded-2xl text-center font-bold text-sm bg-red-100 text-red-800";
+          fb.innerHTML = `<i data-lucide="x" class="inline w-4 h-4 mr-1"></i> Codice non valido!`;
+        }
       }
       lucide.createIcons();
-
-      // Nasconde il feedback dopo 4.5 secondi
-      setTimeout(() => {
-        feedback.classList.add('hidden');
-      }, 4500);
+      setTimeout(() => { if (fb) fb.classList.add('hidden'); }, 4500);
     }
 
     window.handleIsolatedManualSubmit = function(e) {
@@ -2568,14 +2467,11 @@
       const input = document.getElementById('isolatedManualCode');
       const code = input.value.trim().toUpperCase();
       if (!code) return;
-
       processScannedCodeIsolated(code);
       input.value = '';
     }
 
-    window.onload = function() {
-      startApp();
-    };
+    window.onload = startApp;
   </script>
 
 </body>
