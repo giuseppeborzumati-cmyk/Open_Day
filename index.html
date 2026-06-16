@@ -283,9 +283,9 @@
         </div>
 
         <div class="relative z-10 text-left flex-1">
-          <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Scolastico 2026/2027</span>
+          <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie 2025</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mt-4 mb-4 leading-tight">
-            Vieni a scoprire il tuo futuro al Primo Levi
+            Sei in terza media? Costruisci il tuo futuro al Primo Levi
           </h2>
           <p id="bannerText" class="text-base md:text-lg text-slate-600 leading-relaxed">
             Caricamento informazioni in corso...
@@ -313,7 +313,7 @@
 
           <!-- Modulo di Prenotazione -->
           <div id="bookingCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-sky-500 animate-in slide-in-from-bottom duration-300">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-between items-center mb-4">
               <div>
                 <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Compila il modulo</span>
                 <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950 mt-1">Registrazione</h4>
@@ -321,6 +321,15 @@
               <button onclick="closeBookingForm()" class="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition">
                 <i data-lucide="x" class="w-6 h-6"></i>
               </button>
+            </div>
+
+            <!-- Avviso Importante Coesistenza Indirizzi / Contemporaneità -->
+            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex gap-3 text-sm text-amber-900 leading-relaxed mb-6">
+              <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600"></i>
+              <div>
+                <p class="font-bold">Nota per la Contemporaneità delle Presentazioni:</p>
+                <p class="text-xs mt-1">Alcuni indirizzi si svolgono nella medesima fascia oraria in aule differenti, pertanto <strong>è possibile assistere ad una sola presentazione per turno d'orario</strong>. Si prega vivamente di non prenotare lo stesso indirizzo su più date diverse per consentire la massima partecipazione a tutti gli studenti.</p>
+              </div>
             </div>
 
             <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
@@ -334,9 +343,10 @@
                   <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Rossi">
                 </div>
               </div>
+              
               <div class="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail del Genitore/Tutore (Inserire Mail di Google)*</label>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail del Genitore/Tutore *</label>
                   <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. genitore@email.com">
                 </div>
                 <div>
@@ -345,9 +355,35 @@
                 </div>
               </div>
 
-              <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 flex gap-3 text-sm text-sky-800 leading-relaxed">
-                <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
-                <p>Compilando la registrazione, riceverai immediatamente una ricevuta digitale in formato PDF alla mail inserita da presentare all'accoglienza dell'evento.</p>
+              <!-- Selezione Indirizzo di Studio DINAMICO basato sulla contemporaneità definita dall'Admin -->
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
+                <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
+                  <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
+                </select>
+              </div>
+
+              <!-- Opzione Inclusione / Sostegno scolastico -->
+              <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 space-y-3">
+                <div class="flex items-start gap-3">
+                  <input type="checkbox" id="supportRequired" class="w-5 h-5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 mt-0.5">
+                  <label for="supportRequired" class="text-sm text-slate-700 font-semibold select-none cursor-pointer">
+                    Desidero un colloquio al termine delle presentazioni con i referenti dell'inclusione / docenti di sostegno
+                  </label>
+                </div>
+                <p class="text-xs text-slate-500 pl-8">
+                  Selezionando questa opzione, organizzeremo un colloquio conoscitivo individuale personalizzato subito dopo la fine della presentazione istituzionale e della visita.
+                </p>
+              </div>
+
+              <!-- Trattamento Privacy GDPR obbligatorio con Link al DPO -->
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                <div class="flex items-start gap-3">
+                  <input required type="checkbox" id="privacyConsent" class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                  <label for="privacyConsent" class="text-xs text-slate-600 select-none cursor-pointer leading-relaxed">
+                    Dichiaro di aver preso visione dell'informativa sulla privacy ai sensi del <strong>Regolamento (UE) n. 2016/679 (GDPR)</strong>. Sono consapevole che i dati inseriti saranno utilizzati esclusivamente per scopi organizzativi legati all'Open Day e saranno rimossi permanentemente a conclusione dell'evento. Consulta la pagina del D.P.O. dell'Istituto su <a href="https://www.leviseregno.edu.it/pagine/dpo" target="_blank" class="text-indigo-600 hover:underline font-bold">leviseregno.edu.it/pagine/dpo</a>. *
+                  </label>
+                </div>
               </div>
 
               <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-indigo-200 transition flex items-center justify-center gap-2">
@@ -365,6 +401,7 @@
             <div class="space-y-2">
               <h4 class="text-2xl font-extrabold text-indigo-950">Prenotazione Completata!</h4>
               <p class="text-slate-600 max-w-md mx-auto">La richiesta è stata elaborata con successo. Abbiamo inviato la ricevuta PDF ufficiale all'indirizzo email fornito.</p>
+              <p class="text-xs text-slate-500">Se non ricevi l'email entro pochi minuti, controlla la cartella <strong>Spam / Posta indesiderata</strong> o scrivici a <a href="mailto:orientamento@leviseregno.edu.it" class="text-sky-600 underline">orientamento@leviseregno.edu.it</a>.</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 inline-block">
               <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Il tuo Codice Prenotazione</p>
@@ -380,6 +417,32 @@
         <!-- Colonna Destra: Info -->
         <div class="space-y-6">
           
+          <!-- Box Informazioni e Programma -->
+          <div class="glass-card p-6 rounded-3xl space-y-4">
+            <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+              <i data-lucide="info" class="text-sky-500 w-5 h-5"></i>
+              Programma dell'Open Day
+            </h4>
+            <ul class="text-sm text-slate-600 space-y-3">
+              <li class="flex gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                <span><strong>Durata:</strong> Circa 2 ore complessive per sessione.</span>
+              </li>
+              <li class="flex gap-2">
+                <i data-lucide="presentation" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                <span><strong>Presentazione:</strong> Presentazione informativa dell'offerta formativa dell'istituto.</span>
+              </li>
+              <li class="flex gap-2">
+                <i data-lucide="school" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                <span><strong>Tour Guidato:</strong> Visita completa degli ambienti scolastici e dei laboratori.</span>
+              </li>
+              <li class="flex gap-2">
+                <i data-lucide="contact-2" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                <span><strong>Inclusione e Sostegno:</strong> Colloquio dedicato opzionale a fine evento per bisogni educativi speciali o supporto didattico.</span>
+              </li>
+            </ul>
+          </div>
+
           <!-- Box Contatti Scuola -->
           <div class="glass-card p-6 rounded-3xl space-y-4">
             <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
@@ -400,7 +463,7 @@
             <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
               <i data-lucide="clock-arrow-up" class="w-5 h-5"></i>
             </div>
-            <h4 class="font-bold text-indigo-950 text-base">Promemoria 7 Giorni Prima</h4>
+            <h4 class="font-bold text-indigo-950 text-base">Promemoria Automatico</h4>
             <p class="text-xs text-slate-600 leading-relaxed">
               Il nostro sistema invia in automatico un secondo promemoria con ricevuta PDF aggiornata esattamente 7 giorni prima della data scelta dell'Open Day. Se prenoti a ridosso dei 7 giorni, il promemoria viene pianificato immediatamente.
             </p>
@@ -472,7 +535,7 @@
               <div class="flex flex-1 gap-3">
                 <div class="relative flex-grow">
                   <i data-lucide="search" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
-                  <input type="text" id="searchBar" oninput="renderRegistrations()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cerca studente, codice, email...">
+                  <input type="text" id="searchBar" oninput="renderRegistrations()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cerca studente, indirizzo, codice, email...">
                 </div>
                 <select id="filterDateSelect" onchange="renderRegistrations()" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
                   <option value="all">Tutte le date</option>
@@ -492,9 +555,10 @@
                     <th class="p-4 border-b">Stato / Check-in</th>
                     <th class="p-4 border-b">Codice</th>
                     <th class="p-4 border-b">Cognome e Nome</th>
-                    <th class="p-4 border-b">Contatti Genitore</th>
-                    <th class="p-4 border-b">Data / Orario</th>
-                    <th class="p-4 border-b">Promemoria (7gg)</th>
+                    <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
+                    <th class="p-4 border-b">Colloquio Sostegno</th>
+                    <th class="p-4 border-b">Data</th>
+                    <th class="p-4 border-b text-center">Attestato (Pergamena)</th>
                     <th class="p-4 border-b text-center">Azioni</th>
                   </tr>
                 </thead>
@@ -578,8 +642,10 @@
                       <h4 id="scanResultName" class="text-2xl font-extrabold text-indigo-950 mt-2">Nome Studente</h4>
                       <p id="scanResultCode" class="text-sm font-mono font-bold text-sky-600 mt-1">CODICE</p>
                     </div>
-                    <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 space-y-1">
+                    <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 space-y-1 text-left">
+                      <p id="scanResultPath">Indirizzo: -</p>
                       <p id="scanResultEvent">Data Open Day: -</p>
+                      <p id="scanResultSupport">Richiesta Colloquio Sostegno: -</p>
                       <p id="scanResultContact">Genitore: -</p>
                     </div>
                   </div>
@@ -607,6 +673,23 @@
                 </button>
               </div>
 
+              <!-- Input per decidere quanti giorni prima inviare il promemoria -->
+              <div class="p-6 rounded-2xl border border-slate-200 bg-white space-y-4 shadow-sm">
+                <h3 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+                  <i data-lucide="bell" class="text-sky-500 w-5 h-5"></i>
+                  Giorni Anticipo Promemoria
+                </h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                  Imposta quanti giorni prima dell'inizio di ciascun Open Day far partire l'invio automatico della e-mail di promemoria con la ricevuta PDF allegata.
+                </p>
+                <div class="flex items-center gap-3">
+                  <input type="number" min="1" max="30" id="reminderDaysInput" class="w-24 p-3 rounded-xl border border-slate-200 bg-slate-50 text-center font-bold text-indigo-950 focus:ring-2 focus:ring-indigo-500 outline-none text-lg" value="7">
+                  <button onclick="saveReminderDays()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-sm text-xs">
+                    Salva Configurazione
+                  </button>
+                </div>
+              </div>
+
               <!-- ZONA DI PERICOLO: SVUOTAMENTO DATABASE -->
               <div class="p-6 rounded-2xl border-2 border-red-200 bg-red-50/50 space-y-4">
                 <h3 class="text-lg font-bold text-red-900 flex items-center gap-2">
@@ -623,11 +706,11 @@
               </div>
             </div>
 
-            <!-- Gestione Nuove Date -->
+            <!-- Gestione Nuove Date e Sessioni (Totalmente dinamicizzata) -->
             <div class="space-y-6">
               <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
                 <i data-lucide="plus-circle" class="text-sky-500"></i>
-                Crea Nuova Data Open Day
+                Crea Nuova Sessione / Indirizzo scolastico
               </h3>
               <form id="newDateForm" onsubmit="handleCreateDate(event)" class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                 <div class="grid grid-cols-2 gap-4">
@@ -637,22 +720,32 @@
                   </div>
                   <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Fascia Oraria</label>
-                    <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 09:00 - 12:00">
+                    <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 09:00, 10:30">
                   </div>
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">Numero Massimo di Posti Disponibili</label>
-                  <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 100">
+                  <label class="block text-xs font-bold text-slate-600 mb-1">Indirizzo di Studio presentato</label>
+                  <input required type="text" id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. RIM, LSA, LSE, SM, LOG, CAT...">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Aula / Sede</label>
+                    <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. Aula Magna, Aula A">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Posti Massimi</label>
+                    <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 150">
+                  </div>
                 </div>
                 <button type="submit" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm">
                   <i data-lucide="plus" class="w-4 h-4"></i>
-                  <span>Aggiungi Data</span>
+                  <span>Aggiungi Sessione</span>
                 </button>
               </form>
 
               <!-- Elenco Date Attive -->
               <div class="space-y-3">
-                <h4 class="font-bold text-slate-700 text-sm">Elenco Date Attive</h4>
+                <h4 class="font-bold text-slate-700 text-sm">Elenco Sessioni Configurate</h4>
                 <div id="adminDatesList" class="space-y-2">
                   <!-- Rendered via JS -->
                 </div>
@@ -669,7 +762,7 @@
 
   <!-- Footer Istituzionale -->
   <footer class="glass-card mt-12 py-6 border-t border-white/50 text-center text-sm text-slate-500 relative z-10">
-    <p>© 2026 ITSCG "Primo Levi" - Via Briantina 68, Seregno (MB). Tutti i diritti riservati.</p>
+    <p>© 2025 ITSCG "Primo Levi" - Via Briantina 68, Seregno (MB). Tutti i diritti riservati.</p>
   </footer>
 
   <script type="module">
@@ -695,18 +788,20 @@
     const appId = 'openday-primolevi-seregno';
 
     // Endpoint Webhook
-    const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbaczi00ytUJvRIZ8-_h4wdlzt5UO1Orbz07uByFESuR2GTpGlxX-ModdWfn5Uu5o8F/exec";
-    const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtd6BQ0RfQu5nMyc-bSm5gxr_FhN7Pzj7aCNARqnELhC9UwRvHEBwBN_za7X-ie9E80g/exec";
-    
-    // NUOVO SCRIPT DI ANNULLAMENTO DEDICATO
-    const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMuETOYFn6gscs03VnG3SuVUQSsf0IyWYTF9TttT3iuas5LlRR9X6zJ7GOE7aG0Q-Xbg/exec";
+    const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec";
+    const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
+    const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec";
+    const ATTESTATO_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
 
     // Stato locale
     let state = {
       user: null,
       currentView: 'home',
       isAdminAuthed: false,
-      settings: { bannerText: "Benvenuti all'Open Day dell'ITSCG Primo Levi. Scopri la nostra offerta formativa, visita i laboratori e incontra i docenti." },
+      settings: { 
+        bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. L'open day, della durata di circa 2 ore, prevede un momento informativo di presentazione dell'offerta formativa e la visita degli ambienti dell'istituto. Per coloro che fossero interessati, al termine delle presentazioni sarà possibile avere un colloquio con i referenti dell'inclusione e con i docenti di sostegno.",
+        reminderDaysBefore: 7
+      },
       dates: [],
       registrations: [],
       selectedDate: null,
@@ -812,7 +907,7 @@
     window.openCancelModal = function() { document.getElementById('cancelModal').classList.remove('hidden'); }
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Interfaccia Custom Confirm con protezione re-entry
+    // Interfaccia Custom Confirm
     let isConfirming = false;
     window.showAdminConfirm = function(title, message, requiresInputText, onConfirmCallback) {
       document.getElementById('adminConfirmTitle').innerText = title;
@@ -846,7 +941,7 @@
       };
     }
 
-    // Notifiche integrate
+    // Notifiche
     window.showToast = function(message, type = 'success') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
@@ -930,16 +1025,28 @@
       });
     }
 
-    // Seeding Date D'Esempio
+    // Seeding Date D'Esempio per il 2025 (Da testo fornito)
     async function seedExampleDates() {
       const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
       if (querySnapshot.empty) {
-        const dateRefs = [
-          { date: "2026-06-21", timeSlot: "09:00 - 12:00", maxSeats: 150 },
-          { date: "2026-11-14", timeSlot: "10:00 - 13:00", maxSeats: 100 },
-          { date: "2026-12-12", timeSlot: "14:30 - 17:30", maxSeats: 80 }
+        const defaultSessions = [
+          // 15 Novembre 2025
+          { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna (Edificio Nord)", maxSeats: 50 },
+          { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
+          { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "SISTEMA MODA (SM)", aula: "Laboratorio Moda", maxSeats: 45 },
+          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
+          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 },
+
+          // 29 Novembre 2025
+          { date: "2025-11-29", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna", maxSeats: 50 },
+          { date: "2025-11-29", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
+
+          // 13 Dicembre 2025
+          { date: "2025-12-13", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
+          { date: "2025-12-13", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 }
         ];
-        for (const item of dateRefs) {
+
+        for (const item of defaultSessions) {
           await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', Math.random().toString(36).substring(2, 10)), item);
         }
       }
@@ -953,6 +1060,10 @@
             state.settings = doc.data();
             document.getElementById('bannerText').innerText = state.settings.bannerText;
             document.getElementById('bannerTextarea').value = state.settings.bannerText;
+            
+            const rDays = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
+            const inputEl = document.getElementById('reminderDaysInput');
+            if (inputEl) inputEl.value = rDays;
           }
         });
       });
@@ -977,21 +1088,25 @@
       });
     }
 
-    // Calcolo e spedizione promemoria 7 giorni prima
+    // Calcolo e spedizione promemoria prima della data dell'evento (Configurabile)
     async function checkAndTriggerAutomaticReminders() {
       const today = new Date();
+      const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
+      
       for (const reg of state.registrations) {
         const eventDate = new Date(reg.dateStr);
         const diffTime = eventDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays <= 7 && diffDays >= 0 && !reg.reminderSent) {
+        if (diffDays <= daysBeforeSetting && diffDays >= 0 && !reg.reminderSent) {
           try {
             const base64Pdf = await generateReceiptPDF({
               nome: reg.nome,
               cognome: reg.cognome,
               email: reg.email,
               telefono: reg.telefono,
+              studyPath: reg.studyPath || 'N/D',
+              supportRequired: reg.supportRequired || false,
               dataEvento: new Date(reg.dateStr).toLocaleDateString('it-IT'),
               orarioEvento: reg.timeSlot
             }, reg.code, 'promemoria');
@@ -1054,13 +1169,13 @@
       pdfDoc.setFont("Helvetica", "normal");
       pdfDoc.setFontSize(13);
       const headerSubtitle = type === 'conferma' 
-        ? "CONFERMA DI AVVENUTA PRENOTAZIONE OPEN DAY" 
+        ? "CONFERMA DI PRENOTAZIONE - TERZE MEDIE" 
         : "PROMEMORIA PRENOTAZIONE OPEN DAY";
       pdfDoc.text(headerSubtitle, 105, 32, { align: "center" });
 
       pdfDoc.setTextColor(51, 65, 85);
       pdfDoc.setFontSize(12);
-      pdfDoc.text("Dettagli Registrazione Partecipante:", 20, 60);
+      pdfDoc.text("Dettagli Partecipante (Studente Terza Media):", 20, 60);
       
       pdfDoc.setFont("Helvetica", "bold");
       pdfDoc.setFontSize(14);
@@ -1068,34 +1183,38 @@
       
       pdfDoc.setFont("Helvetica", "normal");
       pdfDoc.setFontSize(11);
-      pdfDoc.text("E-mail registrata: " + data.email, 20, 80);
+      pdfDoc.text("E-mail genitore registrata: " + data.email, 20, 80);
       pdfDoc.text("Recapito telefonico: " + (data.telefono || 'N/D'), 20, 88);
 
       pdfDoc.setFillColor(241, 245, 249);
-      pdfDoc.rect(20, 100, 170, 32, 'F');
+      pdfDoc.rect(20, 100, 170, 42, 'F');
       pdfDoc.setTextColor(15, 23, 42);
       pdfDoc.setFont("Helvetica", "bold");
-      pdfDoc.setFontSize(12);
-      pdfDoc.text("DATA SCELTA: " + data.dataEvento, 25, 112);
-      pdfDoc.text("FASCIA ORARIO: " + data.orarioEvento, 25, 122);
+      pdfDoc.setFontSize(11);
+      pdfDoc.text("DATA OPEN DAY: " + data.dataEvento, 25, 110);
+      pdfDoc.text("INDIRIZZO RICHIESTO: " + data.studyPath, 25, 119);
+      
+      const colloquioText = data.supportRequired ? "Sì, Richiesto (al termine)" : "No, non richiesto";
+      pdfDoc.text("COLLOQUIO SOSTEGNO/INCLUSIONE: " + colloquioText, 25, 128);
+      pdfDoc.text("DURATA STIMATA EVENTO: Circa 2 Ore (Info + Visita)", 25, 137);
 
       pdfDoc.setFillColor(239, 68, 68);
-      pdfDoc.rect(20, 145, 170, 10, 'F');
+      pdfDoc.rect(20, 150, 170, 10, 'F');
       pdfDoc.setTextColor(255, 255, 255);
       pdfDoc.setFontSize(13);
-      pdfDoc.text(`CODICE PRENOTAZIONE UNIVOCO`, 105, 152, { align: "center" });
+      pdfDoc.text(`CODICE PRENOTAZIONE UNIVOCO`, 105, 157, { align: "center" });
 
-      drawBarcode(pdfDoc, code, 75, 162);
+      drawBarcode(pdfDoc, code, 75, 167);
 
       pdfDoc.setTextColor(100, 116, 139);
       pdfDoc.setFont("Helvetica", "italic");
       pdfDoc.setFontSize(9.5);
       
       const disclaimer = type === 'conferma'
-        ? "Nota importante: Questa è la tua ricevuta ufficiale di avvenuta prenotazione. Presentati all'accoglienza dell'evento con questo documento stampato o mostrato sul tuo smartphone."
-        : "PROMEMORIA: Ti ricordiamo che la tua partecipazione all'evento è prevista tra pochissimi giorni. Qualora fossi impossibilitato a partecipare ti preghiamo di effettuare tempestivamente la disdetta autonoma dal sito.";
+        ? "Nota importante: Questa è la tua ricevuta ufficiale di avvenuta prenotazione per gli Open Day delle terze medie. Presentati all'accoglienza dell'evento con questo documento stampato o mostrato sul tuo smartphone."
+        : "PROMEMORIA: Ti ricordiamo che la tua partecipazione all'evento è prevista tra pochissimi giorni. Qualora fossi impossibilitato a partecipare, ti preghiamo di effettuare tempestivamente la disdetta autonoma dal sito.";
       
-      pdfDoc.text(disclaimer, 105, 210, { align: "center", maxWidth: 160 });
+      pdfDoc.text(disclaimer, 105, 215, { align: "center", maxWidth: 160 });
 
       pdfDoc.setTextColor(148, 163, 184);
       pdfDoc.setFont("Helvetica", "bold");
@@ -1116,19 +1235,34 @@
         return;
       }
 
-      container.innerHTML = state.dates.map(d => {
-        const registeredCount = state.registrations.filter(r => r.dateId === d.id).length;
-        const availableSeats = d.maxSeats - registeredCount;
-        const isFull = availableSeats <= 0;
-        const isSelected = state.selectedDate?.id === d.id;
+      const uniqueDays = [];
+      state.dates.forEach(d => {
+        if (!uniqueDays.includes(d.date)) {
+          uniqueDays.push(d.date);
+        }
+      });
 
-        const formattedDate = new Date(d.date).toLocaleDateString('it-IT', {
+      container.innerHTML = uniqueDays.map(dateStr => {
+        const sessionsForThisDate = state.dates.filter(d => d.date === dateStr);
+        let totalSeats = 0;
+        let occupiedSeats = 0;
+
+        sessionsForThisDate.forEach(s => {
+          totalSeats += s.maxSeats;
+          occupiedSeats += state.registrations.filter(r => r.dateId === s.id).length;
+        });
+
+        const availableSeats = totalSeats - occupiedSeats;
+        const isFull = availableSeats <= 0;
+        const isSelected = state.selectedDate === dateStr;
+
+        const formattedDate = new Date(dateStr).toLocaleDateString('it-IT', {
           weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
         });
 
         return `
           <div 
-            onclick="${isFull ? '' : `selectDate('${d.id}')`}" 
+            onclick="${isFull ? '' : `selectDate('${dateStr}')`}" 
             class="glass-card p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden group ${
               isFull ? 'opacity-60 cursor-not-allowed border-transparent' : 
               isSelected ? 'border-sky-500 ring-4 ring-sky-100 shadow-lg scale-[1.02] cursor-pointer' : 
@@ -1138,7 +1272,7 @@
             <div class="absolute right-3 top-3 opacity-10 group-hover:opacity-20 transition-all">
               <i data-lucide="calendar" class="w-16 h-16 text-sky-500"></i>
             </div>
-            <div class="text-xs font-bold text-sky-600 uppercase tracking-widest">${d.timeSlot}</div>
+            <div class="text-xs font-bold text-sky-600 uppercase tracking-widest">Open Day Scolastico</div>
             <div class="text-xl font-bold text-indigo-950 mt-1 capitalize">${formattedDate}</div>
             
             <div class="mt-5 flex items-center justify-between">
@@ -1152,21 +1286,37 @@
       lucide.createIcons();
     }
 
-    window.selectDate = function(id) {
-      const selected = state.dates.find(d => d.id === id);
-      if (!selected) return;
-
-      state.selectedDate = selected;
+    window.selectDate = function(dateStr) {
+      state.selectedDate = dateStr;
       renderHomeDates();
 
       const bookingCard = document.getElementById('bookingCard');
       const successCard = document.getElementById('successCard');
+      const studySelect = document.getElementById('studyPathSelect');
       
       successCard.classList.add('hidden');
       bookingCard.classList.remove('hidden');
 
-      const formattedDate = new Date(selected.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-      document.getElementById('selectedDateTitle').innerText = "Prenotazione per il " + formattedDate + " (" + selected.timeSlot + ")";
+      const formattedDate = new Date(dateStr).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('selectedDateTitle').innerText = "Iscrizione Open Day del " + formattedDate;
+
+      const sessionsForDate = state.dates.filter(d => d.date === dateStr);
+
+      if (sessionsForDate.length === 0) {
+        studySelect.innerHTML = '<option value="" disabled selected>Nessun indirizzo configurato per oggi.</option>';
+      } else {
+        studySelect.innerHTML = '<option value="" disabled selected>-- Scegli l\'indirizzo e la fascia oraria di interesse --</option>' +
+          sessionsForDate.map(s => {
+            const occupied = state.registrations.filter(r => r.dateId === s.id).length;
+            const remaining = s.maxSeats - occupied;
+            const isFull = remaining <= 0;
+            
+            return `<option value="${s.id}" ${isFull ? 'disabled' : ''}>
+              ${s.timeSlot} | ${s.studyPath} (${s.aula}) ${isFull ? '[POSTI ESAURITI]' : `[${remaining} posti liberi]`}
+            </option>`;
+          }).join('');
+      }
+
       bookingCard.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -1185,7 +1335,21 @@
     // Invio della Prenotazione
     window.handleBooking = async function(e) {
       e.preventDefault();
-      if (!state.selectedDate) return;
+      
+      const privacyChecked = document.getElementById('privacyConsent').checked;
+      if (!privacyChecked) {
+        showToast("È necessario accettare il trattamento dei dati personali per registrarsi.", "error");
+        return;
+      }
+
+      const selectedSessionId = document.getElementById('studyPathSelect').value;
+      if (!selectedSessionId) {
+        showToast("Seleziona l'indirizzo di studio prima di confermare.", "error");
+        return;
+      }
+
+      const sessionObj = state.dates.find(d => d.id === selectedSessionId);
+      if (!sessionObj) return;
 
       const btn = document.getElementById('submitBookingBtn');
       btn.disabled = true;
@@ -1195,39 +1359,44 @@
       const studentSurname = document.getElementById('studentSurname').value.trim();
       const parentEmail = document.getElementById('parentEmail').value.trim();
       const parentPhone = document.getElementById('parentPhone').value.trim();
+      const supportRequired = document.getElementById('supportRequired').checked;
 
       const uniqueCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      const formattedDate = new Date(state.selectedDate.date).toLocaleDateString('it-IT');
+      const formattedDate = new Date(sessionObj.date).toLocaleDateString('it-IT');
 
       const bookingPayload = {
         nome: studentName,
         cognome: studentSurname,
         email: parentEmail,
         telefono: parentPhone,
+        studyPath: `${sessionObj.studyPath} (Fascia: ${sessionObj.timeSlot} - Aula: ${sessionObj.aula})`,
+        supportRequired: supportRequired,
         dataEvento: formattedDate,
-        orarioEvento: state.selectedDate.timeSlot
+        orarioEvento: sessionObj.timeSlot
       };
 
       try {
         const base64Pdf = await generateReceiptPDF(bookingPayload, uniqueCode, 'conferma');
         
-        // 1. Salvataggio su database Firebase con stato iniziale "Registrato"
+        // 1. Salvataggio su database Firebase con dettagli completi della sessione e stato "Registrato"
         const regRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', uniqueCode);
         await setDoc(regRef, {
           nome: studentName,
           cognome: studentSurname,
           email: parentEmail,
           telefono: parentPhone,
+          studyPath: `${sessionObj.studyPath} (${sessionObj.aula})`,
+          supportRequired: supportRequired,
           code: uniqueCode,
-          dateId: state.selectedDate.id,
-          dateStr: state.selectedDate.date,
-          timeSlot: state.selectedDate.timeSlot,
+          dateId: sessionObj.id, // Collegato all'ID univoco della sessione
+          dateStr: sessionObj.date,
+          timeSlot: sessionObj.timeSlot,
           timestamp: Date.now(),
           reminderSent: false,
           status: 'Registrato'
         });
 
-        // 2. Invio Email via Webhook
+        // 2. Invio Email via Webhook ufficiale di conferma
         const emailPayload = {
           nome: studentName,
           cognome: studentSurname,
@@ -1245,7 +1414,7 @@
             body: JSON.stringify(emailPayload)
           });
         } catch (scriptErr) {
-          console.warn("GAS Webhook chiamato.");
+          console.warn("Conferma GAS Webhook inviata.");
         }
 
         document.getElementById('bookingCard').classList.add('hidden');
@@ -1316,14 +1485,14 @@
             cognome: reg.cognome,
             email: reg.email,
             telefono: reg.telefono,
+            studyPath: reg.studyPath || 'N/D',
+            supportRequired: reg.supportRequired || false,
             dataEvento: formattedDate,
             orarioEvento: reg.timeSlot
           };
 
-          // Genera il PDF locale in base64
           const base64Pdf = await generateReceiptPDF(bookingPayload, reg.code, 'conferma');
 
-          // 1. Invio e-mail re-utilizzando CONFIRM_SCRIPT_URL
           const emailPayload = {
             nome: reg.nome,
             cognome: reg.cognome,
@@ -1344,7 +1513,6 @@
             console.warn("GAS Webhook chiamato per reinvio.");
           }
 
-          // 2. Scaricamento locale del PDF per comodità dell'utente
           const docConferma = new jsPDF();
           docConferma.setFillColor(30, 41, 59);
           docConferma.rect(0, 0, 210, 45, 'F');
@@ -1353,17 +1521,21 @@
           docConferma.setFontSize(22);
           docConferma.text("ITSCG PRIMO LEVI - SEREGNO", 105, 18, { align: "center" });
           docConferma.setFontSize(13);
-          docConferma.text("CONFERMA DI AVVENUTA PRENOTAZIONE", 105, 32, { align: "center" });
+          docConferma.text("CONFERMA DI PRENOTAZIONE", 105, 32, { align: "center" });
           docConferma.setTextColor(51, 65, 85);
           docConferma.setFontSize(12);
           docConferma.text("Dettagli Registrazione Partecipante:", 20, 60);
           docConferma.setFont("Helvetica", "bold");
           docConferma.text(reg.cognome.toUpperCase() + " " + reg.nome.toUpperCase(), 20, 70);
           docConferma.setFont("Helvetica", "normal");
-          docConferma.text("E-mail: " + reg.email, 20, 80);
-          docConferma.text("Data Evento: " + formattedDate + " (" + reg.timeSlot + ")", 20, 90);
-          drawBarcode(docConferma, reg.code, 75, 110);
-          docConferma.save("Conferma_Levi_" + reg.cognome + ".pdf");
+          docConferma.text("E-mail genitore: " + reg.email, 20, 80);
+          docConferma.text("Telefono: " + (reg.telefono || 'N/D'), 20, 88);
+          docConferma.text("Data Evento: " + formattedDate + " (" + reg.timeSlot + ")", 20, 96);
+          docConferma.text("Indirizzo di studio: " + (reg.studyPath || 'N/D'), 20, 104);
+          docConferma.text("Colloquio Sostegno: " + (reg.supportRequired ? 'Sì, Richiesto' : 'No'), 20, 112);
+          
+          drawBarcode(docConferma, reg.code, 75, 125);
+          docConferma.save("Ricevuta_Levi_" + reg.cognome + ".pdf");
 
           showToast("Ricevuta recuperata, scaricata e inviata via email con successo!", "success");
           closeModal('recoveryModal');
@@ -1398,13 +1570,11 @@
         document.getElementById('confirmCancelModal').classList.remove('hidden');
 
         document.getElementById('btnConfirmDelete').onclick = async () => {
-          // PROTEZIONE CONTRO EVENTUALI COMPORTAMENTI RE-ENTRY / DOPPIO CLIC
           if (!state.pendingDeleteId) return;
           const deleteId = state.pendingDeleteId;
-          state.pendingDeleteId = null; // Svuota immediatamente la variabile di stato per prevenire re-entry
+          state.pendingDeleteId = null;
 
           try {
-            // Invio payload conforme a doPost dello script di cancellazione fornito
             const cancelPayload = {
               email: targetReg.email,
               cognome: targetReg.cognome,
@@ -1435,6 +1605,45 @@
       } else {
         showToast("Nessuna prenotazione attiva associata ai dati forniti.", "error");
       }
+    }
+
+    // Invio Pergamena / Attestato di Partecipazione (ATTESTATO_SCRIPT_URL)
+    window.sendCertificateEmail = async function(id) {
+      const reg = state.registrations.find(r => r.id === id);
+      if (!reg) return;
+
+      showAdminConfirm(
+        "Invia Attestato",
+        `Inviare l'Attestato ufficiale di partecipazione all'Open Day all'alunno ${reg.nome} ${reg.cognome} via e-mail?`,
+        false,
+        async () => {
+          showToast("Generazione ed invio attestato in corso...", "info");
+          try {
+            const payload = {
+              email: reg.email,
+              nome: reg.nome,
+              cognome: reg.cognome
+            };
+
+            await fetch(ATTESTATO_SCRIPT_URL, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
+              certificateSent: true,
+              certificateSentAt: Date.now()
+            });
+
+            showToast(`Attestato inviato con successo a ${reg.nome} ${reg.cognome}!`, "success");
+          } catch (err) {
+            console.error("Errore invio certificato:", err);
+            showToast("Errore durante l'invio della pergamena.", "error");
+          }
+        }
+      );
     }
 
     // Autenticazione Docenti
@@ -1495,7 +1704,7 @@
       const filterSelect = document.getElementById('filterDateSelect');
       const currentVal = filterSelect.value;
       filterSelect.innerHTML = '<option value="all">Tutte le date</option>' + 
-        state.dates.map(d => "<option value=\"" + d.id + "\">" + new Date(d.date).toLocaleDateString('it-IT') + " - " + d.timeSlot + "</option>").join('');
+        state.dates.map(d => "<option value=\"" + d.id + "\">" + new Date(d.date).toLocaleDateString('it-IT') + " - " + d.timeSlot + " | " + d.studyPath + "</option>").join('');
       filterSelect.value = currentVal;
     }
 
@@ -1601,6 +1810,9 @@
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', registration.id), {
             status: 'Ammesso'
           });
+          
+          // Invia automaticamente l'attestato di partecipazione in tempo reale
+          await sendCertificateEmailAuto(registration);
         } catch (err) {
           console.error("Errore aggiornamento stato in Ammesso:", err);
         }
@@ -1611,7 +1823,9 @@
 
         document.getElementById('scanResultName').innerText = registration.cognome.toUpperCase() + " " + registration.nome.toUpperCase();
         document.getElementById('scanResultCode').innerText = cleanedCode;
+        document.getElementById('scanResultPath').innerText = "Indirizzo di Studio: " + (registration.studyPath || 'Non specificato');
         document.getElementById('scanResultEvent').innerText = "Giorno: " + new Date(registration.dateStr).toLocaleDateString() + " (" + registration.timeSlot + ")";
+        document.getElementById('scanResultSupport').innerText = "Richiesta Colloquio Sostegno: " + (registration.supportRequired ? "SÌ, RICHIESTO" : "NO");
         document.getElementById('scanResultContact').innerText = "Contatto: " + registration.email + " / " + (registration.telefono || 'N/D');
 
       } else {
@@ -1624,6 +1838,40 @@
       }
     }
 
+    // Funzione interna silenziosa per inviare automaticamente l'attestato via e-mail
+    async function sendCertificateEmailAuto(reg) {
+      if (!reg) return;
+      if (reg.certificateSent) {
+        console.log(`L'attestato per ${reg.nome} ${reg.cognome} è già stato spedito.`);
+        return;
+      }
+      try {
+        const payload = {
+          email: reg.email,
+          nome: reg.nome,
+          cognome: reg.cognome
+        };
+
+        // Chiamata webhook allo script dedicato della Pergamena (ATTESTATO_SCRIPT_URL)
+        await fetch(ATTESTATO_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // Contrassegna lo stato come "Attestato Inviato"
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
+          certificateSent: true,
+          certificateSentAt: Date.now()
+        });
+
+        showToast(`Attestato inviato in automatico a ${reg.nome} ${reg.cognome}!`, "success");
+      } catch (err) {
+        console.error("Impossibile inviare l'attestato automatico:", err);
+      }
+    }
+
     // Rendering Tabella Iscritti in tempo reale
     window.renderRegistrations = function() {
       const tbody = document.getElementById('registrationsTableBody');
@@ -1633,7 +1881,7 @@
       const filterDate = document.getElementById('filterDateSelect').value;
 
       const filtered = state.registrations.filter(r => {
-        const fullString = (r.nome + " " + r.cognome + " " + r.code + " " + r.email + " " + r.telefono).toLowerCase();
+        const fullString = (r.nome + " " + r.cognome + " " + r.code + " " + r.email + " " + (r.studyPath || '')).toLowerCase();
         const matchesSearch = fullString.includes(searchTerm);
         const matchesDate = filterDate === 'all' || r.dateId === filterDate;
         return matchesSearch && matchesDate;
@@ -1642,7 +1890,7 @@
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colSpan="7" class="p-8 text-center text-slate-400 font-medium">Nessun iscritto trovato per i criteri selezionati.</td>
+            <td colSpan="8" class="p-8 text-center text-slate-400 font-medium">Nessun iscritto trovato per i criteri selezionati.</td>
           </tr>
         `;
         return;
@@ -1654,12 +1902,14 @@
         const diffTime = eventDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
+        const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
+        
         let badgeHtml = '';
         if (diffDays < 0) {
           badgeHtml = `<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i> Concluso</span>`;
-        } else if (diffDays <= 7) {
+        } else if (diffDays <= daysBeforeSetting) {
           badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-100 px-3 py-1 rounded-full animate-pulse\"><i data-lucide=\"bell\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
-        } else if (diffDays <= 10) {
+        } else if (diffDays <= (daysBeforeSetting + 3)) {
           badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full\"><i data-lucide=\"bell-ring\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
         } else {
           badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full\"><i data-lucide=\"check\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
@@ -1669,7 +1919,7 @@
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full"><i data-lucide="check-check" class="w-3.5 h-3.5"></i> Inviata Automatica</span>`
           : (diffDays < 0 
               ? `<span class="text-xs text-slate-400 font-medium">Non necessaria</span>`
-              : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full animate-pulse"><i data-lucide="timer" class="w-3.5 h-3.5"></i> In coda (7gg prima)</span>`
+              : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full animate-pulse"><i data-lucide="timer" class="w-3.5 h-3.5"></i> In coda (${daysBeforeSetting}gg prima)</span>`
             );
 
         const currentStatus = r.status || 'Registrato';
@@ -1678,21 +1928,36 @@
           : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-full"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Registrato</span>`;
 
         const formattedDate = new Date(r.dateStr).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+        
+        const supportBadgeHtml = r.supportRequired
+          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Richiesto</span>`
+          : `<span class="text-xs text-slate-400">No</span>`;
+
+        // Badge per lo stato dell'attestato
+        const certificateBadgeHtml = r.certificateSent
+          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-full shadow-sm" title="Attestato Inviato"><i data-lucide="award" class="w-3.5 h-3.5"></i> Inviato</span>`
+          : (currentStatus === 'Ammesso'
+              ? `<button onclick="sendCertificateEmail('${r.id}')" class="px-4 py-2 bg-gradient-to-tr from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-xs rounded-xl shadow-md transition transform hover:scale-[1.03] flex items-center justify-center gap-1.5">
+                  <i data-lucide="gift" class="w-3.5 h-3.5"></i> Invia Attestato
+                </button>`
+              : `<span class="text-xs text-slate-400 italic">Pre-requisito: Ammesso</span>`
+            );
 
         return `
           <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-all">
             <td class="p-4">${statusBadgeHtml}</td>
             <td class="p-4 font-mono font-bold text-sky-600">${r.code}</td>
-            <td class="p-4 font-semibold text-indigo-950">${r.cognome} ${r.nome}</td>
-            <td class="p-4 text-xs text-slate-600 leading-tight">
-              <div><i data-lucide="mail" class="inline w-3 h-3 mr-1"></i>${r.email}</div>
-              <div class="mt-1"><i data-lucide="phone" class="inline w-3 h-3 mr-1"></i>${r.telefono}</div>
+            <td class="p-4">
+              <div class="font-semibold text-indigo-950">${r.cognome} ${r.nome}</div>
+              <div class="text-slate-400 text-xs mt-0.5">${r.email} | ${r.telefono || 'N/D'}</div>
             </td>
+            <td class="p-4 font-bold text-slate-700 text-xs">${r.studyPath || 'N/D'}</td>
+            <td class="p-4">${supportBadgeHtml}</td>
             <td class="p-4 text-xs font-semibold text-slate-700">
               <span class="block">${formattedDate}</span>
-              <span class="text-slate-400 block">${r.timeSlot}</span>
+              <span class="text-slate-400 block text-[10px]">${r.timeSlot}</span>
             </td>
-            <td class="p-4">${reminderHtml}</td>
+            <td class="p-4 text-center">${certificateBadgeHtml}</td>
             <td class="p-4 text-center">
               <div class="flex gap-2 justify-center">
                 ${currentStatus !== 'Ammesso' ? `
@@ -1713,11 +1978,16 @@
 
     // Ammissione manuale
     window.admitParticipantManually = async function(id) {
+      const reg = state.registrations.find(r => r.id === id);
+      if (!reg) return;
       try {
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), {
           status: 'Ammesso'
         });
         showToast("Stato aggiornato ad Ammesso con successo.", "success");
+        
+        // Invia automaticamente l'attestato di partecipazione all'ammissione manuale
+        await sendCertificateEmailAuto(reg);
       } catch (err) {
         console.error(err);
         showToast("Errore durante l'aggiornamento.", "error");
@@ -1735,7 +2005,6 @@
         false,
         async () => {
           try {
-            // Invio payload conforme a doPost dello script di cancellazione
             const cancelPayload = {
               email: targetReg.email,
               cognome: targetReg.cognome,
@@ -1804,11 +2073,35 @@
       const text = document.getElementById('bannerTextarea').value.trim();
       if (!text) return;
       try {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { bannerText: text });
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { 
+          ...state.settings,
+          bannerText: text 
+        });
         showToast("Banner introduttivo aggiornato con successo!", "success");
       } catch (err) {
         console.error(err);
         showToast("Errore di salvataggio.", "error");
+      }
+    }
+
+    // Salva la configurazione personalizzata dei giorni di preavviso per i promemoria automatici
+    window.saveReminderDays = async function() {
+      const daysInput = document.getElementById('reminderDaysInput');
+      if (!daysInput) return;
+      const days = parseInt(daysInput.value);
+      if (isNaN(days) || days < 1) {
+        showToast("Inserisci un numero valido di giorni (minimo 1).", "error");
+        return;
+      }
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), {
+          ...state.settings,
+          reminderDaysBefore: days
+        });
+        showToast("Giorni di preavviso promemoria aggiornati!", "success");
+      } catch (err) {
+        console.error("Errore durante il salvataggio dei giorni:", err);
+        showToast("Impossibile salvare i giorni di promemoria.", "error");
       }
     }
 
@@ -1817,15 +2110,19 @@
       e.preventDefault();
       const dateVal = document.getElementById('newDateValue').value;
       const timeSlot = document.getElementById('newDateTimeSlot').value.trim();
+      const studyPath = document.getElementById('newStudyPath').value.trim();
+      const aula = document.getElementById('newAula').value.trim();
       const maxSeats = parseInt(document.getElementById('newDateMaxSeats').value);
 
-      if (!dateVal || !timeSlot || isNaN(maxSeats)) return;
+      if (!dateVal || !timeSlot || !studyPath || !aula || isNaN(maxSeats)) return;
 
       try {
         const newRef = doc(db, 'artifacts', appId, 'public', 'data', 'dates', Math.random().toString(36).substring(2, 10));
         await setDoc(newRef, {
           date: dateVal,
           timeSlot: timeSlot,
+          studyPath: studyPath,
+          aula: aula,
           maxSeats: maxSeats
         });
 
