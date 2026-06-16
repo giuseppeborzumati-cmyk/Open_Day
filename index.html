@@ -60,7 +60,7 @@
       height: 100vh;
       overflow: hidden;
       pointer-events: none;
-      z-index: 0; /* Dietro a tutto l'HTML attivo */
+      z-index: 0;
     }
 
     .bubble {
@@ -85,7 +85,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* Logo scolastico fluttuante all'interno delle bolle */
     .bubble img, .bubble svg {
       width: 55%;
       height: 55%;
@@ -95,7 +94,6 @@
       filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.1));
     }
 
-    /* Glassmorphism custom design system */
     .glass-card {
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
@@ -111,19 +109,18 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     }
 
-    /* Visualizer laser per lo scanner */
     .laser-line {
       position: absolute;
       width: 100%;
-      height: 3px;
+      height: 4px;
       background-color: #ef4444;
-      box-shadow: 0 0 10px #f87171, 0 0 20px #ef4444;
+      box-shadow: 0 0 12px #f87171, 0 0 24px #ef4444;
       animation: laserMove 2s infinite ease-in-out;
       z-index: 10;
     }
     @keyframes laserMove {
-      0%, 100% { top: 5%; }
-      50% { top: 95%; }
+      0%, 100% { top: 8%; }
+      50% { top: 92%; }
     }
   </style>
 </head>
@@ -132,719 +129,669 @@
   <!-- Sfondo animato con bolle di sapone sparpagliate ovunque -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
-  <!-- Intestazione del Sito -->
-  <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm relative z-40">
-    <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
-      <div class="relative w-12 h-12 flex items-center justify-center">
-        <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl shadow-lg border-2 border-white/80">
-      </div>
-      <div>
-        <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
-        <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
-      </div>
-    </div>
-    
-    <!-- Azioni Rapide in Alto -->
-    <div class="flex flex-wrap items-center gap-2">
-      <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
-        <span>Prenota</span>
-      </button>
-      <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
-        <i data-lucide="search-code" class="w-4 h-4"></i>
-        <span>Recupera Prenotazione</span>
-      </button>
-      <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
-        <i data-lucide="trash-2" class="w-4 h-4"></i>
-        <span>Annulla Prenotazione</span>
-      </button>
-      <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
-      <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
-        <i data-lucide="shield-alert" class="w-4 h-4"></i>
-        <span>Area Docenti</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Area Notifiche Custom -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- MODALE CUSTOM: RECUPERA RICEVUTA -->
-  <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
-      <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-3">
-          <i data-lucide="download-cloud" class="w-6 h-6"></i>
+  <!-- INTERFACCIA 1: SITO PUBBLICO GENERALE -->
+  <div id="wrapperMainSite" class="flex-grow flex flex-col">
+    <!-- Intestazione del Sito -->
+    <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm relative">
+      <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
+        <div class="relative w-12 h-12 flex items-center justify-center">
+          <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl shadow-lg border-2 border-white/80">
         </div>
-        <h3 class="text-xl font-bold text-indigo-950">Recupera la tua Ricevuta</h3>
-        <p class="text-sm text-slate-500 mt-1">Inserisci il codice di prenotazione o il cognome dello studente per riscaricare la ricevuta in PDF munita di barcode e ricevere nuovamente la mail di conferma.</p>
-      </div>
-      <form onsubmit="handleRecovery(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Codice o Cognome Studente</label>
-          <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition" placeholder="Es. Rossi o AB12CD">
+          <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
+          <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
         </div>
-        <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition shadow-md flex items-center justify-center gap-2">
-          <i data-lucide="file-text" class="w-5 h-5"></i>
-          <span>Invia Mail e Scarica PDF</span>
+      </div>
+      
+      <!-- Azioni Rapide in Alto -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>Prenota</span>
         </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODALE CUSTOM: ANNULLA PRENOTAZIONE -->
-  <div id="cancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
-      <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
-          <i data-lucide="trash-2" class="w-6 h-6"></i>
-        </div>
-        <h3 class="text-xl font-bold text-indigo-950">Annulla Prenotazione</h3>
-        <p class="text-sm text-slate-500 mt-1">Inserisci il tuo codice di prenotazione o cognome per liberare il posto e ricevere l'email di annullamento.</p>
-      </div>
-      <form id="cancelForm" onsubmit="handleCancellation(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Codice Prenotazione o Cognome</label>
-          <input required type="text" id="cancelTerm" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-red-500 outline-none transition" placeholder="Codice o Cognome Studente">
-        </div>
-        <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-md flex items-center justify-center gap-2">
-          <i data-lucide="x-circle" class="w-5 h-5"></i>
-          <span>Conferma Annullamento</span>
+        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
+          <i data-lucide="search-code" class="w-4 h-4"></i>
+          <span>Recupera Prenotazione</span>
         </button>
-      </form>
-    </div>
-  </div>
+        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+          <span>Annulla Prenotazione</span>
+        </button>
+        <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
+        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
+          <i data-lucide="shield-alert" class="w-4 h-4"></i>
+          <span>Area Docenti</span>
+        </button>
+      </div>
+    </nav>
 
-  <!-- MODALE CUSTOM: CONFERMA CANCELLAZIONE UTENTE -->
-  <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
-      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
-      </div>
-      <h3 class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
-      <p class="text-sm text-slate-500 mt-2">Questa operazione eliminerà definitivamente la prenotazione per <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
-      <div class="flex gap-3 mt-6">
-        <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
-        <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
-      </div>
-    </div>
-  </div>
+    <!-- Contenuto Principale -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl relative z-10">
 
-  <!-- MODALE CUSTOM: AGGIUNGI DISPOSITIVO SCANNER (QR CODE ACCOPPIAMENTO) -->
-  <div id="addDeviceModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
-      <button onclick="closeModal('addDeviceModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="smartphone" class="w-6 h-6"></i>
-      </div>
-      <h3 class="text-xl font-bold text-indigo-950">Collega Smartphone Scanner</h3>
-      <p class="text-xs text-slate-500 mt-2">Scansiona questo QR Code con la fotocamera del tuo telefono per aprirlo come terminale di scansione portatile connesso via Cloud. Qualsiasi lettura aggiornerà questa pagina all'istante.</p>
-      
-      <!-- QR Code generato dinamicamente con l'indirizzo corrente -->
-      <div class="my-6 flex justify-center bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner border border-slate-100">
-        <img id="qrCodeDeviceLink" src="" alt="QR Accoppiamento" class="w-full h-full object-contain">
-      </div>
-      
-      <p class="text-[10px] text-slate-400 font-mono select-all break-all bg-slate-50 p-2 rounded-lg" id="lblDeviceUrl">-</p>
-
-      <div class="mt-6">
-        <button onclick="closeModal('addDeviceModal')" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">Chiudi Finestra</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODALE CUSTOM: INTERFACCIA DI CONFERMA / SICUREZZA DOCENTE (Sostituisce alert/confirm nativi) -->
-  <div id="adminConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200">
-      <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="alert-octagon" class="w-6 h-6"></i>
-      </div>
-      <h3 id="adminConfirmTitle" class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
-      <p id="adminConfirmMessage" class="text-sm text-slate-500 mt-2"></p>
-      
-      <!-- Input sblocco sicurezza svuotamento -->
-      <div id="adminConfirmInputWrapper" class="mt-4 hidden">
-        <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Digita 'ELIMINA' per confermare</label>
-        <input type="text" id="adminConfirmInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-center uppercase tracking-widest font-bold">
-      </div>
-
-      <div class="flex gap-3 mt-6">
-        <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Annulla</button>
-        <button id="btnAdminConfirmAction" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Conferma</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Contenuto Principale -->
-  <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl relative z-10">
-
-    <!-- Schermata Principale (Utente) -->
-    <section id="sectionHome" class="space-y-8 animate-in fade-in duration-500">
-      
-      <!-- Sopra-Banner Introduttivo Dinamico -->
-      <div class="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-xl border border-white/60 flex flex-col md:flex-row items-center gap-8">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-200/40 rounded-full blur-2xl"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-pink-200/30 rounded-full blur-2xl"></div>
+      <!-- Schermata Principale (Utente) -->
+      <section id="sectionHome" class="space-y-8 animate-in fade-in duration-500">
         
-        <!-- Grafica della Scuola in SVG a sinistra nel banner -->
-        <div class="w-full md:w-1/3 flex justify-center relative z-10">
-          <svg class="w-48 h-48 drop-shadow-lg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="70" width="160" height="100" rx="10" fill="#1e3a8a" />
-            <rect x="35" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
-            <rect x="87" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
-            <rect x="140" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
-            <rect x="35" y="125" width="25" height="25" rx="3" fill="#60a5fa" />
-            <rect x="140" y="125" width="25" height="25" rx="3" fill="#60a5fa" />
-            <rect x="85" y="125" width="30" height="45" rx="2" fill="#ffffff" />
-            <path d="M10 70 L100 20 L190 70 Z" fill="#dc2626" />
-            <circle cx="100" cy="45" r="8" fill="#facc15" />
-            <rect x="97" y="135" width="2" height="15" fill="#1e3a8a" />
-            <circle cx="98" cy="142" r="1.5" fill="#facc15" />
-          </svg>
-        </div>
-
-        <div class="relative z-10 text-left flex-1">
-          <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie</span>
-          <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mt-4 mb-4 leading-tight">
-            Sei in terza media? Costruisci il tuo futuro al Primo Levi
-          </h2>
-          <p id="bannerText" class="text-base md:text-lg text-slate-600 leading-relaxed">
-            Caricamento informazioni in corso...
-          </p>
-        </div>
-      </div>
-
-      <div id="datesSection" class="grid lg:grid-cols-3 gap-8">
-        
-        <!-- Elenco Date Open Day & Form Prenotazione -->
-        <div class="lg:col-span-2 space-y-6">
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-sky-100 text-sky-600 rounded-xl">
-              <i data-lucide="calendar" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-indigo-950">Seleziona una data per iscriverti</h3>
+        <!-- Sopra-Banner Introduttivo Dinamico -->
+        <div class="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-xl border border-white/60 flex flex-col md:flex-row items-center gap-8">
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-200/40 rounded-full blur-2xl"></div>
+          <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-pink-200/30 rounded-full blur-2xl"></div>
+          
+          <!-- Grafica della Scuola in SVG a sinistra nel banner -->
+          <div class="w-full md:w-1/3 flex justify-center relative z-10">
+            <svg class="w-48 h-48 drop-shadow-lg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="70" width="160" height="100" rx="10" fill="#1e3a8a" />
+              <rect x="35" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
+              <rect x="87" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
+              <rect x="140" y="85" width="25" height="25" rx="3" fill="#60a5fa" />
+              <rect x="35" y="125" width="25" height="25" rx="3" fill="#60a5fa" />
+              <rect x="140" y="125" width="25" height="25" rx="3" fill="#60a5fa" />
+              <rect x="85" y="125" width="30" height="45" rx="2" fill="#ffffff" />
+              <path d="M10 70 L100 20 L190 70 Z" fill="#dc2626" />
+              <circle cx="100" cy="45" r="8" fill="#facc15" />
+              <rect x="97" y="135" width="2" height="15" fill="#1e3a8a" />
+              <circle cx="98" cy="142" r="1.5" fill="#facc15" />
+            </svg>
           </div>
 
-          <!-- Griglia Date caricate da Firebase -->
-          <div id="datesGrid" class="grid sm:grid-cols-2 gap-4">
-            <div class="col-span-2 text-center p-8 text-slate-500 glass-card rounded-2xl">
-              Caricamento delle date disponibili...
-            </div>
+          <div class="relative z-10 text-left flex-1">
+            <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mt-4 mb-4 leading-tight">
+              Sei in terza media? Costruisci il tuo futuro al Primo Levi
+            </h2>
+            <p id="bannerText" class="text-base md:text-lg text-slate-600 leading-relaxed">
+              Caricamento informazioni in corso...
+            </p>
           </div>
+        </div>
 
-          <!-- Modulo di Prenotazione -->
-          <div id="bookingCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-sky-500 animate-in slide-in-from-bottom duration-300">
-            <div class="flex justify-between items-center mb-4">
-              <div>
-                <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Compila il modulo</span>
-                <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950 mt-1">Registrazione</h4>
+        <div id="datesSection" class="grid lg:grid-cols-3 gap-8">
+          <!-- Elenco Date Open Day & Form Prenotazione -->
+          <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-sky-100 text-sky-600 rounded-xl">
+                <i data-lucide="calendar" class="w-6 h-6"></i>
               </div>
-              <button onclick="closeBookingForm()" class="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition">
-                <i data-lucide="x" class="w-6 h-6"></i>
-              </button>
+              <h3 class="text-2xl font-bold text-indigo-950">Seleziona una data per iscriverti</h3>
             </div>
 
-            <!-- Avviso Importante Coesistenza Indirizzi / Contemporaneità -->
-            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex gap-3 text-sm text-amber-900 leading-relaxed mb-6">
-              <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600"></i>
-              <div>
-                <p class="font-bold">Nota per la Contemporaneità delle Presentazioni:</p>
-                <p class="text-xs mt-1">Alcuni indirizzi si svolgono nella medesima fascia oraria in aule differenti, pertanto <strong>è possibile assistere ad una sola presentazione per turno d'orario</strong>. Si prega vivamente di non prenotare lo stesso indirizzo su più date diverse per consentire la massima partecipazione a tutti gli studenti.</p>
-                <p class="text-xs mt-1.5 font-bold text-red-700"><i data-lucide="shield-alert" class="inline w-3.5 h-3.5 mr-1"></i> Controllo automatico attivo: il sistema impedisce di prenotare lo stesso indirizzo su più date. È comunque consentito prenotare indirizzi differenti su date diverse.</p>
+            <!-- Griglia Date caricate da Firebase -->
+            <div id="datesGrid" class="grid sm:grid-cols-2 gap-4">
+              <div class="col-span-2 text-center p-8 text-slate-500 glass-card rounded-2xl">
+                Caricamento delle date disponibili...
               </div>
             </div>
 
-            <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
-              <div class="grid sm:grid-cols-2 gap-4">
+            <!-- Modulo di Prenotazione -->
+            <div id="bookingCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-sky-500 animate-in slide-in-from-bottom duration-300">
+              <div class="flex justify-between items-center mb-4">
                 <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Nome dello Studente Referente *</label>
-                  <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Mario">
+                  <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Compila il modulo</span>
+                  <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950 mt-1">Registrazione</h4>
                 </div>
-                <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Cognome dello Studente Referente *</label>
-                  <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Rossi">
-                </div>
+                <button onclick="closeBookingForm()" class="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition">
+                  <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
               </div>
-              
-              <div class="grid sm:grid-cols-2 gap-4">
+
+              <!-- Avviso Importante Coesistenza Indirizzi / Contemporaneità -->
+              <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex gap-3 text-sm text-amber-900 leading-relaxed mb-6">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600"></i>
                 <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail del Genitore/Tutore *</label>
-                  <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. genitore@email.com">
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Telefono di Contatto *</label>
-                  <input required type="tel" id="parentPhone" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. 3331234567">
+                  <p class="font-bold">Nota per la Contemporaneità delle Presentazioni:</p>
+                  <p class="text-xs mt-1">Alcuni indirizzi si svolgono nella medesima fascia oraria in aule differenti, pertanto <strong>è possibile assistere ad una sola presentazione per turno d'orario</strong>. Si prega vivamente di non prenotare lo stesso indirizzo su più date diverse per consentire la massima partecipazione a tutti gli studenti.</p>
+                  <p class="text-xs mt-1.5 font-bold text-red-700"><i data-lucide="shield-alert" class="inline w-3.5 h-3.5 mr-1"></i> Controllo automatico attivo: il sistema impedisce di prenotare lo stesso indirizzo su più date. È comunque consentito prenotare indirizzi differenti su date diverse.</p>
                 </div>
               </div>
 
-              <!-- Selezione Indirizzo di Studio, Alunni e Accompagnatori (MANUALI) -->
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
-                  <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
-                    <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
-                  </select>
+              <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nome dello Studente Referente *</label>
+                    <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Mario">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Cognome dello Studente Referente *</label>
+                    <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. Rossi">
+                  </div>
                 </div>
                 
                 <div class="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Numero Alunni da prenotare *</label>
-                    <input required type="number" min="1" max="10" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="1" oninput="calculateTotalFormSeats()">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail del Genitore/Tutore *</label>
+                    <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. genitore@email.com">
                   </div>
                   <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Numero di Accompagnatori *</label>
-                    <input required type="number" min="0" max="20" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="0" oninput="calculateTotalFormSeats()">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefono di Contatto *</label>
+                    <input required type="tel" id="parentPhone" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition" placeholder="Es. 3331234567">
                   </div>
                 </div>
 
-                <div class="text-right text-slate-500 text-sm font-bold">
-                  Posti totali calcolati per questa prenotazione: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span>
-                </div>
-              </div>
+                <!-- Selezione Indirizzo di Studio, Alunni e Accompagnatori (MANUALI) -->
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Scegli l'Indirizzo di Studio di Interesse *</label>
+                    <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition font-semibold text-slate-700">
+                      <option value="" disabled selected>-- Caricamento indirizzi disponibili per questa data... --</option>
+                    </select>
+                  </div>
+                  
+                  <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-semibold text-slate-700 mb-1">Numero Alunni da prenotare *</label>
+                      <input required type="number" min="1" max="10" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="1" oninput="calculateTotalFormSeats()">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-slate-700 mb-1">Numero di Accompagnatori *</label>
+                      <input required type="number" min="0" max="20" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition font-semibold text-slate-700" value="0" oninput="calculateTotalFormSeats()">
+                    </div>
+                  </div>
 
-              <!-- Opzione Inclusione / Sostegno scolastico -->
-              <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 space-y-3">
-                <div class="flex items-start gap-3">
-                  <input type="checkbox" id="supportRequired" class="w-5 h-5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 mt-0.5">
-                  <label for="supportRequired" class="text-sm text-slate-700 font-semibold select-none cursor-pointer">
-                    Desidero un colloquio al termine delle presentazioni con i referenti dell'inclusione / docenti di sostegno
+                  <div class="text-right text-slate-500 text-sm font-bold">
+                    Posti totali calcolati per questa prenotazione: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span>
+                  </div>
+                </div>
+
+                <!-- Opzione Inclusione / Sostegno scolastico -->
+                <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 space-y-3">
+                  <div class="flex items-start gap-3">
+                    <input type="checkbox" id="supportRequired" class="w-5 h-5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 mt-0.5">
+                    <label for="supportRequired" class="text-sm text-slate-700 font-semibold select-none cursor-pointer">
+                      Desidero un colloquio al termine delle presentazioni con i referenti dell'inclusione / docenti di sostegno
+                    </label>
+                  </div>
+                  <p class="text-xs text-slate-500 pl-8">
+                    Selezionando questa opzione, organizzeremo un colloquio conoscitivo individuale personalizzato subito dopo la fine della presentazione istituzionale e della visita.
+                  </p>
+                </div>
+
+                <!-- Trattamento Privacy GDPR obbligatorio con Link al DPO -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div class="flex items-start gap-3">
+                    <input required type="checkbox" id="privacyConsent" class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                    <label for="privacyConsent" class="text-xs text-slate-600 select-none cursor-pointer leading-relaxed">
+                      Dichiaro di aver preso visione dell'informativa sulla privacy ai sensi del <strong>Regolamento (UE) n. 2016/679 (GDPR)</strong>. Sono consapevole che i dati inseriti saranno utilizzati esclusivamente per scopi organizzativi legati all'Open Day e saranno rimossi permanentemente a conclusione dell'evento. Consulta la pagina del D.P.O. dell'Istituto su <a href="https://www.leviseregno.edu.it/pagine/dpo" target="_blank" class="text-indigo-600 hover:underline font-bold">leviseregno.edu.it/pagine/dpo</a>. *
                   </label>
+                  </div>
                 </div>
-                <p class="text-xs text-slate-500 pl-8">
-                  Selezionando questa opzione, organizzeremo un colloquio conoscitivo individual personalizzato subito dopo la fine della presentazione istituzionale e della visita.
-                </p>
-              </div>
 
-              <!-- Trattamento Privacy GDPR obbligatorio con Link al DPO -->
-              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                <div class="flex items-start gap-3">
-                  <input required type="checkbox" id="privacyConsent" class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 mt-0.5">
-                  <label for="privacyConsent" class="text-xs text-slate-600 select-none cursor-pointer leading-relaxed">
-                    Dichiaro di aver preso visione dell'informativa sulla privacy ai sensi del <strong>Regolamento (UE) n. 2016/679 (GDPR)</strong>. Sono consapevole che i dati inseriti saranno utilizzati esclusivamente per scopi organizzativi legati all'Open Day e saranno rimossi permanentemente a conclusione dell'evento. Consulta la pagina del D.P.O. dell'Istituto su <a href="https://www.leviseregno.edu.it/pagine/dpo" target="_blank" class="text-indigo-600 hover:underline font-bold">leviseregno.edu.it/pagine/dpo</a>. *
-                  </label>
-                </div>
-              </div>
+                <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-indigo-200 transition flex items-center justify-center gap-2">
+                  <span>Conferma e Invia Ricevuta</span>
+                  <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+              </form>
+            </div>
 
-              <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-indigo-200 transition flex items-center justify-center gap-2">
-                <span>Conferma e Invia Ricevuta</span>
-                <i data-lucide="send" class="w-5 h-5"></i>
+            <!-- Modulo Successo Prenotazione -->
+            <div id="successCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-emerald-500 text-center space-y-6">
+              <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
+                <i data-lucide="check-circle" class="w-10 h-10"></i>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-2xl font-extrabold text-indigo-950">Prenotazione Completata!</h4>
+                <p class="text-slate-600 max-w-md mx-auto">La richiesta è stata elaborata con successo. Abbiamo inviato la ricevuta PDF ufficiale all'indirizzo email fornito.</p>
+                <p class="text-xs text-slate-500">Se non ricevi l'email entro pochi minuti, controlla la cartella <strong>Spam / Posta indesiderata</strong> o scrivici a <a href="mailto:orientamento@leviseregno.edu.it" class="text-sky-600 underline">orientamento@leviseregno.edu.it</a>.</p>
+              </div>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 inline-block">
+                <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Il tuo Codice Prenotazione</p>
+                <p id="successRegCode" class="text-3xl font-mono font-bold text-sky-600 mt-1 tracking-wider">- - - - - -</p>
+              </div>
+              <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">
+                Chiudi e torna all'inizio
               </button>
-            </form>
+            </div>
+
           </div>
 
-          <!-- Modulo Successo Prenotazione -->
-          <div id="successCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-emerald-500 text-center space-y-6">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
-              <i data-lucide="check-circle" class="w-10 h-10"></i>
+          <!-- Colonna Destra: Info -->
+          <div class="space-y-6">
+            
+            <!-- Box Informazioni e Programma -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+                <i data-lucide="info" class="text-sky-500 w-5 h-5"></i>
+                Programma dell'Open Day
+              </h4>
+              <ul class="text-sm text-slate-600 space-y-3">
+                <li class="flex gap-2">
+                  <i data-lucide="clock" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                  <span><strong>Durata:</strong> Circa 2 ore complessive per sessione.</span>
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="presentation" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                  <span><strong>Presentazione:</strong> Presentazione informativa dell'offerta formativa dell'istituto.</span>
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="school" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                  <span><strong>Tour Guidato:</strong> Visita completa degli ambienti scolastici e dei laboratori.</span>
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="contact-2" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
+                  <span><strong>Inclusione e Sostegno:</strong> Colloquio dedicato opzionale a fine evento per bisogni educativi speciali o supporto didattico.</span>
+                </li>
+              </ul>
             </div>
-            <div class="space-y-2">
-              <h4 class="text-2xl font-extrabold text-indigo-950">Prenotazione Completata!</h4>
-              <p class="text-slate-600 max-w-md mx-auto">La richiesta è stata elaborata con successo. Abbiamo inviato la ricevuta PDF ufficiale all'indirizzo email fornito.</p>
-              <p class="text-xs text-slate-500">Se non ricevi l'email entro pochi minuti, controlla la cartella <strong>Spam / Posta indesiderata</strong> o scrivici a <a href="mailto:orientamento@leviseregno.edu.it" class="text-sky-600 underline">orientamento@leviseregno.edu.it</a>.</p>
+
+            <!-- Box Contatti Scuola -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+                <i data-lucide="map-pin" class="text-sky-500 w-5 h-5"></i>
+                Sede dell'Istituto
+              </h4>
+              <p class="text-sm text-slate-600">Via Briantina 68, Seregno (MB)<br>ITSCG Primo Levi</p>
+              <hr class="border-slate-200/60">
+              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+                <i data-lucide="mail" class="text-sky-500 w-5 h-5"></i>
+                Supporto Iscrizioni
+              </h4>
+              <a href="mailto:orientamento@leviseregno.edu.it" class="text-sm text-sky-600 hover:underline">orientamento@leviseregno.edu.it</a>
             </div>
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 inline-block">
-              <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Il tuo Codice Prenotazione</p>
-              <p id="successRegCode" class="text-3xl font-mono font-bold text-sky-600 mt-1 tracking-wider">- - - - - -</p>
+
+            <!-- Box Illustrativo "Come Funzionano le Scadenze" -->
+            <div class="glass-card p-6 rounded-3xl bg-indigo-950/5 border border-indigo-950/10 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                <i data-lucide="clock-arrow-up" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-indigo-950 text-base">Promemoria Automatico</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Il nostro sistema invia in automatico un secondo promemoria con ricevuta PDF aggiornata esattamente 7 giorni prima della data scelta dell'Open Day. Se prenoti a ridosso dei 7 giorni, il promemoria viene pianificato immediatamente.
+              </p>
             </div>
-            <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">
-              Chiudi e torna all'inizio
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Schermata Autenticazione Docenti -->
+      <section id="sectionLogin" class="hidden max-w-md mx-auto mt-12 animate-in fade-in duration-300">
+        <div class="glass-card p-8 rounded-3xl shadow-xl border border-white/60 text-center space-y-6">
+          <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto border border-indigo-100 shadow-sm">
+            <i data-lucide="shield-check" class="w-10 h-10"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-indigo-950">Accesso Riservato Docenti</h2>
+          <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div class="text-left">
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Inserisci Password Amministrativa</label>
+              <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" placeholder="Password di accesso">
+            </div>
+            <button type="submit" class="w-full py-3.5 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition shadow-md">
+              Verifica Credenziali
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Schermata Pannello di Controllo Docenti (Dashboard) -->
+      <section id="sectionAdmin" class="hidden space-y-8 animate-in fade-in duration-300">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 class="text-3xl font-extrabold text-indigo-950">Area di Amministrazione Open Day</h2>
+            <p class="text-slate-600">Gestisci iscritti, controlla gli accessi con lettore di codici a barre e amministra le date.</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="navigateTo('home')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-sm transition flex items-center gap-2">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>Torna al Sito Pubblico</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Schede di Navigazione Tab -->
+        <div class="glass-card rounded-3xl overflow-hidden shadow-lg border border-white/60">
+          <div class="flex flex-col sm:flex-row border-b border-slate-200/80 bg-slate-50/50">
+            <button id="tabIscrittiBtn" onclick="switchAdminTab('iscritti')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition">
+              <i data-lucide="users" class="w-5 h-5"></i>
+              <span>Elenco Iscritti</span>
+            </button>
+            
+            <!-- TAB: SCANNER CHECK-IN INTEGRATO -->
+            <button id="tabScannerBtn" onclick="switchAdminTab('scanner')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition">
+              <i data-lucide="scan-line" class="w-5 h-5"></i>
+              <span>Scanner Check-in (Webcam + USB)</span>
+            </button>
+
+            <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition">
+              <i data-lucide="settings" class="w-5 h-5"></i>
+              <span>Impostazioni & Date</span>
             </button>
           </div>
 
-        </div>
-
-        <!-- Colonna Destra: Info -->
-        <div class="space-y-6">
-          
-          <!-- Box Informazioni e Programma -->
-          <div class="glass-card p-6 rounded-3xl space-y-4">
-            <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
-              <i data-lucide="info" class="text-sky-500 w-5 h-5"></i>
-              Programma dell'Open Day
-            </h4>
-            <ul class="text-sm text-slate-600 space-y-3">
-              <li class="flex gap-2">
-                <i data-lucide="clock" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
-                <span><strong>Durata:</strong> Circa 2 ore complessive per sessione.</span>
-              </li>
-              <li class="flex gap-2">
-                <i data-lucide="presentation" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
-                <span><strong>Presentazione:</strong> Presentazione informativa dell'offerta formativa dell'istituto.</span>
-              </li>
-              <li class="flex gap-2">
-                <i data-lucide="school" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
-                <span><strong>Tour Guidato:</strong> Visita completa degli ambienti scolastici e dei laboratori.</span>
-              </li>
-              <li class="flex gap-2">
-                <i data-lucide="contact-2" class="w-5 h-5 text-sky-600 flex-shrink-0"></i>
-                <span><strong>Inclusione e Sostegno:</strong> Colloquio dedicato opzionale a fine evento per bisogni educativi speciali o supporto didattico.</span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Box Contatti Scuola -->
-          <div class="glass-card p-6 rounded-3xl space-y-4">
-            <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
-              <i data-lucide="map-pin" class="text-sky-500 w-5 h-5"></i>
-              Sede dell'Istituto
-            </h4>
-            <p class="text-sm text-slate-600">Via Briantina 68, Seregno (MB)<br>ITSCG Primo Levi</p>
-            <hr class="border-slate-200/60">
-            <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
-              <i data-lucide="mail" class="text-sky-500 w-5 h-5"></i>
-              Supporto Iscrizioni
-            </h4>
-            <a href="mailto:orientamento@leviseregno.edu.it" class="text-sm text-sky-600 hover:underline">orientamento@leviseregno.edu.it</a>
-          </div>
-
-          <!-- Box Illustrativo "Come Funzionano le Scadenze" -->
-          <div class="glass-card p-6 rounded-3xl bg-indigo-950/5 border border-indigo-950/10 space-y-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
-              <i data-lucide="clock-arrow-up" class="w-5 h-5"></i>
-            </div>
-            <h4 class="font-bold text-indigo-950 text-base">Promemoria Automatico</h4>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Il nostro sistema invia in automatico un secondo promemoria con ricevuta PDF aggiornata esattamente 7 giorni prima della data scelta dell'Open Day. Se prenoti a ridosso dei 7 giorni, il promemoria viene pianificato immediatamente.
-            </p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Schermata Autenticazione Docenti -->
-    <section id="sectionLogin" class="hidden max-w-md mx-auto mt-12 animate-in fade-in duration-300">
-      <div class="glass-card p-8 rounded-3xl shadow-xl border border-white/60 text-center space-y-6">
-        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto border border-indigo-100 shadow-sm">
-          <i data-lucide="shield-check" class="w-10 h-10"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-indigo-950">Accesso Riservato Docenti</h2>
-        <form onsubmit="handleLogin(event)" class="space-y-4">
-          <div class="text-left">
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Inserisci Password Amministrativa</label>
-            <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" placeholder="Password di accesso">
-          </div>
-          <button type="submit" class="w-full py-3.5 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition shadow-md">
-            Verifica Credenziali
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- Schermata Pannello di Controllo Docenti (Dashboard) -->
-    <section id="sectionAdmin" class="hidden space-y-8 animate-in fade-in duration-300">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 class="text-3xl font-extrabold text-indigo-950">Area di Amministrazione Open Day</h2>
-          <p class="text-slate-600">Gestisci iscritti, controlla gli accessi con lettore di codici a barre e amministra le date.</p>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="navigateTo('home')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-sm transition flex items-center gap-2">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Torna al Sito Pubblico</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Schede di Navigazione Tab -->
-      <div class="glass-card rounded-3xl overflow-hidden shadow-lg border border-white/60">
-        <div class="flex flex-col sm:flex-row border-b border-slate-200/80 bg-slate-50/50">
-          <button id="tabIscrittiBtn" onclick="switchAdminTab('iscritti')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-indigo-600 text-indigo-700 bg-white transition">
-            <i data-lucide="users" class="w-5 h-5"></i>
-            <span>Elenco Iscritti</span>
-          </button>
-          
-          <!-- TAB: SCANNER CHECK-IN INTEGRATO -->
-          <button id="tabScannerBtn" onclick="switchAdminTab('scanner')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition">
-            <i data-lucide="scan-line" class="w-5 h-5"></i>
-            <span>Scanner Check-in (Webcam + USB)</span>
-          </button>
-
-          <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="flex-1 py-4 font-bold text-base flex items-center justify-center gap-2 border-b-4 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/40 transition">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-            <span>Impostazioni & Date</span>
-          </button>
-        </div>
-
-        <div class="p-6 md:p-8">
-          
-          <!-- TAB 1: ELENCO ISCRITTI -->
-          <div id="tabIscritti" class="space-y-6">
-            <div class="flex flex-col md:flex-row justify-between gap-4">
-              <div class="flex flex-1 gap-3">
-                <div class="relative flex-grow">
-                  <i data-lucide="search" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
-                  <input type="text" id="searchBar" oninput="renderRegistrations()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cerca studente, indirizzo, codice, email...">
-                </div>
-                <select id="filterDateSelect" onchange="renderRegistrations()" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="all">Tutte le date</option>
-                </select>
-              </div>
-              <button onclick="exportToCSV()" class="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-sm">
-                <i data-lucide="download" class="w-5 h-5"></i>
-                <span>Esporta Excel (CSV)</span>
-              </button>
-            </div>
-
-            <!-- Tabella -->
-            <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
-                    <th class="p-4 border-b">Stato / Check-in</th>
-                    <th class="p-4 border-b">Codice</th>
-                    <th class="p-4 border-b">Cognome e Nome (Alunni & Accompagnatori)</th>
-                    <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
-                    <th class="p-4 border-b">Colloquio Sostegno</th>
-                    <th class="p-4 border-b">Data</th>
-                    <th class="p-4 border-b text-center">Attestato (Pergamena)</th>
-                    <th class="p-4 border-b text-center">Azioni</th>
-                  </tr>
-                </thead>
-                <tbody id="registrationsTableBody">
-                  <!-- Rendered via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- TAB 2: SCANNER CHECK-IN (CAMERA INTEGRATA + LETTORE HARDWARE ESTERNO) -->
-          <div id="tabScanner" class="hidden space-y-6">
-            <div class="grid md:grid-cols-2 gap-8">
-              
-              <!-- Pannello Sinistro: Camera / Lettore di Codici -->
-              <div class="space-y-4">
-                <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
-                  <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-1">
-                    <i data-lucide="camera" class="text-sky-600 w-5 h-5"></i>
-                    Seleziona Webcam / Fotocamera del PC
-                  </h4>
-                  <p class="text-xs text-slate-500 mb-3">Scegli il dispositivo video connesso per avviare il mirino di scansione laser.</p>
-                  
-                  <div class="flex flex-col gap-2">
-                    <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-sky-500">
-                      <option value="">Rilevamento fotocamere...</option>
-                    </select>
-                    <div class="grid grid-cols-2 gap-2 mt-1">
-                      <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
-                        Usa Selezionata
-                      </button>
-                      <button id="btnToggleCameraDirect" onclick="startWebcamDirectMobile()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
-                        Fotocamera Mobile (Rear)
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Box di visualizzazione Webcam -->
-                <div class="relative w-full aspect-video bg-slate-950 rounded-3xl overflow-hidden border border-slate-800 flex flex-col items-center justify-center shadow-inner">
-                  <!-- Laser animato -->
-                  <div id="scannerLaser" class="laser-line hidden"></div>
-                  
-                  <div id="scannerView" class="w-full h-full"></div>
-                  
-                  <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 p-4 text-center">
-                    <i data-lucide="scan" class="w-16 h-16 text-slate-700 mb-3 animate-pulse"></i>
-                    <p class="text-sm font-bold">Scanner Webcam Spento</p>
-                    <p class="text-xs text-slate-600 mt-1 max-w-xs">Inquadra il codice a barre o il QR Code per eseguire il check-in.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB + MULTI DISPOSITIVO -->
-              <div class="space-y-6">
-                <!-- Lettura Hardware / Codice Manuale -->
-                <div class="glass-card p-6 rounded-2xl border border-slate-100">
-                  <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-2">
-                    <i data-lucide="keyboard" class="text-indigo-600 w-5 h-5"></i>
-                    Input Pistola Scanner USB / Bluetooth
-                  </h4>
-                  <p class="text-xs text-slate-500 mb-3">Mantieni il focus su questo campo se usi pistole scanner laser o se preferisci inserire il codice a mano.</p>
-                  
-                  <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
-                    <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border border-slate-200 bg-white font-mono uppercase tracking-wider text-center text-lg outline-none focus:ring-2 focus:ring-indigo-500" placeholder="CODICE PRENOTAZIONE" autocomplete="off">
-                    <button type="submit" class="px-6 py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">
-                      Invia
-                    </button>
-                  </form>
-                </div>
-
-                <!-- NUOVA SEZIONE: DISPOSITIVI SCANNER CLOUD COLLEGATI IN TEMPO REALE -->
-                <div class="glass-card p-6 rounded-2xl border border-slate-100 space-y-4">
-                  <div class="flex justify-between items-center">
-                    <h4 class="font-bold text-indigo-950 flex items-center gap-2">
-                      <i data-lucide="cpu" class="text-indigo-600 w-5 h-5"></i>
-                      Scanner Cloud Associati
-                    </h4>
-                    <!-- Tasto Aggiungi Dispositivo per accoppiamento mobile -->
-                    <button onclick="openAddDeviceModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1 shadow-sm">
-                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                      <span>Collega Telefono</span>
-                    </button>
-                  </div>
-                  <p class="text-xs text-slate-500">Collega uno o più smartphone esterni per scansionare simultaneamente all'ingresso. Le scansioni effettuate dai telefoni aggiornano questa pagina all'istante.</p>
-                  
-                  <!-- Lista dei terminali scanner connessi -->
-                  <div id="activeScannersList" class="space-y-2">
-                    <div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">
-                      Nessun telefono scanner esterno associato via Cloud.
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Scheda dell'Ultimo Alunno Scansionato -->
-                <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-200 flex flex-col items-center justify-center text-center min-h-[200px] transition-all duration-300">
-                  <div id="scanResultEmpty">
-                    <i data-lucide="scan-face" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                    <p class="text-sm font-bold text-slate-500">In attesa di scansione...</p>
-                    <p class="text-xs text-slate-400 mt-1">Scansiona un barcode per autorizzare l'accesso</p>
-                  </div>
-                  
-                  <!-- Box successo scansione -->
-                  <div id="scanResultSuccess" class="hidden space-y-4 w-full">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
-                      <i data-lucide="check-check" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Accesso Autorizzato - AMMESSO</span>
-                      <h4 id="scanResultName" class="text-2xl font-extrabold text-indigo-950 mt-2">Nome Studente</h4>
-                      <p id="scanResultCode" class="text-sm font-mono font-bold text-sky-600 mt-1">CODICE</p>
-                    </div>
-                    <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 space-y-1 text-left">
-                      <p id="scanResultPath">Indirizzo: -</p>
-                      <p id="scanResultEvent">Data Open Day: -</p>
-                      <p id="scanResultSupport">Richiesta Colloquio Sostegno: -</p>
-                      <p id="scanResultContact">Genitore: -</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
-          <!-- TAB 3: IMPOSTAZIONI E DATE -->
-          <div id="tabSettings" class="hidden grid md:grid-cols-2 gap-10">
+          <div class="p-6 md:p-8">
             
-            <!-- Gestione Messaggio del Banner & Zona di Pericolo -->
-            <div class="space-y-6">
-              <div class="space-y-4">
-                <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
-                  <i data-lucide="file-edit" class="text-sky-500"></i>
-                  Gestione Banner Introduttivo
-                </h3>
-                <p class="text-sm text-slate-500">Modifica la descrizione visualizzata in cima al sito web dell'Open Day in tempo reale.</p>
-                <textarea id="bannerTextarea" class="w-full p-4 rounded-2xl border border-slate-200 bg-white min-h-[140px] focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Scrivi una descrizione..."></textarea>
-                <button onclick="saveBannerText()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">
-                  Salva Modifiche Banner
+            <!-- TAB 1: ELENCO ISCRITTI -->
+            <div id="tabIscritti" class="space-y-6">
+              <div class="flex flex-col md:flex-row justify-between gap-4">
+                <div class="flex flex-1 gap-3">
+                  <div class="relative flex-grow">
+                    <i data-lucide="search" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                    <input type="text" id="searchBar" oninput="renderRegistrations()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cerca studente, indirizzo, codice, email...">
+                  </div>
+                  <select id="filterDateSelect" onchange="renderRegistrations()" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="all">Tutte le date</option>
+                  </select>
+                </div>
+                <button onclick="exportToCSV()" class="flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-sm">
+                  <i data-lucide="download" class="w-5 h-5"></i>
+                  <span>Esporta Excel (CSV)</span>
                 </button>
               </div>
 
-              <!-- Input per decidere quanti giorni prima inviare il promemoria -->
-              <div class="p-6 rounded-2xl border border-slate-200 bg-white space-y-4 shadow-sm">
-                <h3 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
-                  <i data-lucide="bell" class="text-sky-500 w-5 h-5"></i>
-                  Giorni Anticipo Promemoria
-                </h3>
-                <p class="text-xs text-slate-500 leading-relaxed">
-                  Imposta quanti giorni prima dell'inizio di ciascun Open Day far partire l'invio automatico della e-mail di promemoria con la ricevuta PDF allegata.
-                </p>
-                <div class="flex items-center gap-3">
-                  <input type="number" min="1" max="30" id="reminderDaysInput" class="w-24 p-3 rounded-xl border border-slate-200 bg-slate-50 text-center font-bold text-indigo-950 focus:ring-2 focus:ring-indigo-500 outline-none text-lg" value="7">
-                  <button onclick="saveReminderDays()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-sm text-xs">
-                    Salva Configurazione
+              <!-- Tabella -->
+              <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
+                      <th class="p-4 border-b">Stato / Check-in</th>
+                      <th class="p-4 border-b">Codice</th>
+                      <th class="p-4 border-b">Cognome e Nome (Alunni & Accompagnatori)</th>
+                      <th class="p-4 border-b">Indirizzo di Studio / Aula</th>
+                      <th class="p-4 border-b">Sostegno</th>
+                      <th class="p-4 border-b">Data</th>
+                      <th class="p-4 border-b text-center">Invia Pergamena (Uscita)</th>
+                      <th class="p-4 border-b text-center">Azioni</th>
+                    </tr>
+                  </thead>
+                  <tbody id="registrationsTableBody">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- TAB 2: SCANNER CHECK-IN (CAMERA INTEGRATA + LETTORE HARDWARE ESTERNO) -->
+            <div id="tabScanner" class="hidden space-y-6">
+              <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- Pannello Sinistro: Camera / Lettore di Codici -->
+                <div class="space-y-4">
+                  <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
+                    <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-1">
+                      <i data-lucide="camera" class="text-sky-600 w-5 h-5"></i>
+                      Seleziona Webcam / Fotocamera del PC
+                    </h4>
+                    <p class="text-xs text-slate-500 mb-3">Scegli il dispositivo video connesso per avviare il mirino di scansione laser.</p>
+                    
+                    <div class="flex flex-col gap-2">
+                      <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                        <option value="">Rilevamento fotocamere...</option>
+                      </select>
+                      <div class="grid grid-cols-2 gap-2 mt-1">
+                        <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
+                          Usa Selezionata
+                        </button>
+                        <button id="btnToggleCameraDirect" onclick="startWebcamDirectMobile()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
+                          Fotocamera Mobile (Rear)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Box di visualizzazione Webcam -->
+                  <div class="relative w-full aspect-video bg-slate-950 rounded-3xl overflow-hidden border border-slate-800 flex flex-col items-center justify-center shadow-inner">
+                    <div id="scannerLaser" class="laser-line hidden"></div>
+                    <div id="scannerView" class="w-full h-full"></div>
+                    <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 p-4 text-center">
+                      <i data-lucide="scan" class="w-16 h-16 text-slate-700 mb-3 animate-pulse"></i>
+                      <p class="text-sm font-bold">Scanner Webcam Spento</p>
+                      <p class="text-xs text-slate-600 mt-1 max-w-xs">Inquadra il codice a barre o il QR Code per eseguire il check-in.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pannello Destro: Monitor & Input Manuale/Pistola USB + MULTI DISPOSITIVO -->
+                <div class="space-y-6">
+                  <!-- Lettura Hardware / Codice Manuale -->
+                  <div class="glass-card p-6 rounded-2xl border border-slate-100">
+                    <h4 class="font-bold text-indigo-950 flex items-center gap-2 mb-2">
+                      <i data-lucide="keyboard" class="text-indigo-600 w-5 h-5"></i>
+                      Input Pistola Scanner USB / Bluetooth
+                    </h4>
+                    <p class="text-xs text-slate-500 mb-3">Mantieni il focus su questo campo se usi pistole scanner laser o se preferisci inserire il codice a mano.</p>
+                    
+                    <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
+                      <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border border-slate-200 bg-white font-mono uppercase tracking-wider text-center text-lg outline-none focus:ring-2 focus:ring-indigo-500" placeholder="CODICE PRENOTAZIONE" autocomplete="off">
+                      <button type="submit" class="px-6 py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">
+                        Invia
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- DISPOSITIVI SCANNER CLOUD COLLEGATI IN TEMPO REALE -->
+                  <div class="glass-card p-6 rounded-2xl border border-slate-100 space-y-4">
+                    <div class="flex justify-between items-center">
+                      <h4 class="font-bold text-indigo-950 flex items-center gap-2">
+                        <i data-lucide="cpu" class="text-indigo-600 w-5 h-5"></i>
+                        Scanner Cloud Associati
+                      </h4>
+                      <button onclick="openAddDeviceModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1 shadow-sm">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Collega Telefono</span>
+                      </button>
+                    </div>
+                    <p class="text-xs text-slate-500">Collega uno o più smartphone esterni per scansionare simultaneamente all'ingresso. Le scansioni effettuate dai telefoni aggiornano questa pagina all'istante.</p>
+                    
+                    <div id="activeScannersList" class="space-y-2">
+                      <div class="p-3 text-xs text-slate-500 bg-slate-50 rounded-xl text-center italic border border-slate-100">
+                        Nessun telefono scanner esterno associato via Cloud.
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Scheda dell'Ultimo Alunno Scansionato -->
+                  <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-200 flex flex-col items-center justify-center text-center min-h-[200px] transition-all duration-300">
+                    <div id="scanResultEmpty">
+                      <i data-lucide="scan-face" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                      <p class="text-sm font-bold text-slate-500">In attesa di scansione...</p>
+                      <p class="text-xs text-slate-400 mt-1">Scansiona un barcode o un QR per autorizzare l'accesso</p>
+                    </div>
+                    
+                    <!-- Box successo scansione -->
+                    <div id="scanResultSuccess" class="hidden space-y-4 w-full">
+                      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                        <i data-lucide="check-check" class="w-6 h-6"></i>
+                      </div>
+                      <div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Accesso Autorizzato - AMMESSO</span>
+                        <h4 id="scanResultName" class="text-2xl font-extrabold text-indigo-950 mt-2">Nome Studente</h4>
+                        <p id="scanResultCode" class="text-sm font-mono font-bold text-sky-600 mt-1">CODICE</p>
+                      </div>
+                      <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 space-y-1 text-left">
+                        <p id="scanResultPath">Indirizzo: -</p>
+                        <p id="scanResultEvent">Data Open Day: -</p>
+                        <p id="scanResultSupport">Richiesta Colloquio Sostegno: -</p>
+                        <p id="scanResultContact">Genitore: -</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TAB 3: IMPOSTAZIONI E DATE -->
+            <div id="tabSettings" class="hidden grid md:grid-cols-2 gap-10">
+              
+              <!-- Gestione Messaggio del Banner & Zona di Pericolo -->
+              <div class="space-y-6">
+                <div class="space-y-4">
+                  <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
+                    <i data-lucide="file-edit" class="text-sky-500"></i>
+                    Gestione Banner Introduttivo
+                  </h3>
+                  <p class="text-sm text-slate-500">Modifica la descrizione visualizzata in cima al sito web dell'Open Day in tempo reale.</p>
+                  <textarea id="bannerTextarea" class="w-full p-4 rounded-2xl border border-slate-200 bg-white min-h-[140px] focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Scrivi una descrizione..."></textarea>
+                  <button onclick="saveBannerText()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">
+                    Salva Modifiche Banner
+                  </button>
+                </div>
+
+                <!-- Input per decidere quanti giorni prima inviare il promemoria -->
+                <div class="p-6 rounded-2xl border border-slate-200 bg-white space-y-4 shadow-sm">
+                  <h3 class="text-lg font-bold text-indigo-950 flex items-center gap-2">
+                    <i data-lucide="bell" class="text-sky-500 w-5 h-5"></i>
+                    Giorni Anticipo Promemoria
+                  </h3>
+                  <p class="text-xs text-slate-500 leading-relaxed">
+                    Imposta quanti giorni prima dell'inizio di ciascun Open Day far partire l'invio automatico della e-mail di promemoria con la ricevuta PDF allegata.
+                  </p>
+                  <div class="flex items-center gap-3">
+                    <input type="number" min="1" max="30" id="reminderDaysInput" class="w-24 p-3 rounded-xl border border-slate-200 bg-slate-50 text-center font-bold text-indigo-950 focus:ring-2 focus:ring-indigo-500 outline-none text-lg" value="7">
+                    <button onclick="saveReminderDays()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-sm text-xs">
+                      Salva Configurazione
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ZONA DI PERICOLO: SVUOTAMENTO DATABASE -->
+                <div class="p-6 rounded-2xl border-2 border-red-200 bg-red-50/50 space-y-4">
+                  <h3 class="text-lg font-bold text-red-900 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="text-red-600"></i>
+                    Zona di Pericolo
+                  </h3>
+                  <p class="text-xs text-red-700 leading-relaxed font-semibold">
+                    Utilizzando questa funzione puoi cancellare definitivamente tutte le registrazioni e gli iscritti dal database Firebase. Questa azione è immediata e irreversibile.
+                  </p>
+                  <button onclick="handleClearAllRegistrations()" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-md">
+                    <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                    <span>Svuota Database Prenotazioni</span>
                   </button>
                 </div>
               </div>
 
-              <!-- ZONA DI PERICOLO: SVUOTAMENTO DATABASE -->
-              <div class="p-6 rounded-2xl border-2 border-red-200 bg-red-50/50 space-y-4">
-                <h3 class="text-lg font-bold text-red-900 flex items-center gap-2">
-                  <i data-lucide="alert-triangle" class="text-red-600"></i>
-                  Zona di Pericolo
+              <!-- Gestione Nuove Date e Sessioni (Totalmente dinamicizzata) -->
+              <div class="space-y-6">
+                <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
+                  <i data-lucide="plus-circle" class="text-sky-500"></i>
+                  Crea Nuova Sessione / Indirizzo scolastico
                 </h3>
-                <p class="text-xs text-red-700 leading-relaxed font-semibold">
-                  Utilizzando questa funzione puoi cancellare definitivamente tutte le registrazioni e gli iscritti dal database Firebase. Questa azione è immediata e irreversibile.
-                </p>
-                <button onclick="handleClearAllRegistrations()" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-md">
-                  <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
-                  <span>Svuota Database Prenotazioni</span>
-                </button>
-              </div>
-            </div>
+                <form id="newDateForm" onsubmit="handleCreateDate(event)" class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 mb-1">Giorno dell'Evento</label>
+                      <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                  </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 mb-1">Fascia Oraria</label>
+                      <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 09:00, 10:30">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Indirizzo di Studio presentato</label>
+                    <input required type="text" id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. RIM, LSA, LSE, SM, LOG, CAT...">
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 mb-1">Aula / Sede</label>
+                      <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. Aula Magna, Aula A">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 mb-1">Posti Massimi</label>
+                      <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 150">
+                    </div>
+                  </div>
+                  <button type="submit" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Aggiungi Sessione</span>
+                  </button>
+                </form>
 
-            <!-- Gestione Nuove Date e Sessioni (Totalmente dinamicizzata) -->
-            <div class="space-y-6">
-              <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
-                <i data-lucide="plus-circle" class="text-sky-500"></i>
-                Crea Nuova Sessione / Indirizzo scolastico
-              </h3>
-              <form id="newDateForm" onsubmit="handleCreateDate(event)" class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Giorno dell'Evento</label>
-                    <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                <!-- Elenco Date Attive -->
+                <div class="space-y-3">
+                  <h4 class="font-bold text-slate-700 text-sm">Elenco Sessioni Configurate</h4>
+                  <div id="adminDatesList" class="space-y-2">
+                    <!-- Rendered via JS -->
                   </div>
-                  <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Fascia Oraria</label>
-                    <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 09:00, 10:30">
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">Indirizzo di Studio presentato</label>
-                  <input required type="text" id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. RIM, LSA, LSE, SM, LOG, CAT...">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Aula / Sede</label>
-                    <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. Aula Magna, Aula A">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Posti Massimi</label>
-                    <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Es. 150">
-                  </div>
-                </div>
-                <button type="submit" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm">
-                  <i data-lucide="plus" class="w-4 h-4"></i>
-                  <span>Aggiungi Sessione</span>
-                </button>
-              </form>
-
-              <!-- Elenco Date Attive -->
-              <div class="space-y-3">
-                <h4 class="font-bold text-slate-700 text-sm">Elenco Sessioni Configurate</h4>
-                <div id="adminDatesList" class="space-y-2">
-                  <!-- Rendered via JS -->
                 </div>
               </div>
+
             </div>
 
           </div>
+        </div>
+      </section>
 
+    </main>
+
+    <!-- Footer Istituzionale -->
+    <footer class="glass-card mt-12 py-6 border-t border-white/50 text-center text-sm text-slate-500 relative z-10">
+      <p>© 2025 ITSCG "Primo Levi" - Via Briantina 68, Seregno (MB). Tutti i diritti riservati.</p>
+    </footer>
+  </div>
+
+  <!-- INTERFACCIA 2: SCANNER ISOLATO PER STUDENTI E COLLABORATORI (?mode=scanner) -->
+  <div id="wrapperIsolatedScanner" class="hidden min-h-screen flex flex-col items-center justify-between p-4 relative">
+    <!-- Header Isolata -->
+    <header class="w-full max-w-xl flex justify-between items-center p-4 glass-card rounded-2xl relative z-20">
+      <div class="flex items-center gap-3">
+        <img src="levi.png" class="w-10 h-10 object-contain rounded-xl shadow border border-white" alt="Logo">
+        <div>
+          <h1 class="text-sm font-bold text-indigo-950">Terminale Check-in</h1>
+          <p class="text-[10px] text-sky-600 font-semibold tracking-wide">ITSCG PRIMO LEVI</p>
         </div>
       </div>
-    </section>
+      <button onclick="exitIsolatedMode()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1">
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+        <span>Sito Pubblico</span>
+      </button>
+    </header>
 
-  </main>
+    <!-- Lock Screen Password se non autorizzato -->
+    <div id="scannerLockScreen" class="w-full max-w-md p-8 glass-card rounded-3xl text-center space-y-6 relative z-10 my-auto shadow-2xl">
+      <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto border border-indigo-100">
+        <i data-lucide="shield-check" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-bold text-indigo-950">Terminale Protetto</h2>
+      <p class="text-xs text-slate-500">Inserisci la password docente per abilitare la scansione dei QR Code d'accredito da questo smartphone.</p>
+      <form onsubmit="handleIsolatedLogin(event)" class="space-y-4">
+        <input required type="password" id="isolatedPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 text-center font-bold tracking-widest text-lg bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" placeholder="PASSWORD">
+        <button type="submit" class="w-full py-3.5 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition">
+          Sblocca Scanner
+        </button>
+      </form>
+    </div>
 
-  <!-- Footer Istituzionale -->
-  <footer class="glass-card mt-12 py-6 border-t border-white/50 text-center text-sm text-slate-500 relative z-10">
-    <p>© 2025 ITSCG "Primo Levi" - Via Briantina 68, Seregno (MB). Tutti i diritti riservati.</p>
-  </footer>
+    <!-- Scanner Gigante Sbloccato -->
+    <div id="scannerActiveView" class="hidden w-full max-w-xl flex-grow flex flex-col justify-center gap-4 relative z-10 py-6">
+      <div class="glass-card p-4 rounded-2xl text-center">
+        <h2 class="text-sm font-bold text-indigo-950 flex items-center justify-center gap-2">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>Inquadra il QR Code d'Ingresso</span>
+        </h2>
+        <p class="text-[10px] text-slate-500 mt-1">La presenza sarà registrata e la Pergamena di Benvenuto inviata in tempo reale.</p>
+      </div>
+
+      <!-- Area Camera preview GIGANTE e ottimizzata -->
+      <div class="relative flex-grow w-full bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border-4 border-indigo-950 flex items-center justify-center">
+        <!-- Laser rosso animato -->
+        <div id="isolatedScannerLaser" class="laser-line"></div>
+        <div id="isolatedScannerView" class="w-full h-full"></div>
+      </div>
+
+      <!-- Risultati della scansione veloce a comparsa in basso -->
+      <div id="isolatedScanFeedback" class="p-4 rounded-2xl glass-card text-center font-bold text-sm hidden">
+        Rilevamento...
+      </div>
+      
+      <!-- Input manuale di emergenza se la cam non legge -->
+      <form onsubmit="handleIsolatedManualSubmit(event)" class="flex gap-2">
+        <input required type="text" id="isolatedManualCode" class="flex-grow p-3.5 rounded-xl border border-slate-200 bg-white/90 text-center uppercase tracking-wider font-mono font-bold outline-none" placeholder="Digitazione manuale emergenza">
+        <button type="submit" class="px-5 py-3.5 bg-indigo-900 text-white rounded-xl font-bold hover:bg-indigo-950 transition">Invia</button>
+      </form>
+    </div>
+
+    <!-- Footer Isolata -->
+    <footer class="text-[10px] text-slate-400 text-center py-2 relative z-10 w-full">
+      ITSCG Primo Levi - Scanner Cloud Terminale ID: <span class="font-mono font-bold select-all" id="lblIsolatedDeviceId">-</span>
+    </footer>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     // Configurazione Firebase
     const firebaseConfig = {
@@ -875,7 +822,10 @@
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec";
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec";
-    const ATTESTATO_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
+    
+    // NUOVI SCRIPT DEDICATI PER LE DUE PERGAMENE DISTINTE
+    const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbx8KLoNmY9YcjXhi1KFYkqv0WsGT5gqDQchKe6_IxpVpgBWG7taD2Z-AvbkTtGGLOnxJw/exec";
+    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
 
     // Stato locale
     let state = {
@@ -895,7 +845,7 @@
       isWebcamScanning: false
     };
 
-    // Creazione bolle di sapone caotiche
+    // Inizializzazione delle bolle
     function initBubbles() {
       const container = document.getElementById('bubbleContainer');
       const numBubbles = 45;
@@ -992,19 +942,17 @@
     window.openCancelModal = function() { document.getElementById('cancelModal').classList.remove('hidden'); }
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Apre il modale QR Code di accoppiamento per dispositivi esterni
     window.openAddDeviceModal = function() {
       const modal = document.getElementById('addDeviceModal');
       const qrImg = document.getElementById('qrCodeDeviceLink');
       const urlLabel = document.getElementById('lblDeviceUrl');
       
-      // Costruiamo il link dell'app corrente per aprire la scansione su mobile
-      const currentUrl = window.location.href;
+      // Costruiamo il link dello scanner isolato (?mode=scanner)
+      const currentUrl = window.location.origin + window.location.pathname + "?mode=scanner";
       urlLabel.innerText = currentUrl;
       
       // Generazione dinamica QR Code di accoppiamento tramite API pubblica gratuita
       qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(currentUrl);
-      
       modal.classList.remove('hidden');
     }
 
@@ -1122,11 +1070,28 @@
         if (user) {
           setupRealtimeListeners();
           seedExampleDates();
+
+          // Gestione della modalità router via query string
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get('mode');
+          const checkinCode = urlParams.get('checkin');
+
+          if (mode === 'scanner') {
+            setupIsolatedScannerMode();
+          } else {
+            document.getElementById('wrapperMainSite').classList.remove('hidden');
+            document.getElementById('wrapperIsolatedScanner').classList.add('hidden');
+            
+            // Esegue il check-in se rileva il parametro 'checkin' nell'URL
+            if (checkinCode) {
+              executeAutoCheckin(checkinCode.toUpperCase());
+            }
+          }
         }
       });
     }
 
-    // Seeding Date D'Esempio per il 2025 (Da testo fornito)
+    // Seeding Date D'Esempio per il 2025
     async function seedExampleDates() {
       const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
       if (querySnapshot.empty) {
@@ -1135,11 +1100,7 @@
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
           { date: "2025-11-15", timeSlot: "Ore 09:00", studyPath: "SISTEMA MODA (SM)", aula: "Laboratorio Moda", maxSeats: 45 },
           { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
-          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 },
-          { date: "2025-11-29", timeSlot: "Ore 09:00", studyPath: "RELAZIONI INTERNAZIONALI PER IL MARKETING (RIM)", aula: "Aula Magna", maxSeats: 50 },
-          { date: "2025-11-29", timeSlot: "Ore 10:30", studyPath: "LICEO Scientifico Scienze Applicate (LSA) & LICEO con curvatura Economica (LSE)", aula: "Aula Magna", maxSeats: 150 },
-          { date: "2025-12-13", timeSlot: "Ore 09:00", studyPath: "LOGISTICA (LOG)", aula: "Aula B1", maxSeats: 55 },
-          { date: "2025-12-13", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 }
+          { date: "2025-11-15", timeSlot: "Ore 10:30", studyPath: "COSTRUZIONE AMBIENTE E TERRITORIO (CAT)", aula: "Aula C3", maxSeats: 60 }
         ];
 
         for (const item of defaultSessions) {
@@ -1196,7 +1157,6 @@
         const now = Date.now();
         snapshot.forEach(docObj => {
           const scData = docObj.data();
-          // Mostra solo i dispositivi attivi negli ultimi 12 secondi
           if (now - scData.lastActive < 12000) {
             scannerList.push({ id: docObj.id, ...scData });
           }
@@ -1220,18 +1180,21 @@
 
     // Invio segnale di heartbeat per registrare questo terminale come attivo
     async function sendScannerHeartbeat() {
-      if (!state.user || state.currentView !== 'admin') return;
-      try {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'scanners', deviceId), {
-          name: deviceName,
-          lastActive: Date.now(),
-          isMobile: isMobileDevice
-        });
-      } catch (err) {
-        console.error("Errore invio heartbeat dispositivo:", err);
+      if (!state.user) return;
+      // Invia heartbeat sia in admin che nella modalità scanner isolata sbloccata
+      const isScannerModeActive = document.getElementById('wrapperIsolatedScanner') && !document.getElementById('scannerActiveView').classList.contains('hidden');
+      if (state.currentView === 'admin' || isScannerModeActive) {
+        try {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'scanners', deviceId), {
+            name: deviceName,
+            lastActive: Date.now(),
+            isMobile: isMobileDevice
+          });
+        } catch (err) {
+          console.error("Errore invio heartbeat dispositivo:", err);
+        }
       }
     }
-    // Avvia l'heartbeat continuo ogni 5 secondi
     setInterval(sendScannerHeartbeat, 5000);
 
     // Renderizza graficamente la lista degli scanner attivi
@@ -1250,8 +1213,6 @@
 
       container.innerHTML = state.scanners.map(sc => {
         const isCurrent = sc.id === deviceId;
-        const iconName = sc.isMobile ? 'smartphone' : 'monitor';
-        
         return `
           <div class="flex items-center justify-between p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 text-xs">
             <div class="flex items-center gap-2">
@@ -1259,7 +1220,7 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span class="font-bold text-indigo-950">${sc.name} ${isCurrent ? '(Questo dispositivo)' : ''}</span>
+              <span class="font-bold text-indigo-950">${sc.name} ${isCurrent ? '(Questo)' : ''}</span>
             </div>
             <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-semibold">Attivo</span>
           </div>
@@ -1278,7 +1239,6 @@
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays <= daysBeforeSetting && diffDays >= 0 && !reg.reminderSent) {
-          
           reg.reminderSent = true; 
 
           try {
@@ -1340,6 +1300,21 @@
       }
     }
 
+    // Generatore QR Code tramite libreria QRious
+    function drawQRCode(docObj, code, x, y) {
+      try {
+        const qr = new QRious({
+          value: code,
+          size: 200,
+          level: 'H'
+        });
+        const qrDataUrl = qr.toDataURL('image/png');
+        docObj.addImage(qrDataUrl, 'PNG', x, y, 32, 32);
+      } catch (err) {
+        console.error("Errore generazione QR Code:", err);
+      }
+    }
+
     async function generateReceiptPDF(data, code, type = 'conferma') {
       const { jsPDF } = window.jspdf;
       const pdfDoc = new jsPDF();
@@ -1379,8 +1354,6 @@
       pdfDoc.setFontSize(11);
       pdfDoc.text("DATA OPEN DAY: " + data.dataEvento, 25, 110);
       pdfDoc.text("INDIRIZZO RICHIESTO: " + data.studyPath, 25, 119);
-      
-      // Indicazione dettagliata del totale persone caricate
       pdfDoc.text("POSTI PRENOTATI: " + data.totalPeople + " (" + (data.numAlunni || 1) + " Alunni + " + data.accompanyingPersons + " Accompagnatori)", 25, 128);
       
       const colloquioText = data.supportRequired ? "Sì, Richiesto (al termine)" : "No, non richiesto";
@@ -1390,9 +1363,16 @@
       pdfDoc.rect(20, 150, 170, 10, 'F');
       pdfDoc.setTextColor(255, 255, 255);
       pdfDoc.setFontSize(13);
-      pdfDoc.text(`CODICE PRENOTAZIONE UNIVOCO`, 105, 157, { align: "center" });
+      pdfDoc.text(`CODICE PRENOTAZIONE ED ACCREDITO`, 105, 157, { align: "center" });
 
-      drawBarcode(pdfDoc, code, 75, 167);
+      // CODICE A BARRE (1D) A SINISTRA
+      drawBarcode(pdfDoc, code, 25, 167);
+
+      // LINK CHECK-IN UNICO PER ACCREDITO RAPIDO DA MOBILES
+      const checkInUrl = window.location.origin + window.location.pathname + "?checkin=" + code;
+
+      // QR CODE (2D) A DESTRA
+      drawQRCode(pdfDoc, checkInUrl, 150, 163);
 
       pdfDoc.setTextColor(100, 116, 139);
       pdfDoc.setFont("Helvetica", "italic");
@@ -1410,6 +1390,59 @@
       pdfDoc.text("ITSCG 'Primo Levi' Seregno - Ufficio Orientamento", 105, 260, { align: "center" });
 
       return pdfDoc.output('datauristring').split(',')[1];
+    }
+
+    // FUNZIONE DI CHECK-IN AUTOMATICA SUL CLOUD ALLA SCANSIONE DEL QR CODE DA TELEFONO
+    async function executeAutoCheckin(code) {
+      document.getElementById('autoCheckinModal').classList.remove('hidden');
+      document.getElementById('checkinLoading').classList.remove('hidden');
+      document.getElementById('checkinSuccess').classList.add('hidden');
+      document.getElementById('checkinError').classList.add('hidden');
+
+      let attempts = 0;
+      while (!db && attempts < 50) {
+        await new Promise(r => setTimeout(r, 100));
+        attempts++;
+      }
+
+      try {
+        const regRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code);
+        const regSnap = await getDoc(regRef);
+
+        if (regSnap.exists()) {
+          const regData = regSnap.data();
+          
+          // Segna come Ammesso
+          await updateDoc(regRef, { status: 'Ammesso' });
+          playAudioTone(true);
+
+          // Invia automaticamente l'attestato DI ENTRATA (Pergamena 1)
+          await sendCertificateEmailAuto(regData, 'entrata');
+
+          document.getElementById('checkinLoading').classList.add('hidden');
+          document.getElementById('checkinSuccess').classList.remove('hidden');
+          document.getElementById('checkinStudentName').innerText = `${regData.cognome} ${regData.nome}`;
+          document.getElementById('checkinStudyPath').innerHTML = `<strong>Indirizzo:</strong> ${regData.studyPath || 'N/D'}`;
+          document.getElementById('checkinSupport').innerHTML = `<strong>Sostegno:</strong> ${regData.supportRequired ? 'SÌ' : 'NO'}`;
+          
+          lucide.createIcons();
+        } else {
+          throw new Error("Codice di prenotazione non trovato nel database.");
+        }
+      } catch (err) {
+        playAudioTone(false);
+        document.getElementById('checkinLoading').classList.add('hidden');
+        document.getElementById('checkinError').classList.remove('hidden');
+        document.getElementById('checkinErrorMessage').innerText = err.message;
+        lucide.createIcons();
+      }
+    }
+
+    window.closeAutoCheckin = function() {
+      document.getElementById('autoCheckinModal').classList.add('hidden');
+      const url = new URL(window.location);
+      url.searchParams.delete('checkin');
+      window.history.replaceState({}, document.title, url.pathname);
     }
 
     function renderHomeDates() {
@@ -1521,7 +1554,7 @@
       document.getElementById('bookingForm').reset();
     }
 
-    // Invio della Prenotazione (PULSANTE BLOCCATO PER EVITARE DOPPIO CLICK)
+    // Invio della Prenotazione
     window.handleBooking = async function(e) {
       e.preventDefault();
       
@@ -1618,7 +1651,9 @@
           timeSlot: sessionObj.timeSlot,
           timestamp: Date.now(),
           reminderSent: false,
-          status: 'Registrato'
+          status: 'Registrato',
+          certificate1Sent: false,
+          certificate2Sent: false
         });
 
         const emailPayload = {
@@ -1683,7 +1718,7 @@
       );
     }
 
-    // Recupero della ricevuta (BLOCCO DOPPIO CLICK INCLUSO)
+    // Recupero della ricevuta
     window.handleRecovery = async function(e) {
       e.preventDefault();
       const inputBtn = document.getElementById('submitRecoveryBtn');
@@ -1762,7 +1797,7 @@
           docConferma.text("Colloquio Sostegno: " + (reg.supportRequired ? 'Sì, Richiesto' : 'No'), 20, 112);
           docConferma.text("Posti riservati: " + (reg.totalPeople || 1) + " (Alunni: " + (reg.numAlunni || 1) + " + " + (reg.accompanyingPersons || 0) + " Accompagnatori)", 20, 120);
           
-          drawBarcode(docConferma, reg.code, 75, 130);
+          drawQRCode(docConferma, reg.code, 92.5, 130);
           docConferma.save("Ricevuta_Levi_" + reg.cognome + ".pdf");
 
           showToast("Ricevuta recuperata, scaricata e inviata via email con successo!", "success");
@@ -1835,17 +1870,17 @@
       }
     }
 
-    // Invio Pergamena / Attestato
+    // INVIA PERGAMENA 2 (USCITA / CONCLUSIONE) MANUALE DAL PANNELLO DOCENTI
     window.sendCertificateEmail = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
 
       showAdminConfirm(
-        "Invia Attestato",
-        `Inviare l'Attestato ufficiale di partecipazione all'Open Day all'alunno ${reg.nome} ${reg.cognome} via e-mail?`,
+        "Invia Pergamena di Conclusione",
+        `Inviare la Pergamena di fine evento all'alunno ${reg.nome} ${reg.cognome} via e-mail?`,
         false,
         async () => {
-          showToast("Generazione ed invio attestato in corso...", "info");
+          showToast("Generazione ed invio certificato finale in corso...", "info");
           try {
             const payload = {
               email: reg.email,
@@ -1853,7 +1888,8 @@
               cognome: reg.cognome
             };
 
-            await fetch(ATTESTATO_SCRIPT_URL, {
+            // ESEGUE IL FETCH SULL'URL DI USCITA (PERGAMENA 2)
+            await fetch(ATTESTATO_USCITA_URL, {
               method: "POST",
               mode: "no-cors",
               headers: { "Content-Type": "application/json" },
@@ -1861,17 +1897,56 @@
             });
 
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
-              certificateSent: true,
-              certificateSentAt: Date.now()
+              certificate2Sent: true,
+              certificate2SentAt: Date.now()
             });
 
-            showToast(`Attestato inviato con successo a ${reg.nome} ${reg.cognome}!`, "success");
+            showToast(`Pergamena di Conclusione inviata a ${reg.nome} ${reg.cognome}!`, "success");
           } catch (err) {
-            console.error("Errore invio certificato:", err);
+            console.error("Errore invio certificato finale:", err);
             showToast("Errore durante l'invio della pergamena.", "error");
           }
         }
       );
+    }
+
+    // Funzione interna per inviare automaticamente la Pergamena 1 (Entrata)
+    async function sendCertificateEmailAuto(reg, type = 'entrata') {
+      if (!reg) return;
+      
+      const isAlreadySent = type === 'entrata' ? reg.certificate1Sent : reg.certificate2Sent;
+      if (isAlreadySent) return;
+
+      try {
+        const payload = {
+          email: reg.email,
+          nome: reg.nome,
+          cognome: reg.cognome
+        };
+
+        const targetUrl = type === 'entrata' ? ATTESTATO_ENTRATA_URL : ATTESTATO_USCITA_URL;
+
+        await fetch(targetUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const updateData = {};
+        if (type === 'entrata') {
+          updateData.certificate1Sent = true;
+          updateData.certificate1SentAt = Date.now();
+        } else {
+          updateData.certificate2Sent = true;
+          updateData.certificate2SentAt = Date.now();
+        }
+
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), updateData);
+        showToast(`Pergamena d'Ingresso inviata a ${reg.nome} ${reg.cognome}!`, "success");
+      } catch (err) {
+        console.error("Impossibile inviare la pergamena automatica:", err);
+      }
     }
 
     window.handleLogin = function(e) {
@@ -1960,7 +2035,6 @@
       }
     }
 
-    // AVVIO DIRETTO DELLA FOTOCAMERA POSTERIORE PER MOBILE (FACINGMODE: ENVIRONMENT)
     window.startWebcamDirectMobile = async function() {
       if (state.isWebcamScanning) {
         stopWebcamScanner();
@@ -1977,9 +2051,8 @@
       state.isWebcamScanning = true;
 
       try {
-        // Avvio scansione 1D e 2D ottimizzata per smartphone
         await state.html5QrcodeScanner.start(
-          { facingMode: "environment" }, // Forza l'uso della cam posteriore mobile
+          { facingMode: "environment" },
           {
             fps: 15,
             qrbox: function(viewfinderWidth, viewFinderHeight) {
@@ -1987,10 +2060,9 @@
               const qrboxWidth = Math.floor(minEdge * 0.85);
               return {
                 width: qrboxWidth,
-                height: Math.floor(qrboxWidth * 0.5) // Area rettangolare ottimizzata per i Barcode
+                height: Math.floor(qrboxWidth * 0.85) // Quadrato perfetto per il QR Code
               };
             },
-            // Configurazione dei formati abilitati (Barcode + QR Code simultanei)
             formatsToSupport: [ 
               Html5QrcodeSupportedFormats.QR_CODE,
               Html5QrcodeSupportedFormats.CODE_128,
@@ -2038,7 +2110,7 @@
               const qrboxWidth = Math.floor(minEdge * 0.75);
               return {
                 width: qrboxWidth,
-                height: Math.floor(qrboxWidth * 0.5)
+                height: Math.floor(qrboxWidth * 0.75)
               };
             },
             formatsToSupport: [ 
@@ -2106,7 +2178,8 @@
             status: 'Ammesso'
           });
           
-          await sendCertificateEmailAuto(registration);
+          // Invia la pergamena di entrata 1 automaticamente
+          await sendCertificateEmailAuto(registration, 'entrata');
         } catch (err) {
           console.error("Errore aggiornamento stato in Ammesso:", err);
         }
@@ -2131,37 +2204,6 @@
         emptyCard.classList.remove('hidden');
         successCard.classList.add('hidden');
         resultBox.className = "glass-card p-6 rounded-3xl border-2 border-red-500 text-center min-h-[200px] bg-red-50/10 transition-all duration-300";
-      }
-    }
-
-    async function sendCertificateEmailAuto(reg) {
-      if (!reg) return;
-      if (reg.certificateSent) {
-        console.log(`L'attestato per ${reg.nome} ${reg.cognome} è già stato spedito.`);
-        return;
-      }
-      try {
-        const payload = {
-          email: reg.email,
-          nome: reg.nome,
-          cognome: reg.cognome
-        };
-
-        await fetch(ATTESTATO_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {
-          certificateSent: true,
-          certificateSentAt: Date.now()
-        });
-
-        showToast(`Attestato inviato in automatico a ${reg.nome} ${reg.cognome}!`, "success");
-      } catch (err) {
-        console.error("Impossibile inviare l'attestato automatico:", err);
       }
     }
 
@@ -2207,13 +2249,6 @@
           badgeHtml = "<span class=\"inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full\"><i data-lucide=\"check\" class=\"w-3.5 h-3.5\"></i> - " + diffDays + " giorni</span>";
         }
 
-        const reminderHtml = r.reminderSent 
-          ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full"><i data-lucide="check-check" class="w-3.5 h-3.5"></i> Inviata Automatica</span>`
-          : (diffDays < 0 
-              ? `<span class="text-xs text-slate-400 font-medium">Non necessaria</span>`
-              : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full animate-pulse"><i data-lucide="timer" class="w-3.5 h-3.5"></i> In coda (${daysBeforeSetting}gg prima)</span>`
-            );
-
         const currentStatus = r.status || 'Registrato';
         const statusBadgeHtml = currentStatus === 'Ammesso'
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-white bg-emerald-600 px-3 py-1.5 rounded-full shadow-sm"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Ammesso</span>`
@@ -2225,13 +2260,14 @@
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Richiesto</span>`
           : `<span class="text-xs text-slate-400">No</span>`;
 
-        const certificateBadgeHtml = r.certificateSent
+        // Colonna Certificato Finale (Pergamena 2 di uscita)
+        const certificateBadgeHtml = r.certificate2Sent
           ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-full shadow-sm" title="Attestato Inviato"><i data-lucide="award" class="w-3.5 h-3.5"></i> Inviato</span>`
           : (currentStatus === 'Ammesso'
-              ? `<button onclick="sendCertificateEmail('${r.id}')" class="px-4 py-2 bg-gradient-to-tr from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-xs rounded-xl shadow-md transition transform hover:scale-[1.03] flex items-center justify-center gap-1.5">
-                  <i data-lucide="gift" class="w-3.5 h-3.5"></i> Invia Attestato
+              ? `<button onclick="sendCertificateEmail('${r.id}')" class="px-4 py-2 bg-gradient-to-tr from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-[10px] rounded-xl shadow-md transition transform hover:scale-[1.03] flex items-center justify-center gap-1.5">
+                  <i data-lucide="gift" class="w-3.5 h-3.5"></i> Spedisci Pergamena Uscita
                 </button>`
-              : `<span class="text-xs text-slate-400 italic">Pre-requisito: Ammesso</span>`
+              : `<span class="text-[10px] text-slate-400 italic">Non Ammesso</span>`
             );
 
         return `
@@ -2268,6 +2304,7 @@
       lucide.createIcons();
     }
 
+    // Ammissione manuale
     window.admitParticipantManually = async function(id) {
       const reg = state.registrations.find(r => r.id === id);
       if (!reg) return;
@@ -2277,53 +2314,17 @@
         });
         showToast("Stato aggiornato ad Ammesso con successo.", "success");
         
-        await sendCertificateEmailAuto(reg);
+        // Spedisce la prima pergamena
+        await sendCertificateEmailAuto(reg, 'entrata');
       } catch (err) {
         console.error(err);
         showToast("Errore durante l'aggiornamento.", "error");
       }
     }
 
-    window.adminDeleteRegistration = function(id) {
-      const targetReg = state.registrations.find(r => r.id === id);
-      if (!targetReg) return;
-
-      showAdminConfirm(
-        "Elimina Iscrizione",
-        "Cancellare definitivamente l'iscrizione selezionata per lo studente " + targetReg.nome + " " + targetReg.cognome + "? Verrà inviata una notifica email automatica all'utente.",
-        false,
-        async () => {
-          try {
-            const cancelPayload = {
-              email: targetReg.email,
-              cognome: targetReg.cognome,
-              nome: targetReg.nome,
-              codice_prenotazione: targetReg.code
-            };
-
-            try {
-              await fetch(CANCEL_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(cancelPayload)
-              });
-            } catch (err) {
-              console.warn("GAS cancellazione chiamato lato Admin.");
-            }
-
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id));
-            showToast("Iscritto rimosso con successo e notificato via email.", "success");
-          } catch (err) {
-            console.error(err);
-            showToast("Errore durante l'eliminazione.", "error");
-          }
-        }
-      );
-    }
-
+    // Esportazione CSV
     window.exportToCSV = function() {
-      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Alunni", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato"];
+      const headers = ["Codice", "Stato Check-in", "Giorno", "Fascia Oraria", "Cognome Studente", "Nome Studente", "Alunni", "Accompagnatori", "Totale Posti Occupati", "Email", "Telefono", "Data Iscrizione", "Giorni Rimasti", "Promemoria Inviato", "Pergamena Ingresso", "Pergamena Uscita"];
       
       const rows = state.registrations.map(r => {
         const eventDate = new Date(r.dateStr);
@@ -2345,7 +2346,9 @@
           r.telefono || 'N/D',
           new Date(r.timestamp).toLocaleDateString(),
           diffDays < 0 ? "Passata" : diffDays,
-          r.reminderSent ? "Sì" : "No"
+          r.reminderSent ? "Sì" : "No",
+          r.certificate1Sent ? "Inviata" : "No",
+          r.certificate2Sent ? "Inviata" : "No"
         ].map(cell => "\"" + String(cell).replace(/"/g, '""') + "\"").join(",");
       });
 
@@ -2451,21 +2454,123 @@
       lucide.createIcons();
     }
 
-    window.adminDeleteDate = async function(id) {
-      showAdminConfirm(
-        "Rimuovi Data",
-        "L'eliminazione di questa data/sessione impedirà nuove registrazioni. Le prenotazioni esistenti non verranno cancellate.",
-        false,
-        async () => {
-          try {
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
-            showToast("Data eliminata con successo.", "success");
-          } catch (err) {
-            console.error(err);
-            showToast("Errore eliminazione.", "error");
-          }
+    // --- LOGICA SPECIALE PER LA MODALITÀ SCANNER ISOLATA (?mode=scanner) ---
+    function setupIsolatedScannerMode() {
+      document.getElementById('wrapperMainSite').classList.add('hidden');
+      document.getElementById('wrapperIsolatedScanner').classList.remove('hidden');
+      document.getElementById('scannerLockScreen').classList.remove('hidden');
+      document.getElementById('scannerActiveView').classList.add('hidden');
+      document.getElementById('lblIsolatedDeviceId').innerText = deviceId;
+      lucide.createIcons();
+    }
+
+    window.exitIsolatedMode = function() {
+      const url = new URL(window.location);
+      url.searchParams.delete('mode');
+      window.location.href = url.origin + url.pathname;
+    }
+
+    window.handleIsolatedLogin = function(e) {
+      e.preventDefault();
+      const pwd = document.getElementById('isolatedPasswordInput').value;
+      if (pwd === 'admin') {
+        showToast("Scanner sbloccato con successo!", "success");
+        document.getElementById('scannerLockScreen').classList.add('hidden');
+        document.getElementById('scannerActiveView').classList.remove('hidden');
+        
+        // Avvia immediatamente la fotocamera posteriore del cellulare
+        startWebcamIsolatedMobile();
+      } else {
+        showToast("Password errata. Riprova.", "error");
+      }
+    }
+
+    async function startWebcamIsolatedMobile() {
+      const feedback = document.getElementById('isolatedScanFeedback');
+      state.html5QrcodeScanner = new Html5Qrcode("isolatedScannerView");
+      state.isWebcamScanning = true;
+
+      try {
+        await state.html5QrcodeScanner.start(
+          { facingMode: "environment" },
+          {
+            fps: 20,
+            qrbox: function(viewfinderWidth, viewFinderHeight) {
+              const minEdge = Math.min(viewfinderWidth, viewFinderHeight);
+              const qrboxSize = Math.floor(minEdge * 0.82);
+              return {
+                width: qrboxSize,
+                height: qrboxSize // Quadrato per QR Code
+              };
+            },
+            formatsToSupport: [ 
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.CODE_39
+            ]
+          },
+          (decodedText) => {
+            // Se scansiona il link completo (?checkin=XXXXXX), estrae solo il codice
+            let finalCode = decodedText.trim().toUpperCase();
+            if (decodedText.includes('?checkin=')) {
+              const parts = decodedText.split('?checkin=');
+              if (parts.length > 1) {
+                finalCode = parts[1].split('&')[0].trim().toUpperCase();
+              }
+            }
+            processScannedCodeIsolated(finalCode);
+          },
+          (errorMessage) => {}
+        );
+      } catch (err) {
+        console.error("Scanner mobile isolato KO:", err);
+        showToast("Impossibile avviare la fotocamera posteriore.", "error");
+      }
+    }
+
+    async function processScannedCodeIsolated(code) {
+      const feedback = document.getElementById('isolatedScanFeedback');
+      feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
+      feedback.classList.add('bg-indigo-100', 'text-indigo-800');
+      feedback.innerText = "Verifica del codice " + code + "...";
+
+      const registration = state.registrations.find(r => r.code.toUpperCase() === code);
+
+      if (registration) {
+        playAudioTone(true);
+        feedback.className = "p-4 rounded-2xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 animate-pulse";
+        feedback.innerHTML = `<i data-lucide="check" class="inline w-4 h-4 mr-1"></i> AMMESSO: ${registration.cognome.toUpperCase()} ${registration.nome.toUpperCase()}`;
+        
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', registration.id), {
+            status: 'Ammesso'
+          });
+          // Spedisce la pergamena 1 di benvenuto
+          await sendCertificateEmailAuto(registration, 'entrata');
+        } catch (err) {
+          console.error(err);
         }
-      );
+      } else {
+        playAudioTone(false);
+        feedback.className = "p-4 rounded-2xl text-center font-bold text-sm bg-red-100 text-red-800";
+        feedback.innerHTML = `<i data-lucide="x" class="inline w-4 h-4 mr-1"></i> Codice non valido!`;
+      }
+      lucide.createIcons();
+
+      // Nasconde il feedback dopo 4.5 secondi
+      setTimeout(() => {
+        feedback.classList.add('hidden');
+      }, 4500);
+    }
+
+    window.handleIsolatedManualSubmit = function(e) {
+      e.preventDefault();
+      const input = document.getElementById('isolatedManualCode');
+      const code = input.value.trim().toUpperCase();
+      if (!code) return;
+
+      processScannedCodeIsolated(code);
+      input.value = '';
     }
 
     window.onload = function() {
