@@ -73,7 +73,7 @@
           <i data-lucide="search-code" class="w-4 h-4"></i><span>Recupera Prenotazione</span>
         </button>
         <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
-          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla</span>
+          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Prenotazione</span>
         </button>
         <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
         <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
@@ -153,7 +153,7 @@
         <p class="text-sm text-slate-500 mt-2">Eliminerai la prenotazione per <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
         <div class="flex gap-3 mt-6">
           <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
-          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
+          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla Prenotazione</button>
         </div>
       </div>
     </div>
@@ -179,7 +179,7 @@
           <input type="text" id="adminConfirmInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-center uppercase font-bold" placeholder="Scrivi ELIMINA">
         </div>
         <div class="flex gap-3 mt-6">
-          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Annulla</button>
+          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Annulla Prenotazione</button>
           <button id="btnAdminConfirmAction" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl">Conferma</button>
         </div>
       </div>
@@ -428,7 +428,7 @@
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
               <h4 class="font-bold text-indigo-950 text-sm">Cosa succede se devo disdire la mia presenza?</h4>
-              <p class="text-xs text-slate-600">In caso di imprevisti, ti chiediamo di cliccare sul tasto "Annulla" in alto, inserendo il tuo cognome o codice, per rimettere a disposizione i posti per altre famiglie.</p>
+              <p class="text-xs text-slate-600">In caso di imprevisti, ti chiediamo di cliccare sul tasto "Annulla Prenotazione" in alto, inserendo il tuo cognome o codice, per rimettere a disposizione i posti per altre famiglie.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
               <h4 class="font-bold text-indigo-950 text-sm">Gli attestati di presenza vengono inviati subito?</h4>
