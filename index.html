@@ -43,6 +43,10 @@
     .glass-card { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.06); }
     .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
 
+    /* High-contrast styles for sunlight accessibility in admin view */
+    .sunlight-friendly-table th { background-color: #0f172a !important; color: #ffffff !important; font-weight: 800; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid #334155; }
+    .sunlight-friendly-table td { color: #000000 !important; font-weight: 700; border-bottom: 2px solid #cbd5e1; }
+    
     .laser-line { position: absolute; width: 100%; height: 4px; background-color: #ef4444; box-shadow: 0 0 12px #f87171, 0 0 24px #ef4444; animation: laserMove 2s infinite ease-in-out; z-index: 10; }
     @keyframes laserMove { 0%, 100% { top: 8%; } 50% { top: 92%; } }
   </style>
@@ -60,8 +64,8 @@
           <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl shadow-lg border-2 border-white/80">
         </div>
         <div>
-          <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
-          <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
+          <h1 id="navMainTitle" class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
+          <p id="navSubTitle" class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
         </div>
       </div>
       
@@ -70,10 +74,10 @@
           <i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota</span>
         </button>
         <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
-          <i data-lucide="search-code" class="w-4 h-4"></i><span>Recupera Prenotazione</span>
+          <i data-lucide="download-cloud" class="w-4 h-4"></i><span>Recupera Ricevuta</span>
         </button>
         <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
-          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Prenotazione</span>
+          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla</span>
         </button>
         <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
         <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
@@ -102,7 +106,7 @@
             <p id="checkinSupport"></p>
           </div>
           <p class="text-xs text-emerald-600 font-semibold flex items-center justify-center gap-1">
-            <i data-lucide="award" class="w-4 h-4"></i> Pergamena di Benvenuto in invio...
+            <i data-lucide="award" class="w-4 h-4"></i> Pergamena di Benvenuto inviata correttamente via email!
           </p>
           <button onclick="closeAutoCheckin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-md">Chiudi</button>
         </div>
@@ -117,7 +121,7 @@
       </div>
     </div>
 
-    <!-- MODALI UTENTE (Recupero, Annullamento, Confirm) -->
+    <!-- MODALI UTENTE -->
     <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
       <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
         <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -126,7 +130,7 @@
           <h3 class="text-xl font-bold text-indigo-950">Recupera Ricevuta</h3>
         </div>
         <form onsubmit="handleRecovery(event)" class="space-y-4">
-          <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500" placeholder="Codice o Cognome">
+          <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 font-bold text-slate-800" placeholder="Codice o Cognome Studente">
           <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition">Invia Mail e Scarica PDF</button>
         </form>
       </div>
@@ -140,7 +144,7 @@
           <h3 class="text-xl font-bold text-indigo-950">Annulla Prenotazione</h3>
         </div>
         <form id="cancelForm" onsubmit="handleCancellation(event)" class="space-y-4">
-          <input required type="text" id="cancelTerm" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="Codice o Cognome">
+          <input required type="text" id="cancelTerm" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 font-bold text-slate-800" placeholder="Codice o Cognome Studente">
           <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Procedi</button>
         </form>
       </div>
@@ -150,10 +154,10 @@
       <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
         <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
         <h3 class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
-        <p class="text-sm text-slate-500 mt-2">Eliminerai la prenotazione per <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
+        <p class="text-sm text-slate-500 mt-2">Eliminerai la prenotazione per lo studente <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
         <div class="flex gap-3 mt-6">
           <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
-          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla Prenotazione</button>
+          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
         </div>
       </div>
     </div>
@@ -179,7 +183,7 @@
           <input type="text" id="adminConfirmInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-center uppercase font-bold" placeholder="Scrivi ELIMINA">
         </div>
         <div class="flex gap-3 mt-6">
-          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Annulla Prenotazione</button>
+          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Annulla</button>
           <button id="btnAdminConfirmAction" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl">Conferma</button>
         </div>
       </div>
@@ -194,9 +198,9 @@
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative z-10 text-left flex-1 space-y-4">
             <span class="px-4 py-1.5 rounded-full bg-sky-500/20 text-sky-300 text-xs font-bold uppercase tracking-wider border border-sky-500/30">Orientamento Classi Terze Medie</span>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight font-outfit">Costruisci il tuo futuro all'ITSCG "Primo Levi"</h2>
+            <h2 id="homeBannerTitle" class="text-3xl md:text-5xl font-extrabold text-white leading-tight font-outfit">Costruisci il tuo futuro all'ITSCG "Primo Levi"</h2>
             <p id="bannerText" class="text-base md:text-lg text-slate-300 leading-relaxed font-light">
-              Il nostro Istituto apre le porte per guidare studenti e genitori nella scelta della scuola superiore. Vi aspettiamo per scoprire la nostra eccellente offerta formativa, i laboratori d'avanguardia, i progetti linguistici e le collaborazioni con le aziende del territorio.
+              Il nostro Istituto apre le porte per guidare studenti e genitori nella scelta della scuola superiore. Vi aspettiamo in <strong class="text-sky-300">Via Luigi Briantina, 68, Seregno (MB)</strong> per scoprire la nostra eccellente offerta formativa, i laboratori d'avanguardia, i progetti linguistici e le collaborazioni con le aziende del territorio.
             </p>
             <div class="pt-2 flex flex-wrap gap-4">
               <button onclick="scrollToSection('datesSection')" class="px-6 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold rounded-xl transition flex items-center gap-2 shadow-lg shadow-sky-500/20 text-sm">
@@ -213,28 +217,28 @@
         <div class="space-y-6">
           <div class="text-center max-w-xl mx-auto">
             <h3 class="text-2xl font-bold text-indigo-950">Come funziona la registrazione?</h3>
-            <p class="text-sm text-slate-500">Un percorso semplice e integrato per garantire un accesso sicuro e confortevole.</p>
+            <p class="text-sm text-slate-500">Un percorso semplice e integrato per garantire un accesso sicuro, confortevole e tracciato.</p>
           </div>
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="glass-card p-6 rounded-2xl border border-white text-center space-y-3 relative">
-              <div class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center mx-auto text-lg font-bold">1</div>
+              <div class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center mx-auto text-lg font-bold shadow-sm">1</div>
               <h4 class="font-bold text-indigo-950 text-base">Scegli la Data</h4>
-              <p class="text-xs text-slate-500">Seleziona una delle giornate disponibili nel calendario sottostante.</p>
+              <p class="text-xs text-slate-500">Seleziona una delle giornate disponibili nel calendario scolastico sottostante.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white text-center space-y-3 relative">
-              <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-lg font-bold">2</div>
+              <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-lg font-bold shadow-sm">2</div>
               <h4 class="font-bold text-indigo-950 text-base">Compila i Dati</h4>
-              <p class="text-xs text-slate-500">Seleziona l'indirizzo di studio prescelto e inserisci i dati dei partecipanti.</p>
+              <p class="text-xs text-slate-500">Inserisci i dati dello studente e dell'accompagnatore specificando l'indirizzo di studio preferito.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white text-center space-y-3 relative">
-              <div class="w-12 h-12 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center mx-auto text-lg font-bold">3</div>
+              <div class="w-12 h-12 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center mx-auto text-lg font-bold shadow-sm">3</div>
               <h4 class="font-bold text-indigo-950 text-base">Mostra il QR Code</h4>
-              <p class="text-xs text-slate-500">Ricevi la ricevuta PDF via email con il QR Code d'ingresso per il check-in istantaneo.</p>
+              <p class="text-xs text-slate-500">Mostra all'ingresso della scuola il codice ricevuto via mail, anche direttamente dal tuo smartphone.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white text-center space-y-3 relative">
-              <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-lg font-bold">4</div>
-              <h4 class="font-bold text-indigo-950 text-base">Ricevi gli Attestati</h4>
-              <p class="text-xs text-slate-500">All'arrivo e al termine dell'evento riceverai in automatico le pergamene e gli attestati.</p>
+              <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-lg font-bold shadow-sm">4</div>
+              <h4 class="font-bold text-indigo-950 text-base">Ottieni gli Attestati</h4>
+              <p class="text-xs text-slate-500">Riceverai l'attestato di benvenuto all'entrata e l'attestato finale con il questionario di gradimento al termine dell'evento.</p>
             </div>
           </div>
         </div>
@@ -245,91 +249,91 @@
             <div class="flex items-center gap-3">
               <div class="p-2.5 rounded-xl bg-sky-500 text-white"><i data-lucide="calendar" class="w-6 h-6"></i></div>
               <div>
-                <h3 class="text-2xl font-bold text-indigo-950">Seleziona una Data</h3>
-                <p class="text-xs text-slate-500">Fai clic sul giorno in cui preferisci farci visita per avviare la compilazione.</p>
+                <h3 class="text-2xl font-bold text-indigo-950 font-outfit">Calendario Open Day</h3>
+                <p class="text-xs text-slate-500">Seleziona una data per avviare il processo guidato di iscrizione.</p>
               </div>
             </div>
             <div id="datesGrid" class="grid sm:grid-cols-2 gap-4"></div>
 
             <div id="bookingCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-sky-500 animate-in slide-in-from-bottom duration-300">
               <div class="flex justify-between items-center mb-4">
-                <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950">Registrazione</h4>
+                <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950 font-outfit">Registrazione</h4>
                 <button onclick="closeBookingForm()"><i data-lucide="x" class="w-6 h-6 text-slate-400 hover:text-slate-600"></i></button>
               </div>
 
               <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
                 <div class="grid sm:grid-cols-2 gap-4">
-                  <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500" placeholder="Nome Studente *">
-                  <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500" placeholder="Cognome Studente *">
+                  <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-800" placeholder="Nome Studente *">
+                  <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-800" placeholder="Cognome Studente *">
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4">
-                  <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500" placeholder="Email Genitore *">
-                  <input required type="tel" id="parentPhone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500" placeholder="Telefono *">
+                  <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-800" placeholder="Email Genitore / Studente *">
+                  <input required type="tel" id="parentPhone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-800" placeholder="Telefono *">
                 </div>
                 
                 <div class="space-y-4">
-                  <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700"></select>
+                  <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 font-bold text-slate-700"></select>
                   
                   <div class="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-semibold text-slate-700 mb-1">Alunni *</label>
-                      <input required type="number" min="1" max="10" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700" value="1" oninput="calculateTotalFormSeats()">
+                      <label class="block text-xs font-semibold text-slate-700 mb-1">Numero Alunni *</label>
+                      <input required type="number" min="1" max="10" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-bold text-slate-800" value="1" oninput="calculateTotalFormSeats()">
                     </div>
                     <div>
-                      <label class="block text-xs font-semibold text-slate-700 mb-1">Accompagnatori *</label>
-                      <input required type="number" min="0" max="20" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700" value="0" oninput="calculateTotalFormSeats()">
+                      <label class="block text-xs font-semibold text-slate-700 mb-1">Numero Accompagnatori *</label>
+                      <input required type="number" min="0" max="20" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-bold text-slate-800" value="0" oninput="calculateTotalFormSeats()">
                     </div>
                   </div>
-                  <div class="text-right text-slate-500 text-sm font-bold">Posti calcolati: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span></div>
+                  <div class="text-right text-slate-500 text-sm font-bold">Posti totali riservati: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span></div>
                 </div>
 
                 <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 flex items-start gap-3">
                   <input type="checkbox" id="supportRequired" class="w-5 h-5 rounded border-slate-300 text-sky-600 mt-0.5">
-                  <label for="supportRequired" class="text-sm text-slate-700 font-semibold">Richiesta colloquio per Inclusione / Sostegno</label>
+                  <label for="supportRequired" class="text-sm text-slate-700 font-semibold">Richiesta colloquio per Inclusione / Sostegno (D.S.A / H)</label>
                 </div>
 
                 <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
                   <input required type="checkbox" id="privacyConsent" class="w-5 h-5 rounded border-slate-300 mt-0.5">
-                  <label for="privacyConsent" class="text-xs text-slate-600">Accetto la Privacy Policy (GDPR) e l'uso dei dati per la gestione dell'evento. *</label>
+                  <label for="privacyConsent" class="text-xs text-slate-600">Accetto il trattamento dei dati personali (GDPR) ai fini della gestione dell'evento scolastico. *</label>
                 </div>
 
-                <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition shadow-md">Conferma e Invia Ricevuta</button>
+                <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition shadow-md shadow-indigo-600/20">Conferma Registrazione & Invia Ricevuta</button>
               </form>
             </div>
 
             <div id="successCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-emerald-500 text-center space-y-6">
-              <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"><i data-lucide="check-circle" class="w-10 h-10"></i></div>
-              <h4 class="text-2xl font-extrabold text-indigo-950">Prenotazione Completata!</h4>
-              <p class="text-slate-600">Ricevuta inviata all'indirizzo email indicato.</p>
-              <div class="bg-slate-50 p-4 rounded-2xl inline-block">
-                <p class="text-xs text-slate-500 font-bold uppercase">Codice</p>
+              <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm"><i data-lucide="check-circle" class="w-10 h-10"></i></div>
+              <h4 class="text-2xl font-extrabold text-indigo-950 font-outfit">Prenotazione Completata!</h4>
+              <p class="text-slate-600">Abbiamo inviato un'email contenente la ricevuta digitale in PDF con il QR Code d'ingresso.</p>
+              <div class="bg-slate-50 p-4 rounded-2xl inline-block border border-slate-200 shadow-inner">
+                <p class="text-xs text-slate-500 font-bold uppercase">Codice d'Ingresso</p>
                 <p id="successRegCode" class="text-3xl font-mono font-bold text-sky-600 mt-1">-</p>
               </div>
-              <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">Chiudi</button>
+              <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md">Chiudi e Torna</button>
             </div>
           </div>
 
           <div class="space-y-6">
             <div class="glass-card p-6 rounded-3xl space-y-4">
-              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2"><i data-lucide="info" class="text-sky-500"></i> Info Open Day</h4>
+              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="info" class="text-sky-500"></i> Informazioni Utili</h4>
               <ul class="text-sm text-slate-600 space-y-3">
                 <li class="flex items-start gap-2">
                   <i data-lucide="clock" class="w-4 h-4 text-sky-500 mt-0.5 shrink-0"></i>
-                  <span><strong>Durata:</strong> ~2 ore complessive per sessione</span>
+                  <span><strong>Durata Evento:</strong> ~2 ore totali per sessione.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <i data-lucide="map-pin" class="w-4 h-4 text-sky-500 mt-0.5 shrink-0"></i>
-                  <span><strong>Indirizzo:</strong> Via Briantina, 68 Seregno (MB)</span>
+                  <span><strong>Sede d'Incontro:</strong> Via Luigi Briantina, 68, Seregno (MB).</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <i data-lucide="compass" class="w-4 h-4 text-sky-500 mt-0.5 shrink-0"></i>
-                  <span><strong>Tour Guidato:</strong> Visita alle aule multimediali, palestre, laboratori CAD e linguistici.</span>
+                  <span><strong>Tour Guidato:</strong> Visita guidata aule didattiche, laboratori informatici/multimediali, palestra, aule CAD e di chimica.</span>
                 </li>
               </ul>
             </div>
             <div class="glass-card p-6 rounded-3xl bg-indigo-950/5 border border-indigo-950/10">
-              <h4 class="font-bold text-indigo-950 text-base mb-2">Promemoria Automatico</h4>
-              <p class="text-xs text-slate-600">Invio automatico del promemoria con QR code di accesso via e-mail qualche giorno prima dell'evento.</p>
+              <h4 class="font-bold text-indigo-950 text-base mb-2 font-outfit">Promemoria Automatico</h4>
+              <p class="text-xs text-slate-600">Il nostro sistema scolastico invierà un promemoria via e-mail con il codice di accreditamento QR pochi giorni prima dell'Open Day prenotato.</p>
             </div>
           </div>
         </div>
@@ -337,77 +341,93 @@
         <!-- DETTAGLIO INDIRIZZI DI STUDIO -->
         <div id="indirizziSection" class="space-y-6 pt-6">
           <div class="flex items-center gap-3">
-            <div class="p-2.5 rounded-xl bg-indigo-600 text-white"><i data-lucide="graduation-cap" class="w-6 h-6"></i></div>
+            <div class="p-2.5 rounded-xl bg-indigo-600 text-white shadow-md"><i data-lucide="graduation-cap" class="w-6 h-6"></i></div>
             <div>
-              <h3 class="text-2xl font-bold text-indigo-950">I Nostri Indirizzi di Studio</h3>
-              <p class="text-xs text-slate-500">Esplora le nostre specializzazioni per trovare la tua strada.</p>
+              <h3 class="text-2xl font-bold text-indigo-950 font-outfit">I Nostri Indirizzi di Studio</h3>
+              <p class="text-xs text-slate-500">Scopri i percorsi didattici d'eccellenza che formano i professionisti di domani.</p>
             </div>
           </div>
 
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- RIM -->
-            <div class="glass-card p-6 rounded-2xl border border-white hover:border-sky-500 transition duration-300 flex flex-col justify-between shadow-sm">
-              <div>
-                <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4">
-                  <i data-lucide="globe" class="w-5 h-5"></i>
-                </div>
-                <h4 class="font-extrabold text-indigo-950 text-lg">RIM</h4>
-                <p class="text-[11px] text-sky-600 font-bold uppercase tracking-wider mb-2">Relazioni Internazionali Marketing</p>
-                <p class="text-xs text-slate-600 leading-relaxed">Perfetto per chi ama le lingue straniere e l'economia globale. Offre lo studio di tre lingue europee, marketing internazionale, geopolitica e tecnologia aziendale aziendale.</p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">Sbocchi: Import-export, management, interprete aziendale.</div>
-            </div>
-
+            
             <!-- LSA -->
             <div class="glass-card p-6 rounded-2xl border border-white hover:border-indigo-500 transition duration-300 flex flex-col justify-between shadow-sm">
               <div>
-                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 shadow-sm">
                   <i data-lucide="cpu" class="w-5 h-5"></i>
                 </div>
-                <h4 class="font-extrabold text-indigo-950 text-lg">LSA</h4>
-                <p class="text-[11px] text-indigo-600 font-bold uppercase tracking-wider mb-2">Liceo Scienze Applicate</p>
-                <p class="text-xs text-slate-600 leading-relaxed">Unisce la formazione scientifica liceale classica (matematica, fisica, biologia e chimica) a un solido percorso informatico e tecnologico di laboratorio senza il latino.</p>
+                <h4 class="font-extrabold text-indigo-950 text-lg font-outfit">LSA</h4>
+                <p class="text-[11px] text-indigo-600 font-bold uppercase tracking-wider mb-2">Liceo Scientifico Scienze Applicate</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">Unisce l'eccellente formazione scientifica liceale classica ad un percorso informatico strutturato e di laboratorio, senza lo studio della lingua latina.</p>
+                <div class="bg-indigo-50/60 p-3 rounded-xl border border-indigo-100 text-xs text-slate-700 space-y-1">
+                  <p><strong>Materie d'indirizzo:</strong> Informatica (Algoritmi e C++), Fisica, Scienze Naturali, Chimica, Biologia, Matematica.</p>
+                </div>
               </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">Sbocchi: Università scientifiche, medicina, ingegneria, informatica.</div>
+              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-indigo-600 font-bold">Sbocchi: Facoltà STEM (Ingegneria, Informatica, Medicina, Fisica, Matematica, Biotecnologie).</div>
+            </div>
+
+            <!-- RIM -->
+            <div class="glass-card p-6 rounded-2xl border border-white hover:border-sky-500 transition duration-300 flex flex-col justify-between shadow-sm">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 shadow-sm">
+                  <i data-lucide="globe" class="w-5 h-5"></i>
+                </div>
+                <h4 class="font-extrabold text-indigo-950 text-lg font-outfit">RIM</h4>
+                <p class="text-[11px] text-sky-600 font-bold uppercase tracking-wider mb-2">Relazioni Internazionali Marketing</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">Focus sulle lingue straniere e sul marketing aziendale globale. Perfetto per chi ama la geopolitica e il commercio con l'estero.</p>
+                <div class="bg-sky-50/60 p-3 rounded-xl border border-sky-100 text-xs text-slate-700 space-y-1">
+                  <p><strong>Materie d'indirizzo:</strong> Tre Lingue Straniere, Relazioni Internazionali, Economia Aziendale e Geopolitica, Tecnologie della Comunicazione.</p>
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-sky-600 font-bold">Sbocchi: Lingue, Giurisprudenza, Economia, Import-Export, Brand Specialist in multinazionali.</div>
             </div>
 
             <!-- LOG -->
             <div class="glass-card p-6 rounded-2xl border border-white hover:border-violet-500 transition duration-300 flex flex-col justify-between shadow-sm">
               <div>
-                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 shadow-sm">
                   <i data-lucide="truck" class="w-5 h-5"></i>
                 </div>
-                <h4 class="font-extrabold text-indigo-950 text-lg">LOG</h4>
+                <h4 class="font-extrabold text-indigo-950 text-lg font-outfit">LOG</h4>
                 <p class="text-[11px] text-violet-600 font-bold uppercase tracking-wider mb-2">Logistica e Trasporti</p>
-                <p class="text-xs text-slate-600 leading-relaxed">Per comprendere, progettare e guidare i flussi delle merci, dei mezzi di trasporto e dei flussi informativi ad essi connessi. Unisce organizzazione e sostenibilità.</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">Progettazione e organizzazione intelligente dei flussi di merci, trasporti internazionali e flussi informativi ad essi connessi.</p>
+                <div class="bg-violet-50/60 p-3 rounded-xl border border-violet-100 text-xs text-slate-700 space-y-1">
+                  <p><strong>Materie d'indirizzo:</strong> Logistica di Distribuzione, Scienze della Navigazione, Struttura dei Mezzi di Trasporto, Diritto dei Trasporti.</p>
+                </div>
               </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">Sbocchi: Gestione della supply chain, spedizioni marittime/aeree, dogane.</div>
+              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-violet-600 font-bold">Sbocchi: Supply Chain Manager, dogane, spedizioni aeree/marittime, ingegneria dei trasporti.</div>
             </div>
 
             <!-- CAT -->
             <div class="glass-card p-6 rounded-2xl border border-white hover:border-emerald-500 transition duration-300 flex flex-col justify-between shadow-sm">
               <div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 shadow-sm">
                   <i data-lucide="home" class="w-5 h-5"></i>
                 </div>
-                <h4 class="font-extrabold text-indigo-950 text-lg">CAT</h4>
+                <h4 class="font-extrabold text-indigo-950 text-lg font-outfit">CAT</h4>
                 <p class="text-[11px] text-emerald-600 font-bold uppercase tracking-wider mb-2">Costruzione Ambiente Territorio</p>
-                <p class="text-xs text-slate-600 leading-relaxed">Il geometra del futuro: progettazione eco-sostenibile, utilizzo di software BIM, risparmio energetico, rilievi topografici con droni e sicurezza del territorio.</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">Il geometra tecnologico ed eco-sostenibile: progettazione 3D (BIM), risparmio energetico e tutela del territorio.</p>
+                <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 text-xs text-slate-700 space-y-1">
+                  <p><strong>Materie d'indirizzo:</strong> Progettazione Costruzioni e Impianti, Topografia (con rilievi droni), Estimo e Normativa Edile, Sicurezza.</p>
+                </div>
               </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">Sbocchi: Architettura, ingegneria, perito edile, urbanista.</div>
+              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-emerald-600 font-bold">Sbocchi: Architettura, Ingegneria Civile/Ambientale, Libera Professione Geometra, Perito Immobiliare.</div>
             </div>
 
             <!-- SM -->
             <div class="glass-card p-6 rounded-2xl border border-white hover:border-pink-500 transition duration-300 flex flex-col justify-between shadow-sm">
               <div>
-                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mb-4">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mb-4 shadow-sm">
                   <i data-lucide="palette" class="w-5 h-5"></i>
                 </div>
-                <h4 class="font-extrabold text-indigo-950 text-lg">SM</h4>
+                <h4 class="font-extrabold text-indigo-950 text-lg font-outfit">SM</h4>
                 <p class="text-[11px] text-pink-600 font-bold uppercase tracking-wider mb-2">Sistema Moda</p>
-                <p class="text-xs text-slate-600 leading-relaxed">Dedicato a chi intende esprimere la propria creatività e passione nel settore della moda. Tratta design, filatura, organizzazione aziendale e innovazione dei tessuti.</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">Esprime la creatività ed il design nel settore tessile. Gestisce la filiera della moda dallo schizzo preliminare fino al capo finito.</p>
+                <div class="bg-pink-50/60 p-3 rounded-xl border border-pink-100 text-xs text-slate-700 space-y-1">
+                  <p><strong>Materie d'indirizzo:</strong> Chimica Applicata e Nobilitazione, Ideazione Progettazione e Industrializzazione Moda, Tecnologie dei Materiali.</p>
+                </div>
               </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">Sbocchi: Fashion designer, modellista CAD, esperto marketing della moda.</div>
+              <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-pink-600 font-bold">Sbocchi: Fashion Design, Modellista CAD, Tecnologo Tessile, Brand Management del lusso.</div>
             </div>
           </div>
         </div>
@@ -415,28 +435,28 @@
         <!-- FAQ INFORMATIVE -->
         <div class="space-y-6 pt-6 bg-white/40 p-8 rounded-3xl border border-white/80">
           <div class="flex items-center gap-3">
-            <div class="p-2.5 rounded-xl bg-indigo-500 text-white"><i data-lucide="help-circle" class="w-6 h-6"></i></div>
+            <div class="p-2.5 rounded-xl bg-indigo-500 text-white shadow-sm"><i data-lucide="help-circle" class="w-6 h-6"></i></div>
             <div>
-              <h3 class="text-2xl font-bold text-indigo-950">Domande Frequenti</h3>
-              <p class="text-xs text-slate-500">Tutto quello che c'è da sapere prima dell'Open Day.</p>
+              <h3 class="text-2xl font-bold text-indigo-950 font-outfit">Domande Frequenti (FAQ)</h3>
+              <p class="text-xs text-slate-500">Tutte le risposte sui processi di accreditamento scolastico e attestazioni.</p>
             </div>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
-              <h4 class="font-bold text-indigo-950 text-sm">Possono partecipare sia genitori che studenti?</h4>
-              <p class="text-xs text-slate-600">Assolutamente sì. L'evento è pensato proprio per accogliere i ragazzi delle medie insieme alle loro famiglie per guidarli nel percorso di scelta.</p>
+              <h4 class="font-bold text-indigo-950 text-sm font-outfit">Quali tipi di attestati/pergamene vengono inviati?</h4>
+              <p class="text-xs text-slate-600">Per garantire la massima partecipazione, inviamo due percorsi separati: appena entri e viene scannerizzato il QR Code riceverai una <strong>Pergamena di Benvenuto</strong>. AI termine dell'Open Day, riceverai la <strong>Pergamena di Partecipazione</strong> finale.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
-              <h4 class="font-bold text-indigo-950 text-sm">Cosa succede se devo disdire la mia presenza?</h4>
-              <p class="text-xs text-slate-600">In caso di imprevisti, ti chiediamo di cliccare sul tasto "Annulla Prenotazione" in alto, inserendo il tuo cognome o codice, per rimettere a disposizione i posti per altre famiglie.</p>
+              <h4 class="font-bold text-indigo-950 text-sm font-outfit">Come funziona il Questionario di Gradimento?</h4>
+              <p class="text-xs text-slate-600">Il questionario di gradimento scolastico è allegato all'email dell'attestato di fine evento. La compilazione online richiede solo 2 minuti e ci aiuta a migliorare l'accoglienza.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
-              <h4 class="font-bold text-indigo-950 text-sm">Gli attestati di presenza vengono inviati subito?</h4>
-              <p class="text-xs text-slate-600">L'attestato di benvenuto/entrata arriva appena viene scansionato il QR Code all'ingresso. Quello di fine evento/uscita viene erogato in automatico allo scadere della sessione.</p>
+              <h4 class="font-bold text-indigo-950 text-sm font-outfit">Posso disdire o modificare la mia prenotazione?</h4>
+              <p class="text-xs text-slate-600">Sì. Cliccando su "Annulla" o usando il proprio codice potrete liberare i posti in modo automatico a vantaggio di altre famiglie in lista d'attesa.</p>
             </div>
             <div class="glass-card p-6 rounded-2xl border border-white/60 space-y-2">
-              <h4 class="font-bold text-indigo-950 text-sm">Posso prenotare per più indirizzi diversi dello studente?</h4>
-              <p class="text-xs text-slate-600">Sì, ma per evitare blocchi del sistema si consiglia di compilare due moduli separati nel caso si desideri assistere a presentazioni di indirizzi differenti.</p>
+              <h4 class="font-bold text-indigo-950 text-sm font-outfit">Riceverò dei promemoria automatici prima del giorno?</h4>
+              <p class="text-xs text-slate-600">Certamente. Il nostro server scolastico monitora le date e invia un promemoria via email con allegato il QR Code della ricevuta prima dell'evento.</p>
             </div>
           </div>
         </div>
@@ -446,50 +466,60 @@
       <!-- LOGIN ADMIN -->
       <section id="sectionLogin" class="hidden max-w-md mx-auto mt-12 animate-in fade-in">
         <div class="glass-card p-8 rounded-3xl text-center space-y-6">
-          <h2 class="text-2xl font-bold text-indigo-950">Accesso Docenti</h2>
+          <h2 class="text-2xl font-bold text-indigo-950 font-outfit">Accesso Docenti</h2>
           <form onsubmit="handleLogin(event)" class="space-y-4">
-            <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 text-center" placeholder="Password">
-            <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl">Accedi</button>
+            <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 text-center font-bold text-slate-900" placeholder="Password Area Riservata">
+            <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl shadow-md">Accedi</button>
           </form>
         </div>
       </section>
 
-      <!-- DASHBOARD ADMIN -->
+      <!-- DASHBOARD ADMIN (ALTISSIMO CONTRASTO PER USO ALL'APERTO SOTTO IL SOLE) -->
       <section id="sectionAdmin" class="hidden space-y-6 animate-in fade-in">
-        <div class="flex justify-between items-center">
-          <h2 class="text-3xl font-extrabold text-indigo-950">Area Docenti</h2>
-          <button onclick="navigateTo('home')" class="px-5 py-2.5 bg-slate-200 text-slate-800 rounded-xl font-bold text-sm">Torna al Sito</button>
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900 p-4 rounded-2xl text-white">
+          <div class="text-left">
+            <h2 class="text-2xl font-extrabold font-outfit text-white">ITSCG Primo Levi - Gestione Accoglienza</h2>
+            <p class="text-xs text-indigo-300">Layout potenziato ad alto contrasto per uso sul campo (leggibile sotto al sole)</p>
+          </div>
+          <button onclick="navigateTo('home')" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm transition">Chiudi Area Docenti</button>
         </div>
 
-        <div class="glass-card rounded-3xl overflow-hidden shadow-lg border border-white/60">
-          <div class="flex border-b border-slate-200/80 bg-slate-50/50">
-            <button id="tabIscrittiBtn" onclick="switchAdminTab('iscritti')" class="flex-1 py-4 font-bold text-base border-b-4 border-indigo-600 text-indigo-700 bg-white">Iscritti & Timer</button>
-            <button id="tabScannerBtn" onclick="switchAdminTab('scanner')" class="flex-1 py-4 font-bold text-base border-b-4 border-transparent text-slate-500">Scanner Ingresso</button>
-            <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="flex-1 py-4 font-bold text-base border-b-4 border-transparent text-slate-500">Impostazioni</button>
+        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800">
+          <div class="flex border-b-2 border-slate-900 bg-slate-100">
+            <button id="tabIscrittiBtn" onclick="switchAdminTab('iscritti')" class="flex-1 py-4 font-extrabold text-base border-b-4 border-indigo-600 text-indigo-900 bg-white">Iscritti & Pergamene</button>
+            <button id="tabScannerBtn" onclick="switchAdminTab('scanner')" class="flex-1 py-4 font-extrabold text-base border-b-4 border-transparent text-slate-700">Scanner Ingresso / USB Barcode</button>
+            <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="flex-1 py-4 font-extrabold text-base border-b-4 border-transparent text-slate-700">Configurazione Pagine</button>
           </div>
 
-          <div class="p-6 md:p-8">
+          <div class="p-4 md:p-8 bg-white">
             
             <!-- TAB ISCRITTI -->
             <div id="tabIscritti" class="space-y-6">
-              <!-- TIMER AUTOMATICO DI USCITA (Mostrato all'admin) -->
-              <div id="adminTimersContainer" class="hidden glass-card p-4 rounded-2xl border-l-4 border-indigo-500 mb-6 space-y-2"></div>
+              
+              <!-- TIMER AUTOMATICO DI USCITA -->
+              <div id="adminTimersContainer" class="hidden bg-slate-900 text-white p-4 rounded-2xl border-l-4 border-amber-500 shadow space-y-2"></div>
 
-              <div class="flex gap-4">
-                <input type="text" id="searchBar" oninput="renderRegistrations()" class="flex-grow p-2.5 rounded-xl border border-slate-200" placeholder="Cerca studente o codice...">
-                <select id="filterDateSelect" onchange="renderRegistrations()" class="p-2.5 rounded-xl border border-slate-200 bg-white font-semibold"></select>
-                <button onclick="exportToCSV()" class="px-6 bg-emerald-600 text-white rounded-xl font-bold">Export CSV</button>
+              <div class="flex flex-col md:flex-row gap-4 items-center">
+                <div class="relative flex-grow w-full">
+                  <input type="text" id="searchBar" oninput="renderRegistrations()" class="w-full p-3 rounded-xl border-2 border-slate-800 font-bold text-slate-900 placeholder-slate-500 bg-slate-50 text-lg" placeholder="Cerca cognome, nome o codice prenotazione...">
+                </div>
+                <select id="filterDateSelect" onchange="renderRegistrations()" class="w-full md:w-auto p-3 rounded-xl border-2 border-slate-800 bg-white font-extrabold text-slate-900 text-base"></select>
+                <button onclick="exportToCSV()" class="w-full md:w-auto px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-extrabold flex items-center justify-center gap-2 shadow-md">
+                  <i data-lucide="download" class="w-5 h-5"></i><span>Esporta in Excel</span>
+                </button>
               </div>
 
-              <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">
-                <table class="w-full text-left border-collapse text-sm">
+              <!-- TABELLA AD ALTISSIMO CONTRASTO PER OPERATORI ALL'APERTO -->
+              <div class="overflow-x-auto rounded-2xl border-2 border-slate-900 bg-white shadow-lg">
+                <table class="w-full text-left border-collapse text-sm sunlight-friendly-table">
                   <thead>
-                    <tr class="bg-slate-50 text-slate-500 uppercase text-xs font-bold">
-                      <th class="p-4 border-b">Check-in</th>
-                      <th class="p-4 border-b">Codice / Dati</th>
-                      <th class="p-4 border-b">Indirizzo</th>
-                      <th class="p-4 border-b text-center">Invio Uscita</th>
-                      <th class="p-4 border-b text-center">Azione</th>
+                    <tr>
+                      <th class="p-4 border-b">Stato Check-in</th>
+                      <th class="p-4 border-b">Codice</th>
+                      <th class="p-4 border-b">Studente / Dati</th>
+                      <th class="p-4 border-b">Indirizzo / Aula</th>
+                      <th class="p-4 border-b text-center">Invio Pergamene (Manuale / Auto)</th>
+                      <th class="p-4 border-b text-center">Azioni</th>
                     </tr>
                   </thead>
                   <tbody id="registrationsTableBody"></tbody>
@@ -500,30 +530,31 @@
             <!-- TAB SCANNER -->
             <div id="tabScanner" class="hidden grid md:grid-cols-2 gap-8">
               <div class="space-y-4">
-                <div class="p-4 bg-sky-50 rounded-2xl">
-                  <h4 class="font-bold text-indigo-950 mb-2">Webcam PC</h4>
-                  <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl mb-2"></select>
-                  <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl">Avvia Webcam PC</button>
+                <div class="p-4 bg-slate-100 rounded-2xl border-2 border-slate-800">
+                  <h4 class="font-extrabold text-slate-900 mb-2">Webcam Integrata PC</h4>
+                  <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border border-slate-400 bg-white font-semibold text-slate-800 mb-2"></select>
+                  <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md">Avvia / Ferma Webcam</button>
                 </div>
-                <div class="relative w-full aspect-video bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 flex items-center justify-center">
+                <div class="relative w-full aspect-video bg-slate-900 rounded-3xl overflow-hidden border-2 border-slate-800 flex items-center justify-center">
                   <div id="scannerLaser" class="laser-line hidden"></div>
                   <div id="scannerView" class="w-full h-full"></div>
                 </div>
               </div>
               <div class="space-y-6">
-                <div class="glass-card p-6 rounded-2xl border border-slate-100">
-                  <h4 class="font-bold text-indigo-950 mb-2">Pistola USB / Manuale</h4>
+                <div class="glass-card p-6 rounded-2xl border-2 border-slate-800 bg-slate-50">
+                  <h4 class="font-extrabold text-slate-950 mb-2 flex items-center gap-1"><i data-lucide="scan-barcode" class="text-sky-600"></i> Lettore Barcode USB / Input Manuale</h4>
+                  <p class="text-xs text-slate-600 mb-2">Il sistema cattura in background la lettura delle pistole barcode. Puoi digitare anche qui ed inviare:</p>
                   <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
-                    <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border border-slate-200 text-center font-mono uppercase font-bold" placeholder="CODICE">
-                    <button type="submit" class="px-6 bg-indigo-900 text-white rounded-xl font-bold">Invia</button>
+                    <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border-2 border-slate-800 text-center font-mono uppercase font-extrabold text-xl text-slate-950 bg-white" placeholder="DIGITA CODICE O SPARA CON PISTOLA">
+                    <button type="submit" class="px-6 bg-slate-900 hover:bg-black text-white font-extrabold rounded-xl text-base shadow">Invia</button>
                   </form>
                 </div>
-                <div class="glass-card p-6 rounded-2xl border border-slate-100 flex justify-between items-center">
-                  <h4 class="font-bold text-indigo-950">Usa lo Smartphone</h4>
-                  <button onclick="openAddDeviceModal()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl">Collega Scanner Cloud</button>
+                <div class="glass-card p-6 rounded-2xl border border-slate-200 flex justify-between items-center">
+                  <h4 class="font-bold text-indigo-950">Usa Smartphone come Scanner</h4>
+                  <button onclick="openAddDeviceModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl">Collega Smartphone</button>
                 </div>
                 <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-200 text-center min-h-[150px] flex items-center justify-center">
-                  <div id="scanResultEmpty"><p class="text-sm font-bold text-slate-500">In attesa di scansione...</p></div>
+                  <div id="scanResultEmpty"><p class="text-sm font-bold text-slate-500">In attesa di scansione barcode o QR Code...</p></div>
                   <div id="scanResultSuccess" class="hidden w-full text-left space-y-2 animate-in fade-in zoom-in-95">
                     <div id="scanFeedbackBadge" class="inline-block bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full text-xs mb-2">ACCESSO AUTORIZZATO</div>
                     <h4 id="scanResultName" class="text-xl font-extrabold text-indigo-950"></h4>
@@ -537,39 +568,53 @@
             <!-- TAB IMPOSTAZIONI -->
             <div id="tabSettings" class="hidden grid md:grid-cols-2 gap-8">
               <div class="space-y-6">
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                  <h3 class="font-bold text-indigo-950 mb-2">Configurazione Prompt Eventi</h3>
-                  <div class="flex gap-2 mb-2">
-                    <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border border-slate-300" value="7">
-                    <span class="py-2 text-sm text-slate-600">Giorni prima per invio Email Promemoria (Entrata)</span>
+                <!-- PERSONALIZZAZIONE TESTI SITO -->
+                <div class="p-6 bg-slate-50 rounded-2xl border-2 border-slate-800 space-y-4">
+                  <h3 class="font-extrabold text-slate-950 text-lg flex items-center gap-2"><i data-lucide="edit-3"></i> Configurazione Testi Home Page</h3>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Titolo Principale</label>
+                    <input type="text" id="configHomeTitle" class="w-full p-2.5 rounded-lg border border-slate-400 font-semibold" placeholder="ITSCG Primo Levi">
                   </div>
-                  <button onclick="saveReminderDays()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Salva Set</button>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Sottotitolo / Sede</label>
+                    <input type="text" id="configHomeSub" class="w-full p-2.5 rounded-lg border border-slate-400 font-semibold" placeholder="Seregno (MB)">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Testo Descrittivo Banner</label>
+                    <textarea id="configBannerText" rows="4" class="w-full p-2.5 rounded-lg border border-slate-400 font-semibold text-xs" placeholder="Testo del banner..."></textarea>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Promemoria automatico (giorni prima)</label>
+                    <input type="number" id="reminderDaysInput" class="w-24 p-2 rounded-lg border border-slate-400 font-bold text-center" value="7">
+                  </div>
+                  <button onclick="saveGeneralSettings()" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-extrabold rounded-xl shadow">Salva Modifiche Grafiche</button>
                 </div>
-                <div class="p-6 bg-red-50 rounded-2xl border border-red-200">
-                  <h3 class="font-bold text-red-900 mb-2">Svuota Dati</h3>
-                  <p class="text-xs text-red-700 mb-4">Elimina definitivamente tutti i record dal database.</p>
-                  <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-red-600 text-white rounded-xl font-bold">Svuota Database</button>
+
+                <div class="p-6 bg-red-50 rounded-2xl border-2 border-red-800">
+                  <h3 class="font-bold text-red-900 mb-2">Eliminazione Definitiva</h3>
+                  <p class="text-xs text-red-700 mb-4">Azione irreversibile. Cancella tutti gli iscritti dal sistema.</p>
+                  <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold">Svuota database iscritti</button>
                 </div>
               </div>
-              <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                <h3 class="font-bold text-indigo-950">Nuova Sessione</h3>
+              
+              <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-slate-800">
+                <h3 class="font-bold text-indigo-950">Aggiungi Nuova Sessione / Data</h3>
                 <form id="newDateForm" onsubmit="handleCreateDate(event)" class="space-y-3">
                   <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300">
-                  <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300" placeholder="Fascia (es. 09:00)">
+                  <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 font-semibold" placeholder="Orario e Turno (es. 09:00 - 11:00)">
                   
-                  <!-- MENU A TENDINA DEGLI INDIRIZZI DEFINITI -->
                   <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-semibold">
-                    <option value="" disabled selected>-- Seleziona l'Indirizzo di Studio --</option>
-                    <option value="RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING">RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING</option>
-                    <option value="LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE">LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE</option>
-                    <option value="LOG - LOGISTICA">LOG - LOGISTICA</option>
-                    <option value="CAT - COSTRUZIONE AMBIENTE E TERRITORIO">CAT - COSTRUZIONE AMBIENTE E TERRITORIO</option>
+                    <option value="" disabled selected>-- Seleziona Indirizzo Didattico --</option>
+                    <option value="LSA - LICEO SCIENTIFICO SCIENZE APPLICATE">LSA - LICEO SCIENTIFICO SCIENZE APPLICATE</option>
+                    <option value="RIM - RELAZIONI INTERNAZIONALI MARKETING">RIM - RELAZIONI INTERNAZIONALI MARKETING</option>
+                    <option value="LOG - LOGISTICA E TRASPORTI">LOG - LOGISTICA E TRASPORTI</option>
+                    <option value="CAT - COSTRUZIONE AMBIENTE TERRITORIO">CAT - COSTRUZIONE AMBIENTE TERRITORIO</option>
                     <option value="SM - SISTEMA MODA">SM - SISTEMA MODA</option>
                   </select>
 
-                  <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300" placeholder="Aula (es. Magna)">
-                  <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300" placeholder="Posti Totali">
-                  <button type="submit" class="w-full py-3 bg-indigo-900 text-white rounded-xl font-bold">Aggiungi Data</button>
+                  <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 font-semibold" placeholder="Aula d'Incontro (es. Aula Magna, Aula 22)">
+                  <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 font-semibold" placeholder="Posti Massimi Disponibili">
+                  <button type="submit" class="w-full py-3 bg-indigo-900 text-white rounded-xl font-bold">Aggiungi Turno a Calendario</button>
                 </form>
                 <div id="adminDatesList" class="space-y-2 mt-4 max-h-48 overflow-y-auto"></div>
               </div>
@@ -584,17 +629,17 @@
   <!-- INTERFACCIA 2: SCANNER ISOLATO MOBILE (?mode=scanner) -->
   <div id="wrapperIsolatedScanner" class="hidden min-h-screen flex flex-col p-4 bg-slate-950 font-outfit">
     <div id="scannerLockScreen" class="w-full max-w-sm mx-auto my-auto p-8 glass-card rounded-3xl text-center space-y-6">
-      <h2 class="text-xl font-bold text-indigo-950">Terminale Scanner</h2>
+      <h2 class="text-xl font-bold text-indigo-950">Terminale Smartphone</h2>
       <form onsubmit="handleIsolatedLogin(event)" class="space-y-4">
-        <input required type="password" id="isolatedPasswordInput" class="w-full p-4 rounded-xl text-center font-bold tracking-widest text-lg" placeholder="PASSWORD">
-        <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl">Sblocca</button>
+        <input required type="password" id="isolatedPasswordInput" class="w-full p-4 rounded-xl text-center font-bold tracking-widest text-lg text-slate-950" placeholder="PASSWORD DISPOSITIVO">
+        <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl">Sblocca Terminale</button>
       </form>
     </div>
 
     <div id="scannerActiveView" class="hidden w-full max-w-md mx-auto flex-grow flex flex-col gap-4 py-4">
       <div class="flex justify-between items-center text-white">
-        <h2 class="font-bold">Scanner Ingresso</h2>
-        <button onclick="exitIsolatedMode()" class="bg-red-600 px-3 py-1 rounded text-xs font-bold">Chiudi</button>
+        <h2 class="font-bold">Scanner d'Ingresso Attivo</h2>
+        <button onclick="exitIsolatedMode()" class="bg-red-600 px-3 py-1 rounded text-xs font-bold">Scollega</button>
       </div>
       <div class="relative flex-grow w-full bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-indigo-500">
         <div id="isolatedScannerLaser" class="laser-line"></div>
@@ -602,16 +647,16 @@
       </div>
       <div id="isolatedScanFeedback" class="p-4 rounded-2xl text-center font-bold text-lg hidden"></div>
       <form onsubmit="handleIsolatedManualSubmit(event)" class="flex gap-2">
-        <input required type="text" id="isolatedManualCode" class="flex-grow p-3 rounded-xl text-center font-mono uppercase font-bold" placeholder="CODICE MANUALE">
-        <button type="submit" class="px-5 bg-indigo-600 text-white rounded-xl font-bold">Invia</button>
+        <input required type="text" id="isolatedManualCode" class="flex-grow p-3 rounded-xl text-center font-mono uppercase font-bold text-slate-900" placeholder="CODICE PRENOTAZIONE">
+        <button type="submit" class="px-5 bg-indigo-600 text-white rounded-xl font-bold">Valida</button>
       </form>
     </div>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // --- CONFIG FIREBASE ---
     const firebaseConfig = {
@@ -628,24 +673,51 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-    // --- GOOGLE APPS SCRIPT URL ---
+    // --- GOOGLE APPS SCRIPT ENDPOINTS ---
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec";
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec";
+    
+    // Attestati differenti richiesti dall'utente
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbx8KLoNmY9YcjXhi1KFYkqv0WsGT5gqDQchKe6_IxpVpgBWG7taD2Z-AvbkTtGGLOnxJw/exec";
     const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
 
     let state = {
       user: null, currentView: 'home', isAdminAuthed: false,
-      settings: { reminderDaysBefore: 7, bannerText: "" },
+      settings: { reminderDaysBefore: 7, bannerTitle: "", bannerSub: "", bannerText: "" },
       dates: [], registrations: [], scanners: [],
       selectedDate: null, html5QrcodeScanner: null, isWebcamScanning: false
     };
 
-    window.processedSessions = {}; // Prevenzione dei trigger multipli dei timer
+    window.processedSessions = {}; // Prevenzione trigger multipli per i timer automatici di fine sessione
 
     // --- UTILITIES ---
     initBubbles();
+    
+    // Global barcode scan hook to support physical USB readers in background
+    let barcodeBuffer = "";
+    let lastKeyTime = Date.now();
+    
+    document.addEventListener("keypress", (e) => {
+      const currentTime = Date.now();
+      if (currentTime - lastKeyTime > 50) {
+        barcodeBuffer = ""; // Reset buffer if typed slowly (human typing vs hardware gun)
+      }
+      lastKeyTime = currentTime;
+      
+      if (e.key === "Enter") {
+        if (barcodeBuffer.length >= 4) {
+          e.preventDefault();
+          processScannedCode(barcodeBuffer);
+          barcodeBuffer = "";
+        }
+      } else {
+        if (e.key !== "Shift") {
+          barcodeBuffer += e.key;
+        }
+      }
+    });
+
     window.navigateTo = t => {
       state.currentView = t;
       document.getElementById('sectionHome').classList.add('hidden');
@@ -668,11 +740,13 @@
       }
       lucide.createIcons();
     };
+
     window.scrollToSection = id => { navigateTo('home'); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
     window.toggleAdminPanel = () => { if (state.currentView === 'admin') { state.isAdminAuthed = false; navigateTo('home'); } else navigateTo('admin'); };
     window.openRecoveryModal = () => document.getElementById('recoveryModal')?.classList.remove('hidden');
     window.openCancelModal = () => document.getElementById('cancelModal')?.classList.remove('hidden');
     window.closeModal = id => document.getElementById(id)?.classList.add('hidden');
+    
     window.openAddDeviceModal = () => {
       const url = window.location.origin + window.location.pathname + "?mode=scanner";
       document.getElementById('lblDeviceUrl').innerText = url;
@@ -689,7 +763,7 @@
       document.getElementById('adminConfirmModal').classList.remove('hidden');
       document.getElementById('btnAdminConfirmAction').onclick = async () => {
         if (isConfirming) return;
-        if (reqInput && document.getElementById('adminConfirmInput').value.trim().toUpperCase() !== 'ELIMINA') return showToast("Digita ELIMINA", "error");
+        if (reqInput && document.getElementById('adminConfirmInput').value.trim().toUpperCase() !== 'ELIMINA') return showToast("Digita ELIMINA per confermare", "error");
         isConfirming = true; closeModal('adminConfirmModal');
         try { await cb(); } finally { isConfirming = false; }
       };
@@ -699,7 +773,7 @@
       const c = document.getElementById('toastContainer');
       if(!c) return;
       const t = document.createElement('div');
-      t.className = `p-4 rounded-xl shadow-lg border text-sm font-semibold glass-card mb-2 ${type==='success'?'border-emerald-500 text-emerald-800':type==='error'?'border-red-500 text-red-800':'border-sky-500 text-sky-800'}`;
+      t.className = `p-4 rounded-xl shadow-lg border text-sm font-semibold glass-card mb-2 ${type==='success'?'border-emerald-500 text-emerald-800 bg-emerald-50':type==='error'?'border-red-500 text-red-800 bg-red-50':'border-sky-500 text-sky-800 bg-sky-50'}`;
       t.innerText = msg;
       c.appendChild(t);
       setTimeout(() => t.remove(), 4000);
@@ -728,7 +802,7 @@
       } catch(e) {}
     }
 
-    // --- STREAMING_CHUNK: Autenticazione Firebase e monitoraggio stato... ---
+    // --- STREAMING_CHUNK: Activating database sync and listeners... ---
     async function startApp() {
       try { await signInAnonymously(auth); } catch(e) { showToast("Errore di connessione al database", "error"); }
       onAuthStateChanged(auth, u => {
@@ -745,27 +819,44 @@
     function getOccupiedSeats(sid) { return state.registrations.filter(r => r.dateId === sid).reduce((s, r) => s + (parseInt(r.totalPeople)||1), 0); }
 
     function setupRealtimeListeners() {
+      // Rule 1: Always read from paths formatted as: /artifacts/{appId}/public/data/{collectionName}
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), s => {
         s.forEach(d => { 
           if(d.id==='general') { 
             state.settings = d.data(); 
             document.getElementById('reminderDaysInput').value = state.settings.reminderDaysBefore || 7; 
-            if(state.settings.bannerText && state.settings.bannerText.trim() !== "") {
-              document.getElementById('bannerText').innerText = state.settings.bannerText;
+            
+            // Apply dynamic visual headers requested
+            if(state.settings.bannerTitle && state.settings.bannerTitle.trim() !== "") {
+              document.getElementById('homeBannerTitle').innerText = state.settings.bannerTitle;
+              document.getElementById('navMainTitle').innerText = state.settings.bannerTitle;
             }
+            if(state.settings.bannerSub && state.settings.bannerSub.trim() !== "") {
+              document.getElementById('navSubTitle').innerText = state.settings.bannerSub;
+            }
+            if(state.settings.bannerText && state.settings.bannerText.trim() !== "") {
+              document.getElementById('bannerText').innerHTML = state.settings.bannerText;
+            }
+            
+            // Populating visual inputs in admin settings
+            document.getElementById('configHomeTitle').value = state.settings.bannerTitle || "ITSCG Primo Levi";
+            document.getElementById('configHomeSub').value = state.settings.bannerSub || "Seregno (MB)";
+            document.getElementById('configBannerText').value = state.settings.bannerText || "";
           } 
         });
       });
+      
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), s => {
         state.dates = []; s.forEach(d => state.dates.push({id: d.id, ...d.data()})); state.dates.sort((a,b)=>new Date(a.date)-new Date(b.date));
         renderHomeDates(); renderAdminDatesList();
         const f = document.getElementById('filterDateSelect');
         if(f) { 
           const v=f.value; 
-          f.innerHTML='<option value="all">Tutte le date</option>'+state.dates.map(x=>`<option value="${x.id}">${x.date} ${x.timeSlot} ${x.studyPath}</option>`).join(''); 
-          f.value=v; 
+          f.innerHTML='<option value="all">Tutte le date</option>'+state.dates.map(x=>`<option value="${x.id}">${x.date} ${x.timeSlot} - ${x.studyPath.substring(0,25)}...</option>`).join(''); 
+          f.value=v||'all'; 
         }
       });
+      
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), s => {
         state.registrations = []; s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); state.registrations.sort((a,b)=>b.timestamp-a.timestamp);
         renderHomeDates(); renderRegistrations(); checkAndTriggerAutomaticReminders();
@@ -774,7 +865,7 @@
       setInterval(runAdminTimers, 1000);
     }
 
-    // --- STREAMING_CHUNK: Gestione dei timer automatici di fine sessione... ---
+    // --- STREAMING_CHUNK: Running automatic participation timers... ---
     function runAdminTimers() {
       const container = document.getElementById('adminTimersContainer');
       if (!container || state.currentView !== 'admin') return;
@@ -788,27 +879,27 @@
       }
 
       container.classList.remove('hidden');
-      let html = '<h4 class="font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="timer" class="w-5 h-5"></i> Stato Sessioni Odierne (Auto-Invio Uscita a +2h 10m)</h4>';
+      let html = '<h4 class="font-bold text-amber-400 mb-2 flex items-center gap-2"><i data-lucide="timer" class="w-5 h-5"></i> Invio Attestati Automatico (Fine Evento a +2h 10m)</h4>';
 
       todaysSessions.forEach(session => {
         const timeMatch = (session.timeSlot || '').match(/(\d{2}):(\d{2})/);
         if (timeMatch) {
           const start = new Date(`${session.date}T${timeMatch[1]}:${timeMatch[2]}:00`).getTime();
-          const triggerTime = start + (130 * 60 * 1000); // 130 minuti (2 ore + 10 minuti di margine)
+          const triggerTime = start + (130 * 60 * 1000); // 2 ore e 10 minuti
           const now = Date.now();
           const diff = triggerTime - now;
 
           if (diff > 0) {
             const mins = Math.floor(diff / 60000);
             const secs = Math.floor((diff % 60000) / 1000);
-            html += `<div class="p-3 bg-indigo-50/50 border border-indigo-100 rounded-xl text-sm flex justify-between items-center mt-2">
-                <span class="truncate pr-4"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,35)}...</span>
-                <span class="font-mono text-indigo-700 font-bold bg-white px-2 py-1 rounded whitespace-nowrap">Invio tra: ${mins}m ${secs}s</span>
+            html += `<div class="p-3 bg-slate-800 border border-slate-700 rounded-xl text-sm flex justify-between items-center mt-2">
+                <span class="truncate pr-4 text-white"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,35)}...</span>
+                <span class="font-mono text-amber-400 font-bold bg-slate-950 px-2 py-1 rounded whitespace-nowrap">Invio tra: ${mins}m ${secs}s</span>
             </div>`;
           } else {
-             html += `<div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm flex justify-between items-center mt-2">
-                <span class="truncate pr-4"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,35)}...</span>
-                <span class="font-bold text-emerald-700 whitespace-nowrap flex items-center gap-1"><i data-lucide="check" class="w-4 h-4"></i> Inviati in automatico</span>
+             html += `<div class="p-3 bg-emerald-950/40 border border-emerald-800 rounded-xl text-sm flex justify-between items-center mt-2">
+                <span class="truncate pr-4 text-white"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,35)}...</span>
+                <span class="font-bold text-emerald-400 whitespace-nowrap flex items-center gap-1"><i data-lucide="check" class="w-4 h-4"></i> Inviati in automatico</span>
             </div>`;
             triggerExitEmailsForSession(session.id);
           }
@@ -829,7 +920,7 @@
 
       window.processedSessions[sessionId] = true;
       console.log(`Avvio automatico invio pergamene uscita per sessione: ${sessionId}`);
-      showToast("Invio automatico pergamene di fine Open Day in corso...", "info");
+      showToast("Invio automatico pergamene di fine Open Day e questionari di gradimento...", "info");
 
       for (const reg of regs) {
         try {
@@ -869,7 +960,7 @@
       }
     }
 
-    // --- STREAMING_CHUNK: Generazione file PDF e layout grafico ricevuta... ---
+    // --- STREAMING_CHUNK: Drafting PDF dynamic generations... ---
     function drawBarcode(docObj, code, x, y) {
       docObj.setFont("Courier", "bold"); docObj.setFontSize(10); docObj.setTextColor(0,0,0); docObj.text(code, x+25, y+22, {align:"center"}); docObj.setFillColor(0,0,0);
       let cx = x; for (let i=0; i<35; i++) { let w=(i%3===0)?1.4:(i%2===0)?0.8:0.4; let s=(i%4===0)?1.0:0.6; docObj.rect(cx, y, w, 15, 'F'); cx+=w+s; }
@@ -888,10 +979,10 @@
       p.setTextColor(51,65,85); p.setFontSize(12); p.text("Dettagli Registrazione:", 20, 60); p.setFont("Helvetica","bold"); p.setFontSize(14); p.text(`${data.cognome.toUpperCase()} ${data.nome.toUpperCase()}`, 20, 70);
       p.setFont("Helvetica","normal"); p.setFontSize(11); p.text(`Email: ${data.email}`, 20, 80); p.text(`Telefono: ${data.telefono||'N/D'}`, 20, 88);
       p.setFillColor(241,245,249); p.rect(20,100,170,42,'F'); p.setTextColor(15,23,42); p.setFont("Helvetica","bold"); p.setFontSize(11);
-      p.text(`DATA: ${data.dataEvento||data.dateStr}`, 25, 110); p.text(`INDIRIZZO: ${data.studyPath}`, 25, 119); p.text(`POSTI: ${data.totalPeople} (Alunni: ${data.numAlunni||1}, Acc: ${data.accompanyingPersons||0})`, 25, 128); p.text(`SOSTEGNO: ${data.supportRequired?"Richiesto":"No"}`, 25, 137);
+      p.text(`DATA: ${data.dataEvento||data.dateStr}`, 25, 110); p.text(`INDIRIZZO: ${data.studyPath}`, 25, 119); p.text(`POSTI: ${data.totalPeople} (Alunni: ${data.numAlunni||1}, Acc: ${data.accompanyingPersons||0})`, 25, 128); p.text(`SOSTEGNO: ${data.supportRequired?"Richiesto Colloquio":"No"}`, 25, 137);
       p.setFillColor(239,68,68); p.rect(20,150,170,10,'F'); p.setTextColor(255,255,255); p.setFontSize(13); p.text(`CODICE PRENOTAZIONE ED ACCREDITO`, 105, 157, {align:"center"});
       drawBarcode(p, code, 25, 167); drawQRCode(p, window.location.origin + window.location.pathname + "?checkin=" + code, 150, 163);
-      p.setTextColor(100,116,139); p.setFont("Helvetica","italic"); p.setFontSize(9.5); p.text(type==='conferma'?"Porta questa ricevuta (o su smartphone) all'evento.":"Ti ricordiamo il tuo imminente Open Day. In caso di disdetta, usa il sito.", 105, 215, {align:"center", maxWidth:160});
+      p.setTextColor(100,116,139); p.setFont("Helvetica","italic"); p.setFontSize(9.5); p.text(type==='conferma'?"Porta questa ricevuta (o su smartphone) all'evento. Sede: Via Luigi Briantina, 68 Seregno.":"Ti ricordiamo il tuo imminente Open Day. In caso di disdetta, usa l'apposito pulsante sul sito.", 105, 215, {align:"center", maxWidth:160});
       return p.output('datauristring').split(',')[1];
     }
 
@@ -908,7 +999,7 @@
         if (rSnap.exists()) {
           const reg = rSnap.data();
           if(reg.status === 'Ammesso') {
-             throw new Error(`ATTENZIONE: QR Code già scansionato in precedenza per lo studente ${reg.cognome} ${reg.nome}!`);
+             throw new Error(`Codice già accreditato in precedenza per lo studente ${reg.cognome} ${reg.nome}!`);
           }
           await updateDoc(rRef, { status: 'Ammesso' });
           playAudioTone(true);
@@ -917,8 +1008,9 @@
           document.getElementById('checkinLoading').classList.add('hidden');
           document.getElementById('checkinSuccess').classList.remove('hidden');
           document.getElementById('checkinStudentName').innerText = `${reg.cognome} ${reg.nome}`;
-          document.getElementById('checkinStudyPath').innerHTML = `<strong>Ind.</strong> ${reg.studyPath}`;
-        } else throw new Error("Codice inesistente nel database scolastico.");
+          document.getElementById('checkinStudyPath').innerHTML = `<strong>Assegnato a:</strong> ${reg.studyPath}`;
+          document.getElementById('checkinSupport').innerHTML = `<strong>Accompagnatori:</strong> ${reg.accompanyingPersons || 0}`;
+        } else throw new Error("Codice d'accredito non presente nell'archivio Open Day.");
       } catch (err) {
         playAudioTone(false);
         document.getElementById('checkinLoading').classList.add('hidden');
@@ -928,7 +1020,7 @@
     }
     window.closeAutoCheckin = () => { document.getElementById('autoCheckinModal').classList.add('hidden'); window.history.replaceState({},'',new URL(window.location).pathname); }
 
-    // --- STREAMING_CHUNK: Creazione form di prenotazione e date sul sito... ---
+    // --- STREAMING_CHUNK: Managing booking flow inputs... ---
     window.calculateTotalFormSeats = () => {
       const t = (parseInt(document.getElementById('numAlunni').value)||1) + (parseInt(document.getElementById('numAccompagnatori').value)||0);
       document.getElementById('lblTotalFormSeats').innerText = t; return t;
@@ -936,7 +1028,7 @@
 
     function renderHomeDates() {
       const c = document.getElementById('datesGrid');
-      if (state.dates.length === 0) return c.innerHTML = `<div class="col-span-2 text-center p-8 text-slate-500 glass-card">Caricamento sessioni...</div>`;
+      if (state.dates.length === 0) return c.innerHTML = `<div class="col-span-2 text-center p-8 text-slate-500 glass-card font-bold">Caricamento sessioni scolastiche in corso...</div>`;
       const unq = [...new Set(state.dates.map(d=>d.date))];
       c.innerHTML = unq.map(ds => {
         const sess = state.dates.filter(d=>d.date===ds);
@@ -944,9 +1036,9 @@
         const av = tot-occ; const isFull = av<=0;
         return `
           <div onclick="${isFull?'':`selectDate('${ds}')`}" class="glass-card p-6 rounded-2xl border-2 transition relative group ${isFull?'opacity-60 cursor-not-allowed':'border-transparent hover:border-sky-500 cursor-pointer'}">
-            <div class="text-xs font-bold text-sky-600">Open Day</div>
+            <div class="text-xs font-bold text-sky-600">ITSCG Primo Levi</div>
             <div class="text-xl font-bold text-indigo-950 mt-1 capitalize">${new Date(ds).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</div>
-            <div class="mt-5"><span class="text-xs font-semibold px-3 py-1 rounded-full ${isFull?'bg-red-50 text-red-600':'bg-emerald-50 text-emerald-600'}">${isFull?'Posti Esauriti':av+' posti liberi'}</span></div>
+            <div class="mt-5"><span class="text-xs font-semibold px-3 py-1 rounded-full ${isFull?'bg-red-50 text-red-600':'bg-emerald-50 text-emerald-600'}">${isFull?'Posti Esauriti':av+' posti disponibili'}</span></div>
           </div>
         `;
       }).join('');
@@ -969,7 +1061,7 @@
 
     window.handleBooking = async e => {
       e.preventDefault(); const btn = document.getElementById('submitBookingBtn'); if (btn.disabled) return;
-      if (!document.getElementById('privacyConsent').checked) return showToast("Accetta la privacy.", "error");
+      if (!document.getElementById('privacyConsent').checked) return showToast("Accetta i termini sulla privacy.", "error");
       const sid = document.getElementById('studyPathSelect').value; if (!sid) return showToast("Seleziona un indirizzo.", "error");
       const sess = state.dates.find(d=>d.id===sid);
       
@@ -977,8 +1069,8 @@
       const m = document.getElementById('parentEmail').value.trim(); const p = document.getElementById('parentPhone').value.trim();
       const sup = document.getElementById('supportRequired').checked; const tot = calculateTotalFormSeats();
 
-      if (tot > (sess.maxSeats - getOccupiedSeats(sess.id))) return showToast("Posti insufficienti per le persone richieste.", "error");
-      if (state.registrations.some(r => (r.email.toLowerCase()===m.toLowerCase() || (r.cognome.toLowerCase()===c.toLowerCase() && r.nome.toLowerCase()===n.toLowerCase())) && (r.studyPath||'').split(' (')[0].trim().toUpperCase() === (sess.studyPath||'').split(' (')[0].trim().toUpperCase())) return showToast("Indirizzo già prenotato su altra data per questo studente/email.", "error");
+      if (tot > (sess.maxSeats - getOccupiedSeats(sess.id))) return showToast("Posti insufficienti in questo turno.", "error");
+      if (state.registrations.some(r => (r.email.toLowerCase()===m.toLowerCase() || (r.cognome.toLowerCase()===c.toLowerCase() && r.nome.toLowerCase()===n.toLowerCase())) && (r.studyPath||'').split(' (')[0].trim().toUpperCase() === (sess.studyPath||'').split(' (')[0].trim().toUpperCase())) return showToast("Risulti già registrato a questo indirizzo di studio.", "error");
 
       btn.disabled = true; btn.innerText = "Registrazione in corso...";
       const code = Math.random().toString(36).substring(2,8).toUpperCase();
@@ -989,22 +1081,22 @@
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { ...payload, code, dateId:sess.id, dateStr:sess.date, timeSlot:sess.timeSlot, timestamp:Date.now(), reminderSent:false, status:'Registrato', certificate1Sent:false, certificate2Sent:false });
         try { await fetch(CONFIRM_SCRIPT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify({nome:n, cognome:c, email:m, codice_prenotazione:code, pdfBase64:pdf, type:'conferma'})}); } catch(e){}
         document.getElementById('bookingCard').classList.add('hidden'); document.getElementById('successCard').classList.remove('hidden'); document.getElementById('successRegCode').innerText=code; showToast("Iscrizione completata con successo!", "success");
-      } catch(err) { showToast("Errore di rete, riprova.", "error"); btn.disabled=false; btn.innerText="Conferma"; }
+      } catch(err) { showToast("Errore di salvataggio, riprova.", "error"); btn.disabled=false; btn.innerText="Conferma"; }
     }
 
-    // --- AZIONI RECUPERO / ANNULLA UTENTE ---
+    // --- STREAMING_CHUNK: Managing cancellation and recovery systems... ---
     window.handleRecovery = async e => {
       e.preventDefault(); const btn = document.getElementById('submitRecoveryBtn'); if(btn.disabled) return;
       const term = document.getElementById('recoveryInput').value.trim().toUpperCase();
       const reg = state.registrations.find(r => r.code===term || r.cognome.toUpperCase()===term);
-      if(!reg) return showToast("Nessuna prenotazione trovata.", "error");
+      if(!reg) return showToast("Nessuna prenotazione trovata con questi riferimenti.", "error");
       btn.disabled=true; btn.innerText="Invio...";
       try {
         const payload = {...reg, dataEvento:new Date(reg.dateStr).toLocaleDateString('it-IT'), orarioEvento:reg.timeSlot};
         const pdf = await generateReceiptPDF(payload, reg.code, 'conferma');
         try { await fetch(CONFIRM_SCRIPT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify({nome:reg.nome, cognome:reg.cognome, email:reg.email, codice_prenotazione:reg.code, pdfBase64:pdf, type:'conferma'})}); } catch(e){}
-        showToast("Ricevuta inviata!", "success"); closeModal('recoveryModal');
-      } catch(e) { showToast("Errore.", "error"); } finally { btn.disabled=false; btn.innerText="Invia Mail e Scarica PDF"; document.getElementById('recoveryInput').value=''; }
+        showToast("Ricevuta inviata con successo alla tua email!", "success"); closeModal('recoveryModal');
+      } catch(e) { showToast("Si è verificato un errore, riprova.", "error"); } finally { btn.disabled=false; btn.innerText="Invia Mail e Scarica PDF"; document.getElementById('recoveryInput').value=''; }
     }
 
     window.handleCancellation = e => {
@@ -1018,51 +1110,110 @@
         try {
           try { await fetch(CANCEL_SCRIPT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email:reg.email, cognome:reg.cognome, nome:reg.nome, codice_prenotazione:reg.code})}); } catch(e){}
           await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id));
-          showToast("Prenotazione annullata.", "success"); closeModal('confirmCancelModal');
+          showToast("Prenotazione annullata con successo.", "success"); closeModal('confirmCancelModal');
         } catch(e) {}
       };
     }
 
-    // --- PANNELLO ADMIN E GESTIONE TAB ---
-    window.handleLogin = e => { e.preventDefault(); if(document.getElementById('adminPasswordInput').value==='admin'){ state.isAdminAuthed=true; navigateTo('admin'); } else showToast("Password errata","error"); }
+    // --- STREAMING_CHUNK: Drafting admin core logins and switch modes... ---
+    window.handleLogin = e => { e.preventDefault(); if(document.getElementById('adminPasswordInput').value==='admin'){ state.isAdminAuthed=true; navigateTo('admin'); } else showToast("Password di accesso errata","error"); }
+    
     window.switchAdminTab = t => {
       const xList = ['iscritti','scanner','settings'];
       xList.forEach(x => {
         const tabEl = document.getElementById(`tab${x.charAt(0).toUpperCase()+x.slice(1)}`);
         const tabBtnEl = document.getElementById(`tab${x.charAt(0).toUpperCase()+x.slice(1)}Btn`);
         if (tabEl) tabEl.classList.toggle('hidden', x!==t);
-        if (tabBtnEl) tabBtnEl.className = `flex-1 py-4 font-bold text-base border-b-4 ${x===t?'border-indigo-600 text-indigo-700 bg-white':'border-transparent text-slate-500'}`;
+        if (tabBtnEl) tabBtnEl.className = `flex-1 py-4 font-extrabold text-base border-b-4 ${x===t?'border-indigo-600 text-indigo-900 bg-white':'border-transparent text-slate-700 bg-slate-50'}`;
       });
       if(t==='scanner') { initWebcamDevices(); setTimeout(()=>document.getElementById('manualBarcodeField')?.focus(),300); } else stopWebcamScanner();
     }
 
+    // --- STREAMING_CHUNK: High contrast admin rendering logic... ---
     window.renderRegistrations = () => {
       const tb = document.getElementById('registrationsTableBody'); if(!tb) return;
       const q = document.getElementById('searchBar').value.toLowerCase(); const f = document.getElementById('filterDateSelect').value;
       const filtered = state.registrations.filter(r => (r.nome+" "+r.cognome+" "+r.code).toLowerCase().includes(q) && (f==='all'||r.dateId===f));
-      tb.innerHTML = filtered.map(r => `
-        <tr class="border-b border-slate-100 hover:bg-slate-50">
-          <td class="p-4">${r.status==='Ammesso'?'<span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold">AMMESSO</span>':'<span class="bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs">Registrato</span>'}</td>
-          <td class="p-4 font-mono font-bold text-sky-600">${r.code}<br><span class="text-xs text-slate-500">${r.cognome} ${r.nome}</span></td>
-          <td class="p-4 text-xs font-bold">${r.studyPath||''}<br><span class="font-normal text-slate-500">Persone: ${r.totalPeople}</span></td>
-          <td class="p-4 text-center">${r.certificate2Sent?'<span class="text-emerald-600 font-bold text-xs">Inviata</span>':(r.status==='Ammesso'?`<button onclick="sendCertificateEmail('${r.id}')" class="bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold">Invia Uscita</button>`:'-')}</td>
-          <td class="p-4 text-center">
-            ${r.status!=='Ammesso'?`<button onclick="admitParticipantManually('${r.id}')" class="text-emerald-600 p-1"><i data-lucide="check-square" class="w-4 h-4"></i></button>`:''}
-            <button onclick="adminDeleteRegistration('${r.id}')" class="text-red-500 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-          </td>
-        </tr>
-      `).join(''); lucide.createIcons();
+      
+      tb.innerHTML = filtered.map(r => {
+        const entrataStatus = r.certificate1Sent 
+          ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[10px] px-2 py-0.5 rounded whitespace-nowrap">Inviato</span>` 
+          : `<span class="bg-slate-200 text-slate-700 font-extrabold text-[10px] px-2 py-0.5 rounded whitespace-nowrap">Non Inviato</span>`;
+
+        const uscitaStatus = r.certificate2Sent 
+          ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-[10px] px-2 py-0.5 rounded whitespace-nowrap">Inviato (+Quest)</span>` 
+          : `<span class="bg-slate-200 text-slate-700 font-extrabold text-[10px] px-2 py-0.5 rounded whitespace-nowrap">Non Inviato</span>`;
+
+        return `
+          <tr class="border-b-2 border-slate-300 hover:bg-slate-100 font-extrabold">
+            <td class="p-4">
+              ${r.status==='Ammesso' 
+                ? '<span class="bg-emerald-700 text-white border-2 border-emerald-900 px-3 py-1 rounded text-xs font-black tracking-wide">AMMESSO</span>' 
+                : '<span class="bg-amber-100 text-amber-800 border-2 border-amber-300 px-3 py-1 rounded text-xs font-black tracking-wide">ASSENTE</span>'}
+            </td>
+            <td class="p-4 font-mono font-black text-slate-950 text-base bg-slate-50">${r.code}</td>
+            <td class="p-4">
+              <span class="text-base text-black font-black uppercase">${r.cognome} ${r.nome}</span>
+              <div class="text-[11px] text-slate-700 font-semibold mt-1">
+                E: ${r.email} | T: ${r.telefono||'N/D'} | Accompagnatori: ${r.accompanyingPersons || 0}
+              </div>
+            </td>
+            <td class="p-4 text-xs font-black text-slate-950">
+              ${r.studyPath||''}
+              <div class="text-[11px] font-normal text-slate-600 mt-0.5">Posti totali riservati: ${r.totalPeople}</div>
+            </td>
+            <td class="p-4">
+              <div class="flex flex-col gap-2 justify-center items-center">
+                <!-- Certificato 1: Entrata / Benvenuto -->
+                <div class="flex items-center gap-1.5 w-full justify-between">
+                  <span class="text-[11px] text-slate-700">Perg. Benvenuto:</span>
+                  ${entrataStatus}
+                  <button onclick="sendCertificateManual('${r.id}', 'entrata')" class="bg-sky-700 hover:bg-sky-800 text-white px-2 py-1 rounded text-[10px] font-black border border-sky-900 shadow">Re-Invia</button>
+                </div>
+                <!-- Certificato 2: Uscita / Fine Evento + Questionario -->
+                <div class="flex items-center gap-1.5 w-full justify-between">
+                  <span class="text-[11px] text-slate-700">Perg. Partecipazione:</span>
+                  ${uscitaStatus}
+                  <button onclick="sendCertificateManual('${r.id}', 'uscita')" class="bg-amber-600 hover:bg-amber-700 text-white px-2 py-1 rounded text-[10px] font-black border border-amber-800 shadow">Re-Invia</button>
+                </div>
+              </div>
+            </td>
+            <td class="p-4">
+              <div class="flex gap-2 justify-center">
+                ${r.status!=='Ammesso' 
+                  ? `<button onclick="admitParticipantManually('${r.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded font-black text-xs flex items-center gap-1 border border-emerald-800 shadow-sm"><i data-lucide="check-square" class="w-4 h-4"></i> Accetta</button>` 
+                  : ''}
+                <button onclick="adminDeleteRegistration('${r.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded border border-red-300 shadow-sm"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join(''); 
+      lucide.createIcons();
     }
 
     function syncAdminView() { renderRegistrations(); renderAdminDatesList(); }
     
-    window.sendCertificateEmail = id => {
+    // --- STREAMING_CHUNK: Triggering certificate manual actions... ---
+    window.sendCertificateManual = (id, type) => {
       const reg = state.registrations.find(r => r.id === id); if(!reg) return;
-      showAdminConfirm("Invia Uscita", `Inviare attestato finale a ${reg.nome}?`, false, async () => {
+      const isEntrata = type === 'entrata';
+      const scriptUrl = isEntrata ? ATTESTATO_ENTRATA_URL : ATTESTATO_USCITA_URL;
+      const label = isEntrata ? "Pergamena di Benvenuto" : "Pergamena d'Uscita (+ Questionario)";
+
+      showAdminConfirm(`Invia Manualmente`, `Inviare ${label} a ${reg.nome} ${reg.cognome}?`, false, async () => {
         try {
-          await fetch(ATTESTATO_USCITA_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({email:reg.email, nome:reg.nome, cognome:reg.cognome})});
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), {certificate2Sent:true}); showToast("Inviata!","success");
-        } catch(e) {}
+          await fetch(scriptUrl, {
+            method: "POST", 
+            mode: "no-cors", 
+            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+          });
+          const updateObj = isEntrata ? { certificate1Sent: true } : { certificate2Sent: true };
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), updateObj);
+          showToast(`Inviata correttamente!`, "success");
+        } catch(e) {
+          showToast(`Errore durante l'invio.`, "error");
+        }
       });
     }
 
@@ -1077,21 +1228,41 @@
     window.admitParticipantManually = async id => {
       const reg = state.registrations.find(r => r.id === id); if(!reg) return;
       await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id), {status:'Ammesso'});
-      await sendCertificateEmailAuto(reg, 'entrata'); showToast("Ammesso!","success");
+      await sendCertificateEmailAuto(reg, 'entrata'); showToast("Studente ammesso!","success");
     }
     window.adminDeleteRegistration = id => {
       showAdminConfirm("Elimina", "Cancellare definitivamente?", false, async () => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id)); renderRegistrations(); });
     }
 
+    // Export Excel friendly (semicolon + UTF8-BOM)
     window.exportToCSV = () => {
-      const r = state.registrations.map(x=>`"${x.code}","${x.status||''}","${x.cognome}","${x.nome}","${x.totalPeople}","${x.studyPath||''}","${x.email}"`);
-      const b = new Blob(["\uFEFFCodice,Stato,Cognome,Nome,Persone,Indirizzo,Email\n"+r.join('\n')], {type:'text/csv;charset=utf-8;'});
-      const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`iscritti_${Date.now()}.csv`; a.click();
-    }
-    window.handleClearAllRegistrations = () => showAdminConfirm("Svuota", "Sei sicuro di voler ripulire TUTTI i dati?", true, async () => {
-      await Promise.all(state.registrations.map(r => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', r.id)))); showToast("Database ripulito", "success");
+      const r = state.registrations.map(x=>`"${x.code}";"${x.status||''}";"${x.cognome}";"${x.nome}";"${x.totalPeople}";"${x.studyPath||''}";"${x.email}"`);
+      const b = new Blob(["\uFEFFCodice;Stato;Cognome;Nome;Posti totali;Indirizzo;Email\n"+r.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`iscritti_open_day_${Date.now()}.csv`; a.click();
+    };
+
+    window.handleClearAllRegistrations = () => showAdminConfirm("Svuota tutto", "Sei sicuro di voler ripulire TOTALMENTE il database degli iscritti?", true, async () => {
+      await Promise.all(state.registrations.map(r => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', r.id)))); showToast("Database svuotato", "success");
     });
-    window.saveReminderDays = () => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { reminderDaysBefore: parseInt(document.getElementById('reminderDaysInput').value) }, {merge:true});
+
+    window.saveGeneralSettings = async () => {
+      try {
+        const title = document.getElementById('configHomeTitle').value.trim();
+        const sub = document.getElementById('configHomeSub').value.trim();
+        const bText = document.getElementById('configBannerText').value.trim();
+        const remDays = parseInt(document.getElementById('reminderDaysInput').value) || 7;
+
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), {
+          bannerTitle: title,
+          bannerSub: sub,
+          bannerText: bText,
+          reminderDaysBefore: remDays
+        }, { merge: true });
+        showToast("Configurazioni salvate con successo!", "success");
+      } catch(e) {
+        showToast("Errore di salvataggio.", "error");
+      }
+    };
 
     window.handleCreateDate = async e => {
       e.preventDefault(); 
@@ -1099,20 +1270,21 @@
         date: document.getElementById('newDateValue').value, timeSlot: document.getElementById('newDateTimeSlot').value,
         studyPath: document.getElementById('newStudyPath').value, aula: document.getElementById('newAula').value,
         maxSeats: parseInt(document.getElementById('newDateMaxSeats').value)
-      }); e.target.reset(); showToast("Nuova sessione aggiunta!");
+      }); e.target.reset(); showToast("Nuova sessione aggiunta con successo!");
     }
+    
     function renderAdminDatesList() {
       const c = document.getElementById('adminDatesList'); if(!c) return;
       c.innerHTML = state.dates.map(d => `
         <div class="flex justify-between items-center p-2 border-b text-sm">
-          <div><b>${d.date} ${d.timeSlot}</b><br><span class="text-xs">${d.studyPath} (${getOccupiedSeats(d.id)}/${d.maxSeats})</span></div>
+          <div><b>${d.date} | ${d.timeSlot}</b><br><span class="text-xs font-semibold">${d.studyPath} (${getOccupiedSeats(d.id)}/${d.maxSeats})</span></div>
           <button onclick="adminDeleteDate('${d.id}')" class="text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       `).join(''); lucide.createIcons();
     }
     window.adminDeleteDate = id => showAdminConfirm("Elimina", "Rimuovere la data dal calendario pubblico?", false, () => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id)));
 
-    // --- STREAMING_CHUNK: Logica di scansione scanner integrato... ---
+    // --- SCANNER SYSTEM LOGIC ---
     async function initWebcamDevices() {
       try {
         const devs = await Html5Qrcode.getCameras();
@@ -1120,14 +1292,7 @@
       } catch(e){}
     }
     window.toggleWebcamScanner = () => state.isWebcamScanning ? stopWebcamScanner() : startWebcamScanner();
-    window.startWebcamDirectMobile = async () => {
-      if(state.isWebcamScanning) stopWebcamScanner();
-      document.getElementById('scannerLaser').classList.remove('hidden');
-      state.html5QrcodeScanner = new Html5Qrcode("scannerView"); state.isWebcamScanning=true;
-      try {
-        await state.html5QrcodeScanner.start({facingMode:"environment"}, {fps:15, qrbox:(w,h)=>{let m=Math.min(w,h); return{width:Math.floor(m*0.8), height:Math.floor(m*0.8)}}}, t=>processScannedCode(t), ()=>{});
-      } catch(e) {}
-    }
+    
     async function startWebcamScanner() {
       if(state.isWebcamScanning) stopWebcamScanner();
       const id = document.getElementById('cameraSourceSelect').value; if(!id) return;
@@ -1148,28 +1313,28 @@
 
       if (reg) {
         if(reg.status === 'Ammesso') {
-          playAudioTone(false); showToast("QR CODE GIÀ UTILIZZATO!", "error");
+          playAudioTone(false); showToast("QR CODE / BARCODE GIÀ ACCREDITATO!", "error");
           if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
-          document.getElementById('scanFeedbackBadge').innerText = "CODICE GIÀ ACCREDITATO (MONOUSO)";
-          document.getElementById('scanFeedbackBadge').className = "inline-block bg-amber-200 text-amber-900 font-bold px-3 py-1 rounded-full text-xs mb-2";
+          document.getElementById('scanFeedbackBadge').innerText = "DOPPIO INGRESSO (ACCESSO NEGATO)";
+          document.getElementById('scanFeedbackBadge').className = "inline-block bg-amber-200 text-amber-950 border-2 border-amber-400 font-extrabold px-3 py-1 rounded-full text-xs mb-2";
           document.getElementById('scanResultName').innerText = `${reg.cognome} ${reg.nome}`;
-          document.getElementById('scanResultPath').innerText = `Lo studente ha già effettuato l'accesso.`;
-          document.getElementById('scanResultCode').innerText = "Attenzione: doppia scansione non consentita.";
+          document.getElementById('scanResultPath').innerText = `Lo studente ha già effettuato il check-in in precedenza.`;
+          document.getElementById('scanResultCode').innerText = "Doppia scansione non valida.";
           resC.className = "glass-card p-6 rounded-3xl border-2 border-amber-500 bg-amber-50 text-left";
           return;
         }
 
-        playAudioTone(true); showToast("Accesso Autorizzato", "success");
+        playAudioTone(true); showToast("Accesso Autorizzato!", "success");
         try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {status:'Ammesso'}); await sendCertificateEmailAuto(reg, 'entrata'); } catch(e){}
         if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
         resC.className = "glass-card p-6 rounded-3xl border-2 border-emerald-500 bg-emerald-50 text-left";
         document.getElementById('scanFeedbackBadge').innerText = "ACCESSO AUTORIZZATO";
         document.getElementById('scanFeedbackBadge').className = "inline-block bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full text-xs mb-2";
         document.getElementById('scanResultName').innerText = `${reg.cognome} ${reg.nome}`;
-        document.getElementById('scanResultPath').innerText = `${reg.studyPath} (Posti occupati: ${reg.totalPeople})`;
+        document.getElementById('scanResultPath').innerText = `${reg.studyPath} (Posti totali prenotati: ${reg.totalPeople})`;
         document.getElementById('scanResultCode').innerText = code;
       } else {
-        playAudioTone(false); showToast("Codice d'accredito non valido", "error");
+        playAudioTone(false); showToast("Codice d'accredito non riconosciuto", "error");
       }
     }
 
@@ -1202,7 +1367,7 @@
       setTimeout(()=>fb.classList.add('hidden'), 3500);
     }
 
-    // --- STREAMING_CHUNK: Configurazione bolle di sapone interattive... ---
+    // --- STREAMING_CHUNK: Setting up floating visual bubbles... ---
     function initBubbles() {
       const container = document.getElementById('bubbleContainer');
       if (!container) return;
