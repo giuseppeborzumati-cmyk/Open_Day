@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -110,7 +110,7 @@
             <p id="checkinStudyPath"></p>
           </div>
           <p class="text-xs text-emerald-600 font-semibold flex items-center justify-center gap-1 mt-2">
-            <i data-lucide="award" class="w-4 h-4"></i> Pass di Benvenuto inviato via e-mail!
+            <i data-lucide="award" class="w-4 h-4"></i> Pass di Ammissione inviato via e-mail!
           </p>
           <button onclick="closeAutoCheckin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-md mt-4">Chiudi</button>
         </div>
@@ -131,11 +131,11 @@
         <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
         <div class="text-center mb-6">
           <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="download" class="w-6 h-6"></i></div>
-          <h3 class="text-xl font-bold text-indigo-950">Recupera la tua Ricevuta</h3>
+          <h3 class="text-xl font-bold text-indigo-950">Recupera il tuo Pass di Ammissione</h3>
         </div>
         <form onsubmit="handleRecovery(event)" class="space-y-4">
           <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500" placeholder="Codice o Cognome Studente">
-          <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition">Invia Mail e Scarica PDF</button>
+          <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition">Invia Mail e Scarica Pass</button>
         </form>
       </div>
     </div>
@@ -212,11 +212,11 @@
                 </li>
                 <li class="flex items-start gap-2">
                   <i data-lucide="award" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                  <span><b>Doppio Attestato</b>: Ricezione automatica del Pass di Benvenuto e dell'Attestato finale di Partecipazione.</span>
+                  <span><b>Doppio Certificato</b>: Pass di Ammissione ufficiale e Attestato di Ringraziamento Finale con pergamena.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <i data-lucide="clipboard-list" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                  <span><b>Questionario</b>: Riceverai un link per lasciarci la tua opinione sul gradimento dell'evento con l'email di uscita!</span>
+                  <span><b>Questionario</b>: Riceverai il link per fornirci la tua opinione sul gradimento insieme alla pergamena di fine evento!</span>
                 </li>
               </ul>
             </div>
@@ -281,7 +281,7 @@
                 <label for="privacyConsent" class="text-xs text-slate-600">Prendo visione della Privacy Policy scolastica ai sensi del GDPR (UE 2016/679). I dati verranno eliminati a conclusione degli Open Day. *</label>
               </div>
 
-              <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition shadow-md">Completa Registrazione e Invia Ricevuta</button>
+              <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition shadow-md">Completa Registrazione e Ricevi Pass d'Ammissione</button>
             </form>
           </div>
 
@@ -289,17 +289,17 @@
           <div id="successCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-emerald-500 text-center space-y-6 max-w-md mx-auto shadow-2xl">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"><i data-lucide="check-circle" class="w-10 h-10"></i></div>
             <h4 class="text-2xl font-extrabold text-indigo-950">Iscrizione Completata!</h4>
-            <p class="text-slate-600 text-sm">Riceverai un messaggio all'indirizzo e-mail indicato contenente la ricevuta PDF ufficiale e il codice d'accredito da mostrare all'ingresso della scuola.</p>
+            <p class="text-slate-600 text-sm">Riceverai un messaggio all'indirizzo e-mail indicato contenente il tuo <strong>Pass di Ammissione Ufficiale</strong> in formato PDF con il codice d'accredito da mostrare all'ingresso della scuola.</p>
             <div class="bg-slate-50 p-4 rounded-2xl inline-block border border-slate-200">
-              <p class="text-xs text-slate-500 font-bold uppercase">Il tuo Codice Unico</p>
+              <p class="text-xs text-slate-500 font-bold uppercase">Il tuo Codice Unico d'Ammissione</p>
               <p id="successRegCode" class="text-3xl font-mono font-bold text-sky-600 mt-1">-</p>
             </div>
             <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md">Torna alla Home</button>
           </div>
         </div>
 
-        <!-- Sezione Dettagliata Percorsi Scolastici (Spostata Sotto) -->
-        <div class="space-y-6">
+        <!-- SEZIONE DETTAGLIATA INDIRIZZI DI STUDIO (Posizionata sopra le FAQ) -->
+        <div class="space-y-6 pt-8">
           <h3 class="text-2xl font-extrabold text-indigo-950 flex items-center gap-2"><i data-lucide="graduation-cap" class="text-sky-500"></i> I Nostri Indirizzi di Studio</h3>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- LSA -->
@@ -360,17 +360,17 @@
           </div>
         </div>
 
-        <!-- FAQ (DOMANDE FREQUENTI) SOTTO LA SELEZIONE DELLE DATE -->
+        <!-- FAQ (DOMANDE FREQUENTI) POSIZIONATE IN BASSO DOPO GLI INDIRIZZI -->
         <div class="space-y-6 pt-6">
           <h3 class="text-2xl font-bold text-indigo-950 flex items-center gap-2"><i data-lucide="help-circle" class="text-sky-500"></i> Domande Frequenti</h3>
           <div class="grid md:grid-cols-2 gap-4">
             <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm">
               <h5 class="font-extrabold text-indigo-950 text-sm">Cosa ricevo subito dopo l'iscrizione?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-medium">Riceverai immediatamente via e-mail il tuo <strong>Pass di Benvenuto e Ingresso</strong> in formato PDF. Mostra il QR Code contenuto sul tuo smartphone all'ingresso dell'istituto per effettuare l'accredito immediato del tuo nucleo familiare.</p>
+              <p class="text-xs text-slate-600 leading-relaxed font-medium">Riceverai immediatamente via e-mail il tuo <strong>Pass di Ammissione Ufficiale</strong> in formato PDF. Mostra il QR Code sul tuo smartphone all'ingresso dell'istituto per effettuare l'accredito d'ingresso immediato.</p>
             </div>
             <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm">
               <h5 class="font-extrabold text-indigo-950 text-sm">Quando manderete l'attestato finale?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-medium">Il sistema invia in automatico l'<strong>Attestato di Presenza e Partecipazione</strong> al termine dell'evento visitato. Insieme a questa email, manderemo anche il <strong>Questionario di Gradimento</strong>. Compilarlo richiede solo 1 minuto e ci aiuta a migliorare!</p>
+              <p class="text-xs text-slate-600 leading-relaxed font-medium">Il sistema invia in automatico il <strong>Certificato Finale Conclusivo e Attestato di Ringraziamento</strong> al termine dell'evento visitato. Insieme a questa e-mail, manderemo anche il <strong>Questionario di Gradimento</strong>.</p>
             </div>
             <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm">
               <h5 class="font-extrabold text-indigo-950 text-sm">Posso registrarmi a più indirizzi nello stesso orario?</h5>
@@ -378,7 +378,7 @@
             </div>
             <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm">
               <h5 class="font-extrabold text-indigo-950 text-sm">Come posso cancellare o modificare una prenotazione?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-medium">Usa la funzione <strong>Annulla</strong> nella barra di navigazione in alto inserendo il tuo codice univoco. Se invece vuoi modificare i dati, effettua l'annullamento e procedi a una nuova registrazione sullo slot di tuo interesse.</p>
+              <p class="text-xs text-slate-600 leading-relaxed font-medium">Usa la funzione <strong>Annulla</strong> nella barra di navigazione in alto inserendo il tuo codice unico. Se invece vuoi modificare i dati, effettua l'annullamento e procedi a una nuova registrazione sullo slot di tuo interesse.</p>
             </div>
           </div>
         </div>
@@ -436,8 +436,8 @@
                       <th class="p-4 border-r border-indigo-900">Stato Check-In</th>
                       <th class="p-4 border-r border-indigo-900">Studente & Contatti</th>
                       <th class="p-4 border-r border-indigo-900">Indirizzo Prenotato</th>
-                      <th class="p-4 border-r border-indigo-900 text-center">Fase 1: Benvenuto</th>
-                      <th class="p-4 border-r border-indigo-900 text-center">Fase 2: Partecipazione</th>
+                      <th class="p-4 border-r border-indigo-900 text-center">Fase 1: Ammissione</th>
+                      <th class="p-4 border-r border-indigo-900 text-center">Fase 2: Certificato Finale</th>
                       <th class="p-4 text-center">Azioni Flusso</th>
                     </tr>
                   </thead>
@@ -489,10 +489,10 @@
             <div id="tabSettings" class="hidden grid md:grid-cols-2 gap-8">
               <div class="space-y-6">
                 <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-                  <h3 class="font-black text-indigo-950 mb-2">Pianificazione Promemoria d'Ingresso</h3>
+                  <h3 class="font-black text-indigo-950 mb-2">Pianificazione Invio Automatico</h3>
                   <div class="flex gap-2 mb-2">
                     <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border-2 border-indigo-950 font-black text-indigo-950 text-lg" value="7">
-                    <span class="py-2 text-xs font-bold text-slate-700">Giorni prima dell'evento per l'invio del promemoria (Pass d'Ingresso)</span>
+                    <span class="py-2 text-xs font-bold text-slate-700">Giorni prima dell'evento per l'invio del Pass d'Ammissione</span>
                   </div>
                   <button onclick="saveReminderDays()" class="px-4 py-2 bg-indigo-900 text-white rounded-xl text-xs font-black uppercase tracking-wide">Salva Configurazione</button>
                 </div>
@@ -595,11 +595,11 @@
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec";
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec";
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbx8KLoNmY9YcjXhi1KFYkqv0WsGT5gqDQchKe6_IxpVpgBWG7taD2Z-AvbkTtGGLOnxJw/exec";
-    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz1ONNt7aHsI4-1F6SB5cRhzxLv_LvkXeZWMipsdGmnjmpWs3CGvBSmY1Gkdw0tFcTz5A/exec";
+    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbx_jYDc29asBgxLBe_21hqEAJUcCiujmz0aCork-BenWefP3vAl7JMUZJbS8_Zcl5Kydg/exec";
 
     let state = {
       user: null, currentView: 'home', isAdminAuthed: false,
-      settings: { reminderDaysBefore: 7, bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. Al termine dell'evento manderemo i certificati ufficiali e un questionario di gradimento!" },
+      settings: { reminderDaysBefore: 7, bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. Al termine dell'evento riceverete il Certificato Finale Conclusivo e un questionario di gradimento!" },
       dates: [], registrations: [], selectedDate: null, html5QrcodeScanner: null, isWebcamScanning: false
     };
 
@@ -733,7 +733,7 @@
       }
 
       container.classList.remove('hidden');
-      let html = '<h4 class="font-extrabold text-indigo-950 mb-2 flex items-center gap-2"><i data-lucide="timer" class="w-5 h-5"></i> Stato Sessioni Odierne (Auto-Invio Uscita a +2h 10m)</h4>';
+      let html = '<h4 class="font-extrabold text-indigo-950 mb-2 flex items-center gap-2"><i data-lucide="timer" class="w-5 h-5"></i> Stato Sessioni Odierne (Invio Automatico Attestato a +2h 10m)</h4>';
 
       todaysSessions.forEach(session => {
         const timeMatch = (session.timeSlot || '').match(/(\d{2}):(\d{2})/);
@@ -771,7 +771,7 @@
         return;
       }
       window.processedSessions[sessionId] = true;
-      showToast("Invio automatico attestati d'uscita in corso...", "info");
+      showToast("Invio automatico certificati conclusivi in corso...", "info");
 
       for (const reg of regs) {
         try {
@@ -816,7 +816,7 @@
     }
     function drawQRCode(docObj, code, x, y) { try { const qr = new QRious({value: code, size: 200, level: 'H'}); docObj.addImage(qr.toDataURL('image/png'), 'PNG', x, y, 32, 32); } catch(e){} }
 
-    // --- COMPILAZIONE GRAFICA DEGLI ATTESTATI ARTISTICI (AI CANVAS STYLE) ---
+    // --- COVERS ENTRATA IN "PASS DI AMMISSIONE" E USCITA IN "CERTIFICATO FINALE CONCLUSIVO" ---
     async function generateReceiptPDF(data, code, type='entrata') {
       const { jsPDF } = window.jspdf;
       const p = new jsPDF();
@@ -856,7 +856,6 @@
       p.setFillColor(lightBgColor[0], lightBgColor[1], lightBgColor[2]);
       p.rect(0, 0, 210, 297, 'F');
 
-      // Ellissi sfumate per creare un effetto di sfondo fluido
       for (let i = 1; i <= 6; i++) {
         const col = getBlendedColor(primaryColor, 0.015 * i, lightBgColor);
         p.setFillColor(col[0], col[1], col[2]);
@@ -894,10 +893,10 @@
 
       if (type === 'entrata' || type === 'conferma') {
         p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(14);
-        p.text("PASS DI INGRESSO E BENVENUTO UFFICIALE", 105, 72, {align: "center"});
+        p.text("PASS DI AMMISSIONE E BENVENUTO UFFICIALE", 105, 72, {align: "center"});
 
         p.setTextColor(15, 23, 42); p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("Accogliamo con immenso piacere lo studente", 105, 82, {align: "center"});
+        p.text("Abilitiamo formalmente all'ingresso lo studente", 105, 82, {align: "center"});
         p.setFont("Helvetica", "bold"); p.setFontSize(19);
         p.text(`${(data.cognome || '').toUpperCase()} ${(data.nome || '').toUpperCase()}`, 105, 94, {align: "center"});
 
@@ -922,7 +921,7 @@
         if (data.supportRequired) {
           p.setFillColor(254, 242, 242); p.setDrawColor(239, 68, 68); p.rect(16, 155, 178, 9, 'FD');
           p.setTextColor(185, 28, 28); p.setFont("Helvetica", "bold"); p.setFontSize(8.5);
-          p.text("PRE-ACCREDITO ATTIVATO: AREA COLLOQUIO PERSONALIZZATO / INCLUSIONE", 105, 161, {align: "center"});
+          p.text("PASS ATTIVATO: AREA COLLOQUIO PERSONALIZZATO / INCLUSIONE", 105, 161, {align: "center"});
         }
 
         p.setFillColor(255, 255, 255); p.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.rect(16, 170, 178, 44, 'FD');
@@ -939,34 +938,33 @@
         p.text(`"${quote}"`, 105, 233, {align: "center", maxWidth: 165});
 
         p.setTextColor(71, 85, 105); p.setFont("Helvetica", "italic"); p.setFontSize(9.5);
-        p.text("Esibisci questo Pass all'ingresso per consentire l'accredito immediato del tuo nucleo familiare.", 105, 252, {align: "center"});
+        p.text("Esibisci questo Pass d'Ammissione all'ingresso per consentire l'accredito immediato.", 105, 252, {align: "center"});
       } else {
-        // ATTESTATO DI PRESENZA / PARTECIPAZIONE
+        // ATTESTATO DI RINGRAZIAMENTO E CERTIFICATO FINALE CONCLUSIVO
         p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(16);
-        p.text("ATTESTATO DI PRESENZA E PARTECIPAZIONE", 105, 72, {align: "center"});
+        p.text("CERTIFICATO FINALE CONCLUSIVO DI PARTECIPAZIONE", 105, 72, {align: "center"});
 
         p.setTextColor(15, 23, 42); p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("L'Istituto Primo Levi di Seregno certifica e ringrazia con stima", 105, 82, {align: "center"});
+        p.text("L'Istituto ringrazia vivamente lo studente", 105, 82, {align: "center"});
         p.setFont("Helvetica", "bold"); p.setFontSize(22);
         p.text(`${(data.cognome || '').toUpperCase()} ${(data.nome || '').toUpperCase()}`, 105, 96, {align: "center"});
 
         p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("per la partecipazione alle attivita' laboratoriali durante l'Open Day d'istituto.", 105, 107, {align: "center"});
+        p.text("per la partecipazione attiva e con merito all'Open Day d'istituto.", 105, 107, {align: "center"});
 
         p.setFillColor(255, 255, 255); p.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setLineWidth(0.4);
         p.rect(16, 114, 178, 48, 'FD');
 
         p.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.rect(16, 114, 178, 8, 'F');
         p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-        p.text("LA CONOSCENZA E' IL TUO FUTURO", 105, 120, {align: "center"});
+        p.text("IL FUTURO APPARTIENE A CHI SI PREPARA OGGI", 105, 120, {align: "center"});
 
         p.setTextColor(15, 23, 42); p.setFont("Helvetica", "italic"); p.setFontSize(10.5);
         p.text(`"${quote}"`, 105, 134, {align: "center", maxWidth: 165});
 
         p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(8.5);
-        p.text(`Percorso di studio approfondito: ${pathName}`, 105, 154, {align: "center"});
+        p.text(`Percorso concluso con successo: ${pathName}`, 105, 154, {align: "center"});
 
-        // Sigillo dorato accademico disegnato al tratto
         const mx = 60, my = 195;
         p.setFillColor(251, 191, 36); p.circle(mx, my, 18, 'F');
         p.setFillColor(245, 158, 11); p.circle(mx, my, 15, 'F');
@@ -983,7 +981,6 @@
         p.triangle(mx - 8, my + 13, mx - 15, my + 32, mx - 2, my + 13, 'F');
         p.triangle(mx + 8, my + 13, mx + 15, my + 32, mx + 2, my + 13, 'F');
 
-        // Firme formali d'ufficio
         p.setTextColor(15, 23, 42); p.setFont("Helvetica", "bold"); p.setFontSize(10);
         p.text("Il Docente Referente", 145, 180, {align: "center"});
         p.setFont("Courier", "italic"); p.setFontSize(12);
@@ -993,13 +990,13 @@
         p.line(115, 198, 175, 198);
 
         p.setTextColor(71, 85, 105); p.setFont("Helvetica", "italic"); p.setFontSize(9.5);
-        p.text("L'attestato di partecipazione certifica la presenza ai fini del portfolio delle competenze.", 105, 246, {align: "center"});
+        p.text("Questo attestato finale certifica la presenza ai fini del portfolio delle competenze.", 105, 246, {align: "center"});
       }
 
       p.text("Via Luigi Briantina, 68 - Seregno (MB). Tel: 0362 231122 - segreteria@itscg-leviseregno.it", 105, 252, {align: "center"});
       p.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.rect(12, 268, 186, 17, 'F');
       p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-      p.text("DISEGNA IL TUO FUTURO, COSTRUISCI IL TUO SUCCESSO SULL'ESPERIENZA", 105, 278.5, {align: "center"});
+      p.text("DISEGNA IL TUO FUTURO, COSTRUISCI IL TUO SUCCESSO CON IL PRIMO LEVI", 105, 278.5, {align: "center"});
 
       return p.output('datauristring').split(',')[1];
     }
@@ -1016,9 +1013,8 @@
         const rSnap = await getDoc(rRef);
         if (rSnap.exists()) {
           const reg = rSnap.data();
-          // Impedisce check-in se già entrato o ammesso (Usa e Getta)
           if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
-             throw new Error(`Codice QR già scansionato per ${reg.cognome} ${reg.nome}!`);
+             throw new Error(`Codice QR già scansionato per lo studente ${reg.cognome} ${reg.nome}!`);
           }
           await updateDoc(rRef, { status: 'Entrato' });
           playAudioTone(true);
@@ -1076,7 +1072,6 @@
     window.closeBookingForm = () => { state.selectedDate = null; document.getElementById('bookingCard').classList.add('hidden'); renderHomeDates(); }
     window.resetBookingFlow = () => { closeBookingForm(); document.getElementById('successCard').classList.add('hidden'); document.getElementById('bookingForm').reset(); }
 
-    // --- SALVATAGGIO ISCRIZIONI SUL DATABASE (CON STATO INIZIALE ISCRITTO) ---
     window.handleBooking = async e => {
       e.preventDefault(); const btn = document.getElementById('submitBookingBtn'); if (btn.disabled) return;
       if (!document.getElementById('privacyConsent').checked) return showToast("Accetta la privacy scolastica.", "error");
@@ -1096,7 +1091,6 @@
       
       try {
         const pdf = await generateReceiptPDF(payload, code, 'entrata');
-        // Stato impostato esplicitamente a 'Iscritto' (Stato iniziale di registrazione)
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { ...payload, code, dateId:sess.id, dateStr:sess.date, timeSlot:sess.timeSlot, timestamp:Date.now(), reminderSent:false, status:'Iscritto', certificate1Sent:false, certificate2Sent:false });
         try { 
           await fetch(CONFIRM_SCRIPT_URL, {
@@ -1106,7 +1100,7 @@
             body:JSON.stringify({nome:n, cognome:c, email:m, codice_prenotazione:code, pdfBase64:pdf, type:'conferma'})
           }); 
         } catch(e){}
-        document.getElementById('bookingCard').classList.add('hidden'); document.getElementById('successCard').classList.remove('hidden'); document.getElementById('successRegCode').innerText=code; showToast("Iscrizione registrata con successo!", "success");
+        document.getElementById('bookingCard').classList.add('hidden'); document.getElementById('successCard').classList.remove('hidden'); document.getElementById('successRegCode').innerText=code; showToast("Iscrizione completata, pass d'ammissione generato!", "success");
       } catch(err) { showToast("Errore di rete.", "error"); btn.disabled=false; btn.innerText="Conferma"; }
     }
 
@@ -1126,7 +1120,7 @@
           headers:{"Content-Type":"text/plain"}, 
           body:JSON.stringify({nome:reg.nome, cognome:reg.cognome, email:reg.email, codice_prenotazione:reg.code, pdfBase64:pdf, type:'conferma'})
         });
-        showToast("E-mail di recupero inviata!", "success"); closeModal('recoveryModal');
+        showToast("Pass d'Ammissione inviato via mail!", "success"); closeModal('recoveryModal');
       } catch(e) { showToast("Errore di invio.", "error"); } finally { btn.disabled=false; btn.innerText="Invia"; document.getElementById('recoveryInput').value=''; }
     }
 
@@ -1173,12 +1167,10 @@
       const totalAlunni = state.registrations.reduce((s, r) => s + (parseInt(r.numAlunni) || 1), 0);
       const totalAccompagnatori = state.registrations.reduce((s, r) => s + (parseInt(r.accompanyingPersons) || 0), 0);
 
-      // Conteggi stati di check-in
       const countIscritto = state.registrations.filter(r => !r.status || r.status === 'Iscritto').length;
       const countEntrato = state.registrations.filter(r => r.status === 'Entrato').length;
       const countAmmesso = state.registrations.filter(r => r.status === 'Ammesso').length;
 
-      // Popolarità Indirizzi
       const pathCounts = { 'LSA': 0, 'RIM': 0, 'LOG': 0, 'CAT': 0, 'SM': 0 };
       state.registrations.forEach(r => {
         const path = (r.studyPath || '').toUpperCase();
@@ -1194,8 +1186,6 @@
 
       container.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          
-          <!-- Card Presenze Generali -->
           <div class="p-4 bg-indigo-950 text-white rounded-2xl border-2 border-indigo-950 flex flex-col justify-between shadow-sm">
             <div>
               <span class="text-[10px] font-black uppercase text-sky-300">Presenze Totali Registrate</span>
@@ -1208,7 +1198,6 @@
             </div>
           </div>
 
-          <!-- Card Flusso Accoglienza -->
           <div class="p-4 bg-white text-indigo-950 rounded-2xl border-2 border-indigo-950 flex flex-col justify-between shadow-sm">
             <div>
               <span class="text-[10px] font-black uppercase text-slate-500">Stato Check-In Ingressi</span>
@@ -1229,7 +1218,6 @@
             </div>
           </div>
 
-          <!-- Card Popolarità Indirizzi (Grafico a barre) -->
           <div class="p-4 bg-white text-indigo-950 rounded-2xl border-2 border-indigo-950 flex flex-col justify-between shadow-sm">
             <div>
               <span class="text-[10px] font-black uppercase text-slate-500">Iscrizioni per Indirizzo di Studio</span>
@@ -1256,20 +1244,16 @@
               </div>
             </div>
           </div>
-
         </div>
       `;
     }
 
-    // --- STREAMING_CHUNK: Implementazione del motore di rendering sicuro e difensivo per gli iscritti... ---
-    // --- RENDERING TABELLA AD ALTISSIMO CONTRASTO VISIVO CON STRUTTURA FLUSSO ---
     window.renderRegistrations = () => {
       const tb = document.getElementById('registrationsTableBody'); if(!tb) return;
       
       const q = (document.getElementById('searchBar')?.value || '').toLowerCase().trim(); 
       const f = document.getElementById('filterDateSelect')?.value || 'all';
       
-      // Filtra in modo sicuro assicurando la presenza di stringhe
       const filtered = state.registrations.filter(r => {
         if (!r) return false;
         const nomeStr = (r.nome || '').toString().toLowerCase();
@@ -1282,7 +1266,6 @@
         return matchesQuery && matchesFilter;
       });
 
-      // Aggiorna anche il pannello analitico dei grafici
       renderAdminStatistics();
 
       if (filtered.length === 0) {
@@ -1316,20 +1299,18 @@
           statusBadge = '<span class="bg-slate-100 text-slate-800 border-2 border-slate-500 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 justify-center"><i data-lucide="user-check" class="w-4 h-4"></i>ISCRITTO</span>';
         }
 
-        // Pulsanti interattivi di Invio e Rinvio manuale
         const c1Html = `<button onclick="sendCertificateManual('${rId}', 'entrata')" class="w-full ${r.certificate1Sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-indigo-900 hover:bg-indigo-950'} text-white font-extrabold border border-slate-300 px-2 py-1.5 rounded-lg text-[10px] uppercase block flex flex-col items-center justify-center gap-0.5 shadow-sm">
-          <span>${r.certificate1Sent ? 'Rinvia Benvenuto' : 'Invia Benvenuto'}</span>
+          <span>${r.certificate1Sent ? 'Rinvia Ammissione' : 'Invia Ammissione'}</span>
           ${r.certificate1Sent ? '<span class="text-[9px] opacity-90 font-normal">Inviato ✓</span>' : ''}
         </button>`;
 
         const c2Html = (rStatus === 'Ammesso' || rStatus === 'Entrato')
           ? `<button onclick="sendCertificateManual('${rId}', 'uscita')" class="w-full ${r.certificate2Sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'} text-white font-extrabold border border-slate-300 px-2 py-1.5 rounded-lg text-[10px] uppercase block flex flex-col items-center justify-center gap-0.5 shadow-sm">
-              <span>${r.certificate2Sent ? 'Rinvia Attestato' : 'Invia Attestato'}</span>
+              <span>${r.certificate2Sent ? 'Rinvia Certificato' : 'Invia Certificato'}</span>
               ${r.certificate2Sent ? '<span class="text-[9px] opacity-90 font-normal">Inviato ✓</span>' : ''}
             </button>`
           : '<span class="text-slate-400 text-xs italic block text-center">-</span>';
 
-        // Pulsanti avanzamento flusso stato
         let flowButton = '';
         if (rStatus === 'Iscritto') {
           flowButton = `<button onclick="advanceRegistrationStatus('${rId}', 'Entrato')" class="text-xs bg-blue-900 hover:bg-blue-950 text-white border border-blue-950 px-2 py-1.5 rounded-lg font-black w-full text-center flex items-center justify-center gap-1"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Registra Ingresso</button>`;
@@ -1371,7 +1352,6 @@
 
     function syncAdminView() { renderRegistrations(); renderAdminDatesList(); }
     
-    // --- GESTIONE AVANZAMENTO STATO DI ACCREDITO ---
     window.advanceRegistrationStatus = async (id, nextStatus) => {
       const reg = state.registrations.find(r => (r.id === id || r.code === id)); if(!reg) return;
       try {
@@ -1380,7 +1360,6 @@
         if (nextStatus === 'Entrato') {
           await sendCertificateEmailAuto(reg, 'entrata');
         } else if (nextStatus === 'Ammesso') {
-          // Invio automatico della pergamena finale con questionario di gradimento
           await sendCertificateEmailAuto(reg, 'uscita');
         }
       } catch(e) {
@@ -1388,10 +1367,9 @@
       }
     };
 
-    // --- FUNZIONE INVIO MANUALE ATTESTATO ---
     window.sendCertificateManual = (id, type) => {
       const reg = state.registrations.find(r => (r.id === id || r.code === id)); if(!reg) return;
-      const tLabel = type === 'entrata' ? "Pass di Benvenuto d'Ingresso" : "Pergamena di Presenza d'Uscita (con Questionario di Gradimento)";
+      const tLabel = type === 'entrata' ? "Pass di Ammissione Ufficiale d'Ingresso" : "Certificato Finale e Attestato di Ringraziamento d'Uscita (con Questionario)";
       
       showAdminConfirm("Invia Certificato", `Confermi l'invio manuale del ${tLabel} a ${reg.nome} ${reg.cognome}?`, false, async () => {
         try {
@@ -1441,11 +1419,9 @@
       });
     }
 
-    // --- STREAMING_CHUNK: Creazione file excel csv formattato con punto e virgola per Microsoft Excel... ---
-    // --- ESPORTAZIONE IN EXCEL FORMATO CON DELIMITATORE ";" ---
     window.exportToCSV = () => {
-      const r = state.registrations.map(x=>`"${x.code || ''}";"${x.status || 'Iscritto'}";"${x.cognome || ''}";"${x.nome || ''}";"${x.totalPeople || 1}";"${x.studyPath || ''}";"${x.email || ''}";"${x.telefono || ''}";"${x.certificate1Sent?'Spedita':'No'}";"${x.certificate2Sent?'Spedita':'No'}"`);
-      const b = new Blob(["\uFEFFCodice;Stato;Cognome;Nome;Persone;Indirizzo;Email;Telefono;Pergamena_Ingresso;Pergamena_Uscita\n"+r.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const r = state.registrations.map(x=>`"${x.code || ''}";"${x.status || 'Iscritto'}";"${x.cognome || ''}";"${x.nome || ''}";"${x.totalPeople || 1}";"${x.studyPath || ''}";"${x.email || ''}";"${x.telefono || ''}";"${x.certificate1Sent?'Spedito':'No'}";"${x.certificate2Sent?'Spedito':'No'}"`);
+      const b = new Blob(["\uFEFFCodice;Stato;Cognome;Nome;Persone;Indirizzo;Email;Telefono;Pass_Ammissione;Certificato_Finale\n"+r.join('\n')], {type:'text/csv;charset=utf-8;'});
       const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`iscritti_openday_${Date.now()}.csv`; a.click();
     }
     window.handleClearAllRegistrations = () => showAdminConfirm("Svuota Database", "Sei sicuro di voler svuotare interamente l'archivio iscritti?", true, async () => {
@@ -1493,7 +1469,6 @@
     }
     window.handleManualBarcodeSubmit = e => { e.preventDefault(); const i = document.getElementById('manualBarcodeField'); processScannedCode(i.value); i.value=''; i.focus(); }
 
-    // --- LOGICA DI INTERCETTAZIONE BARCODE GLOBALE CON PISTOLA USB ---
     document.addEventListener("keydown", function(e) {
       if (state.currentView === 'admin' && document.getElementById('tabScanner').classList.contains('hidden') === false) {
         const manualField = document.getElementById('manualBarcodeField');
@@ -1510,7 +1485,6 @@
       const resC = document.getElementById('scanResultCard'), resS = document.getElementById('scanResultSuccess'), resE = document.getElementById('scanResultEmpty');
 
       if (reg) {
-        // Logica rigida monouso per lo scanner
         if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
           playAudioTone(false); showToast("QR CODE GIÀ SCANNERIZZATO!", "error");
           if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
@@ -1528,7 +1502,7 @@
         } catch(e){}
         if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
         resC.className = "glass-card p-6 rounded-3xl border-4 border-emerald-600 bg-emerald-50 text-indigo-950 text-left font-bold animate-pulse";
-        document.getElementById('scanFeedbackBadge').innerText = "ACCESSO AUTORIZZATO - BENVENUTO";
+        document.getElementById('scanFeedbackBadge').innerText = "ACCESSO AUTORIZZATO - PASS ATTIVATO";
         document.getElementById('scanFeedbackBadge').className = "inline-block bg-emerald-700 text-white font-black px-3 py-1 rounded-full text-xs mb-2";
         document.getElementById('scanResultName').innerText = `${reg.cognome.toUpperCase()} ${reg.nome}`;
         document.getElementById('scanResultPath').innerText = `${reg.studyPath} (Posti accreditati: ${reg.totalPeople})`;
@@ -1561,7 +1535,7 @@
         if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
            playAudioTone(false); fb.className = "p-4 rounded-xl font-bold bg-amber-100 text-amber-800 border-2 border-amber-500"; fb.innerText = `GIÀ IN SCUOLA: ${reg.nome}`; return;
         }
-        playAudioTone(true); fb.className = "p-4 rounded-xl font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-500 animate-bounce"; fb.innerText = `BENVENUTO: ${reg.nome}`;
+        playAudioTone(true); fb.className = "p-4 rounded-xl font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-500 animate-bounce"; fb.innerText = `AMMESSO: ${reg.nome}`;
         try { 
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {status:'Entrato'}); 
           await sendCertificateEmailAuto(reg, 'entrata'); 
