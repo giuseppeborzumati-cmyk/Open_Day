@@ -11,7 +11,7 @@
   <!-- Google Fonts - Outfit & Plus Jakarta per un'eccellente leggibilità -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;805&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- Icone Lucide per elementi visuali moderni -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,92 +24,103 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #eff6ff 100%);
+      background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 50%, #ecfdf5 100%);
       overflow-x: hidden;
       min-height: 100vh;
     }
     h1, h2, h3, h4, .font-outfit { font-family: 'Outfit', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
     
-    /* Animazione fluida delle bolle d'acqua di sfondo (molto discrete, eleganti, dai colori azzurri) */
+    /* Animazione fluida delle bolle d'acqua di sfondo con riflesso */
     @keyframes driftAllAround {
-      0%, 100% { transform: translate(0px, 0px) scale(0.9) rotate(0deg); }
-      25% { transform: translate(var(--moveX), var(--moveY)) scale(1.05) rotate(45deg); }
-      50% { transform: translate(calc(var(--moveX) * -0.4), calc(var(--moveY) * 0.8)) scale(0.95) rotate(90deg); }
-      75% { transform: translate(calc(var(--moveX) * 0.8), calc(var(--moveY) * -0.4)) scale(1.1) rotate(135deg); }
+      0%, 100% { transform: translate(0px, 0px) scale(0.85) rotate(0deg); }
+      25% { transform: translate(var(--moveX), var(--moveY)) scale(1.1) rotate(90deg); }
+      50% { transform: translate(calc(var(--moveX) * -0.5), calc(var(--moveY) * 1.1)) scale(0.9) rotate(180deg); }
+      75% { transform: translate(calc(var(--moveX) * 1.2), calc(var(--moveY) * -0.6)) scale(1.15) rotate(270deg); }
     }
 
     .bubble-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; z-index: 0; }
     .bubble {
       position: absolute;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.6) 20%, rgba(56, 189, 248, 0.25) 50%, rgba(59, 130, 246, 0.1) 80%, rgba(255, 255, 255, 0) 100%);
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.55) 15%, rgba(14, 165, 233, 0.25) 45%, rgba(236, 72, 153, 0.15) 70%, rgba(255, 255, 255, 0) 100%);
       border-radius: 50%;
-      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.95), inset -3px -3px 10px rgba(56, 189, 248, 0.3), inset 3px 3px 10px rgba(59, 130, 246, 0.15), 0 6px 18px rgba(37, 99, 235, 0.06);
-      backdrop-filter: blur(0.5px); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply;
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.9), inset -5px -5px 15px rgba(56, 189, 248, 0.35), inset 5px 5px 15px rgba(244, 114, 182, 0.3), 0 8px 25px rgba(14, 165, 233, 0.1);
+      backdrop-filter: blur(1px); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply;
+      border: 1px solid rgba(255,255,255,0.6);
     }
-    .bubble img, .bubble svg { width: 50%; height: 50%; object-fit: contain; opacity: 0.22; pointer-events: none; }
+    .bubble .bubble-monogram { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; color: #0284c7; opacity: 0.35; user-select: none; }
 
-    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 4px 24px 0 rgba(30, 41, 59, 0.04); }
-    .glass-nav { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255, 255, 255, 0.75); }
+    .glass-card { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.04); }
+    .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.6); }
 
-    /* Animazione laser dello scanner */
-    .laser-line { position: absolute; width: 100%; height: 4px; background-color: #ef4444; box-shadow: 0 0 12px #f87171, 0 0 24px #ef4444; animation: laserMove 2s infinite ease-in-out; z-index: 10; }
-    @keyframes laserMove { 0%, 100% { top: 8%; } 50% { top: 92%; } }
+    /* Laser scanner webcam */
+    .laser-line { 
+      position: absolute; 
+      width: 100%; 
+      height: 3px; 
+      background-color: #ef4444; 
+      box-shadow: 0 0 15px #f87171, 0 0 30px #ef4444; 
+      animation: laserMove 2s infinite ease-in-out; 
+      z-index: 10; 
+    }
+    @keyframes laserMove { 
+      0%, 100% { top: 12%; } 
+      50% { top: 88%; } 
+    }
 
-    /* Animazione shake per messaggi di errore */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
     .animate-shake { animation: shake 0.4s ease-in-out; }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
 
-  <!-- Bolle decorative di sfondo azzurre e cangianti -->
+  <!-- Sfondo animato fluido delle bolle istituzionali -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
-  <!-- INTESTAZIONE BARRA DI NAVIGAZIONE -->
+  <!-- INTERFACCIA: SITO PUBBLICO GENERALE -->
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
-    <nav class="glass-nav sticky top-0 z-40 px-5 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3 shadow-sm">
+    <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
-        <div class="relative w-11 h-11 flex items-center justify-center">
-          <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-11 h-11 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-md border border-white/80\'>PL</div>';" class="w-11 h-11 object-contain rounded-xl shadow-md border border-white/80">
+        <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm">
+          <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
         </div>
         <div>
-          <h1 class="text-xl font-bold text-indigo-950 leading-none">ITSCG "Primo Levi"</h1>
-          <p class="text-xs text-sky-600 font-bold uppercase tracking-wider mt-0.5">Seregno (MB)</p>
+          <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
+          <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
         </div>
       </div>
       
       <div class="flex flex-wrap items-center justify-center gap-2">
-        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-black transition">
-          <i data-lucide="calendar" class="w-4 h-4"></i><span>PRENOTA POSTO</span>
+        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
+          <i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota Posto</span>
         </button>
-        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black transition">
-          <i data-lucide="search" class="w-4 h-4"></i><span>RECUPERA PRENOTAZIONE</span>
+        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
+          <i data-lucide="search" class="w-4 h-4"></i><span>Recupera Pass</span>
         </button>
-        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-xs font-black transition">
-          <i data-lucide="trash-2" class="w-4 h-4"></i><span>ANNULLA PRENOTAZIONE</span>
+        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
+          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Iscrizione</span>
         </button>
         <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
-        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black transition shadow-sm uppercase">
+        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
           <i data-lucide="shield-alert" class="w-4 h-4"></i><span>Area Docenti</span>
         </button>
       </div>
     </nav>
 
-    <!-- Contenitore Notifiche Toast -->
+    <!-- Contenitore Notifiche Toast di Sistema -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- SEZIONE SITO HOME PRINCIPALE -->
-    <section id="sectionHome" class="space-y-6">
-      <main class="flex-grow container mx-auto px-4 py-6 max-w-5xl relative z-10 space-y-6">
-
-        <!-- RESTYLING: CENTRATO CON SINISTRA-DESTRA SENZA BLOCCO BLU SUPERIORE -->
+    <!-- MAIN HOME PAGE -->
+    <section id="sectionHome" class="space-y-8">
+      <main class="flex-grow container mx-auto px-4 py-6 max-w-5xl relative z-10 space-y-8">
+        
+        <!-- Benvenuto d'Istituto e Dettagli d'Incontro Sede -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
-          <!-- COLONNA SINISTRA: Benvenuto Istituzionale -->
           <div class="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl border border-white flex flex-col justify-center space-y-4">
             <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/50 uppercase tracking-wider self-start">
               Orientamento A.S. 2026/2027
@@ -122,16 +133,15 @@
             </p>
           </div>
 
-          <!-- COLONNA DESTRA: Informazioni Sede (Elegante, ad alto contrasto) -->
-          <div class="lg:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-6 rounded-3xl flex flex-col justify-between shadow-xl space-y-4 border border-indigo-950">
-            <div class="space-y-3.5">
-              <h4 class="text-sm font-black uppercase text-sky-400 tracking-wider flex items-center gap-2 border-b border-indigo-900 pb-2">
-                <i data-lucide="info" class="w-4 h-4"></i> Informazioni Sede d'Istituto
+          <div class="lg:col-span-5 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white p-6 rounded-3xl flex flex-col justify-between shadow-xl space-y-4 border border-indigo-950">
+            <div class="space-y-3">
+              <h4 class="text-sm font-black uppercase text-sky-400 tracking-wider flex items-center gap-2 border-b border-white/10 pb-2">
+                <i data-lucide="info" class="w-4 h-4"></i> Informazioni d'Istituto
               </h4>
               <ul class="text-xs space-y-2.5 font-bold text-slate-200">
                 <li class="flex items-start gap-2.5">
                   <i data-lucide="user" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                  <span>Referente Orientamento: Prof.ssa Mariagrazia Calabrese</span>
+                  <span>Referente Orientamento: Prof. ssa Mariagrazia Calabrese</span>
                 </li>
                 <li class="flex items-start gap-2.5">
                   <i data-lucide="map-pin" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
@@ -143,174 +153,181 @@
                 </li>
                 <li class="flex items-start gap-2.5">
                   <i data-lucide="award" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                  <span>Certificazione Ufficiale: Pass di Ammissione per l'ingresso e Certificato Finale Conclusivo all'uscita.</span>
+                  <span><b>Documenti Conclusivi:</b> Pass di Ammissione per l'ingresso e Certificato Finale Conclusivo all'uscita.</span>
                 </li>
                 <li class="flex items-start gap-2.5">
-                  <i data-lucide="message-square" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                  <span>Questionario di Gradimento: Allegato direttamente alla mail dell'attestato finale!</span>
+                  <i data-lucide="message-square" class="w-4 h-4 text-sky-300 shrink-0 mt-0.5"></i>
+                  <span><b>Questionario di Gradimento:</b> Allegato direttamente alla mail dell'attestato finale!</span>
                 </li>
               </ul>
             </div>
-            <div class="pt-3 border-t border-indigo-900/60 flex items-center justify-between text-[9px] text-slate-400 font-bold">
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[9px] text-slate-400 font-bold">
               <span>ITSCG "Primo Levi" Seregno</span>
-              <span>Cod. Mecc: MBTD430001</span>
+              <span>Codice Meccanografico: MBTD430001</span>
             </div>
           </div>
         </div>
 
-        <!-- SEZIONE GRUPPO DI SELEZIONE DATE (Unificato a Calcolo Unico) -->
-        <div id="datesSection" class="space-y-4 scroll-mt-20 animate-in fade-in duration-300">
+        <!-- Sezione Date Disponibili (Grouped) -->
+        <div id="datesSection" class="space-y-4 scroll-mt-20">
           <div class="text-center sm:text-left">
             <h3 class="text-2xl font-black text-indigo-950 font-outfit">Seleziona un Giorno Disponibile</h3>
-            <p class="text-xs text-slate-500 font-bold">Le sessioni d'indirizzo sono raggruppate per data per darti una panoramica chiara d'aula.</p>
+            <p class="text-xs text-slate-500 font-bold">Iscriviti alla sessione d'indirizzo d'aula. Posti calcolati complessivamente per turno d'aula.</p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="groupedDatesGrid">
-            <!-- Calcolato e popolarizzato dinamicamente con calcolo posti unificato -->
+            <!-- Popolato e raggruppato in modo automatico -->
           </div>
         </div>
 
-        <!-- MODULO FORM REGISTRAZIONE -->
+        <!-- Modulo Form di Prenotazione -->
         <div id="bookingSection" class="hidden max-w-xl mx-auto scroll-mt-24">
-          <div class="glass-card p-6 rounded-3xl border border-white space-y-4 shadow-xl">
+          <div class="glass-card p-6 rounded-3xl border border-white space-y-4 shadow-xl relative animate-in fade-in">
             <div class="flex justify-between items-start">
               <div>
-                <span class="inline-block py-0.5 px-2 text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 rounded uppercase">Step d'Iscrizione</span>
-                <h3 class="text-lg font-bold text-indigo-950 font-outfit mt-1">Completa Prenotazione</h3>
+                <span class="inline-block py-0.5 px-2 text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 rounded uppercase">Ammissione Immediata</span>
+                <h3 class="text-lg font-bold text-slate-900 font-outfit mt-1">Completa Prenotazione</h3>
               </div>
               <button onclick="cancelBookingProcess()" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-full transition">
                 <i data-lucide="x" class="w-4 h-4"></i>
               </button>
             </div>
 
-            <div class="p-3.5 bg-indigo-50/60 border border-indigo-100 rounded-2xl text-xs space-y-1 text-slate-700 font-bold">
-              <p class="text-indigo-950 text-sm font-black" id="lblBookingPath"></p>
-              <p id="lblBookingDate"></p>
-              <p class="text-indigo-600 font-semibold" id="lblBookingAula"></p>
+            <div class="p-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-xs space-y-1 text-slate-700 font-bold">
+              <p class="text-indigo-900 text-base font-black" id="lblBookingPath"></p>
+              <p id="lblBookingDate" class="text-indigo-600 font-bold text-xs"></p>
+              <p class="text-amber-700 font-bold" id="lblBookingAula"></p>
             </div>
 
-            <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-3 font-semibold text-xs">
+            <!-- Avviso doppia prenotazione e differenti account -->
+            <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-800 flex items-start gap-2.5 font-bold">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+              <span>Posso prenotare due eventi che non si sovrappongono nella stessa giornata? Sì, ma la doppia prenotazione deve essere eseguita con due account diversi.</span>
+            </div>
+
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4 font-semibold text-xs text-slate-600">
               <input type="hidden" id="formEventId">
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">Cognome Alunno *</label>
-                  <input required type="text" id="formCognome" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rossi">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Cognome Alunno *</label>
+                  <input required type="text" id="formCognome" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rossi">
                 </div>
                 <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">Nome Alunno *</label>
-                  <input required type="text" id="formNome" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Mario">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">Provenienza (Terza Media) *</label>
-                  <input required type="text" id="formProvenienza" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="es. Media Don Milani">
-                </div>
-                <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">E-mail del Genitore *</label>
-                  <input required type="email" id="formEmail" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="genitore@email.it">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Nome Alunno *</label>
+                  <input required type="text" id="formNome" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Mario">
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">Numero Alunni *</label>
-                  <input required type="number" min="1" max="5" id="formNumAlunni" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" value="1" oninput="recalcTotalSeats()">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Scuola di Provenienza *</label>
+                  <input required type="text" id="formProvenienza" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Don Milani Seregno">
                 </div>
                 <div class="space-y-1">
-                  <label class="text-[10px] font-black text-slate-500 uppercase">Numero Accompagnatori *</label>
-                  <input required type="number" min="0" max="8" id="formNumAccompagnatori" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" value="1" oninput="recalcTotalSeats()">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">E-mail del Genitore *</label>
+                  <input required type="email" id="formEmail" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="genitore@email.it">
                 </div>
               </div>
 
-              <div class="text-right text-[11px] text-slate-500 font-bold">Posti totali da riservare in aula: <span id="lblTotalFormSeats" class="text-indigo-900 text-sm font-black">2</span></div>
-
-              <div class="p-3 bg-sky-50/50 rounded-xl border border-sky-100 flex items-start gap-2.5">
-                <input type="checkbox" id="formSupportRequired" class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 mt-0.5">
-                <label for="formSupportRequired" class="text-[11px] text-slate-600 font-bold select-none cursor-pointer">Richiesta colloquio individuale per Inclusione / Supporto D.S.A. (fine incontro)</label>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Numero Alunni *</label>
+                  <input required type="number" min="1" max="5" id="formNumAlunni" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="recalcTotalSeats()">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Numero Accompagnatori *</label>
+                  <input required type="number" min="0" max="8" id="formNumAccompagnatori" class="w-full p-2.5 rounded-lg border bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="recalcTotalSeats()">
+                </div>
               </div>
 
-              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
-                <input required type="checkbox" id="formPrivacy" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5">
-                <label for="formPrivacy" class="text-[10px] text-slate-500 leading-normal select-none cursor-pointer">Dichiaro di aver preso visione dell'Informativa d'istituto sul trattamento dei dati personali ai sensi del GDPR (Regolamento UE 2016/679). *</label>
+              <div class="text-right text-[11px] text-slate-500 font-bold">Posti totali da riservare in aula: <span id="lblTotalFormSeats" class="text-indigo-600 text-sm font-black">2</span></div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                <input required type="checkbox" id="formPrivacy" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5 bg-white border-slate-300">
+                <label for="formPrivacy" class="text-[10px] text-slate-500 leading-normal select-none cursor-pointer">Preso visione dell'Informativa sul trattamento dei dati personali ai sensi del GDPR. *</label>
               </div>
 
               <div class="pt-2">
-                <div id="bookingLoader" class="hidden space-y-1 mb-2">
-                  <div class="flex justify-between items-center text-[10px] text-indigo-950 font-black">
+                <div id="bookingLoader" class="hidden space-y-2 mb-3">
+                  <div class="flex justify-between items-center text-[10px] text-indigo-700 font-black">
                     <span id="bookingLoaderText">Esecuzione...</span>
                     <span id="bookingLoaderPercent">0%</span>
                   </div>
-                  <div class="w-full bg-slate-100 rounded-full h-1">
-                    <div id="bookingLoaderBar" class="bg-indigo-600 h-1 transition-all" style="width:0%"></div>
+                  <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div id="bookingLoaderBar" class="bg-indigo-600 h-full transition-all duration-300" style="width:0%"></div>
                   </div>
                 </div>
 
-                <button type="submit" id="btnSubmitBooking" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl transition text-xs uppercase tracking-wider shadow">
-                  Conferma e Emetti Pass
+                <button type="submit" id="btnSubmitBooking" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold rounded-xl transition text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/10 animate-pulse">
+                  Conferma e Emetti Pass d'Ammissione
                 </button>
               </div>
             </form>
           </div>
         </div>
 
-        <!-- SEZIONE CONFERMA AVVENUTA REGISTRAZIONE CON DOWNLOAD PASS -->
-        <div id="confirmationSection" class="hidden max-w-md mx-auto scroll-mt-24">
-          <div class="glass-card rounded-3xl border border-white overflow-hidden shadow-2xl space-y-4">
-            <div class="bg-gradient-to-tr from-emerald-500 to-teal-600 p-5 text-white text-center space-y-1">
-              <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                <i data-lucide="check" class="w-5 h-5"></i>
+        <!-- Schermo Conferma & Anteprima Biglietto d'Ingresso -->
+        <div id="confirmationSection" class="hidden max-w-lg mx-auto scroll-mt-24">
+          <div class="glass-card rounded-3xl border border-slate-200 overflow-hidden shadow-xl space-y-4">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-600 p-6 text-white text-center space-y-2 relative">
+              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto shadow-inner border border-white/20">
+                <i data-lucide="check" class="w-6 h-6 text-white"></i>
               </div>
-              <h3 class="text-xl font-extrabold font-outfit">Iscrizione Ricevuta!</h3>
-              <p class="text-[10px] text-teal-100 font-bold">Un messaggio con allegato il Pass d'Ammissione è in arrivo via e-mail.</p>
+              <h3 class="text-2xl font-black font-outfit">Iscrizione Ricevuta!</h3>
+              <p class="text-xs text-emerald-50 font-bold">Un messaggio con allegato il Pass d'Ammissione è stato appena inviato via e-mail.</p>
             </div>
 
-            <div class="p-5 space-y-4">
-              <div class="border border-slate-100 rounded-xl p-3 bg-slate-50/50 space-y-3 relative">
-                <div class="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#dbeafe] border-r border-slate-100 rounded-full"></div>
-                <div class="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#dbeafe] border-l border-slate-100 rounded-full"></div>
+            <div class="p-6 space-y-5">
+              <div class="border border-slate-200 rounded-2xl p-5 bg-white space-y-4 relative overflow-hidden shadow-sm text-slate-700">
+                <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 border-r border-slate-200 rounded-full"></div>
+                <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 border-l border-slate-200 rounded-full"></div>
                 
-                <div class="flex justify-between items-center border-b border-slate-200/60 pb-2 text-[11px]">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3 text-xs">
                   <div>
-                    <h4 class="font-extrabold text-indigo-950">ITSCG Primo Levi</h4>
-                    <p class="text-[9px] text-slate-400 font-bold">Via Briantina, 68 Seregno</p>
+                    <h4 class="font-extrabold text-slate-800">ITSCG "Primo Levi"</h4>
+                    <p class="text-[10px] text-slate-500 font-bold">Via Briantina, 68 Seregno</p>
                   </div>
                   <div class="text-right">
-                    <span id="ticketCode" class="font-mono text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded">LEVI-0000</span>
+                    <span id="ticketCode" class="font-mono text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-100 px-3 py-1 rounded">LEVI-0000</span>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-[10px] font-bold">
+                <div class="grid grid-cols-2 gap-4 text-xs font-bold text-slate-700">
                   <div>
-                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Studente Referente</span>
-                    <p id="ticketStudent" class="text-slate-800 mt-0.5 uppercase"></p>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">Studente Referente</span>
+                    <p id="ticketStudent" class="text-slate-800 mt-1 uppercase text-sm"></p>
                   </div>
                   <div>
-                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Incontro d'Aula</span>
-                    <p id="ticketDate" class="text-slate-800 mt-0.5"></p>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">Incontro d'Aula</span>
+                    <p id="ticketDate" class="text-slate-800 mt-1 text-sm"></p>
                   </div>
-                  <div>
-                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Indirizzo Scelto</span>
-                    <p id="ticketPath" class="text-slate-800 mt-0.5"></p>
+                  <div class="col-span-2 border-t border-slate-100 pt-3">
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">Indirizzo Scelto</span>
+                    <p id="ticketPath" class="text-indigo-600 mt-1 text-sm"></p>
                   </div>
-                  <div>
-                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Posti totali riservati</span>
-                    <p id="ticketPeople" class="text-slate-800 mt-0.5"></p>
+                  <div class="border-t border-slate-100 pt-3">
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">Posti Riservati</span>
+                    <p id="ticketPeople" class="text-slate-800 mt-1 text-sm"></p>
+                  </div>
+                  <div class="border-t border-slate-100 pt-3 text-right">
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block">Stato Iniziale</span>
+                    <span id="ticketStatusLabel" class="inline-block mt-1 text-[10px] font-black bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200 uppercase">Iscritto</span>
                   </div>
                 </div>
 
-                <div class="flex flex-col items-center justify-center pt-2 border-t border-dashed border-slate-200">
-                  <canvas id="ticketQrCanvas" class="bg-white p-1 rounded-xl border border-slate-100 shadow-sm"></canvas>
-                  <p class="text-[8px] text-slate-400 uppercase tracking-widest font-black mt-1">Scanner d'Ingresso</p>
+                <div class="flex flex-col items-center justify-center pt-4 border-t border-dashed border-slate-200">
+                  <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+                    <canvas id="ticketQrCanvas" class="bg-white"></canvas>
+                  </div>
+                  <p class="text-[8px] text-slate-500 uppercase tracking-widest font-black mt-2">Scanner d'Ingresso</p>
                 </div>
               </div>
 
-              <div class="flex flex-col gap-1.5">
-                <button onclick="downloadTicketPDF()" class="w-full py-2 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-lg transition flex items-center justify-center gap-1.5 text-xs shadow-md">
-                  <i data-lucide="download" class="w-4 h-4"></i><span>SCARICA PASS VETTORIALE PDF</span>
+              <div class="flex flex-col gap-2">
+                <button onclick="downloadTicketPDF()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-extrabold rounded-xl transition flex items-center justify-center gap-2 text-xs shadow-lg shadow-indigo-600/10">
+                  <i data-lucide="download" class="w-4 h-4"></i><span>SCARICA PASS DI AMMISSIONE PDF</span>
                 </button>
-                <button onclick="navigateTo('home')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs">
+                <button onclick="navigateTo('home')" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs">
                   Torna alla Home
                 </button>
               </div>
@@ -318,148 +335,181 @@
           </div>
         </div>
 
-        <!-- SEZIONE DETTAGLIATA INDIRIZZI DI STUDIO (Inserita come richiesto) -->
+        <!-- Sezione degli indirizzi di studio -->
         <div class="space-y-6 pt-8">
-          <h3 class="text-2xl font-extrabold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="graduation-cap" class="text-sky-500"></i> I Nostri Indirizzi di Studio</h3>
+          <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 font-outfit"><i data-lucide="graduation-cap" class="text-indigo-600"></i> I Nostri Indirizzi di Studio</h3>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- LSA -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-indigo-600 flex flex-col justify-between shadow-sm bg-white">
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-indigo-600 flex flex-col justify-between shadow-sm">
               <div>
-                <h4 class="font-outfit font-extrabold text-indigo-950 text-lg mb-1">LSA</h4>
-                <p class="text-xs font-bold text-indigo-600 uppercase mb-3">Liceo Scientifico - Scienze Applicate</p>
-                <div class="space-y-2 text-xs text-slate-600 mb-4 font-semibold">
-                  <p><strong>Materie di indirizzo:</strong> Matematica, Fisica, Scienze Naturali (Chimica, Biologia, Scienze della Terra), Informatica specialistica (C/C++, Python, Web design, Algoritmica).</p>
-                  <p><strong>Sbocchi Futuri:</strong> Facoltà Scientifiche e Tecnologiche (Medicina, Ingegneria, Fisica, Informatica, Biotecnologie) e carriere in software-house, laboratori e centri di ricerca.</p>
+                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">LSA</h4>
+                <p class="text-xs font-bold text-indigo-600 uppercase mb-2">Liceo Scientifico - Scienze Applicate</p>
+                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
+                  <p><strong>Materie:</strong> Matematica, Fisica, Scienze (Chimica, Biologia, Terra), Informatica specialistica.</p>
+                  <p><strong>Sbocchi:</strong> Facoltà Scientifiche, Ingegneria, Medicina, Informatica e centri di ricerca.</p>
                 </div>
               </div>
             </div>
             <!-- RIM -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-teal-600 flex flex-col justify-between shadow-sm bg-white">
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-emerald-500 flex flex-col justify-between shadow-sm">
               <div>
-                <h4 class="font-outfit font-extrabold text-indigo-950 text-lg mb-1">RIM</h4>
-                <p class="text-xs font-bold text-teal-600 uppercase mb-3">Relazioni Internazionali per il Marketing</p>
-                <div class="space-y-2 text-xs text-slate-600 mb-4 font-semibold">
-                  <p><strong>Materie di indirizzo:</strong> Tre Lingue Straniere, Economia Aziendale e Geopolitica, Relazioni Internazionali, Diritto Pubblico/Commerciale, Tecnologie della Comunicazione.</p>
-                  <p><strong>Sbocchi Futuri:</strong> Facoltà di Economia, Lingue Straniere, Scienze Politiche, Giurisprudenza, e impiego in aziende multinazionali di import-export, uffici marketing ed enti diplomatici.</p>
+                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">RIM</h4>
+                <p class="text-xs font-bold text-emerald-600 uppercase mb-2">Relazioni Internazionali per il Marketing</p>
+                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
+                  <p><strong>Materie:</strong> Tre Lingue, Economia Aziendale e Geopolitica, Diritto, Tecnologie Comunicazione.</p>
+                  <p><strong>Sbocchi:</strong> Economia, Lingue, Scienze Politiche, aziende import-export, marketing.</p>
                 </div>
               </div>
             </div>
             <!-- LOG -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-orange-600 flex flex-col justify-between shadow-sm bg-white">
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-orange-500 flex flex-col justify-between shadow-sm">
               <div>
-                <h4 class="font-outfit font-extrabold text-indigo-950 text-lg mb-1">LOG</h4>
-                <p class="text-xs font-bold text-orange-600 uppercase mb-3">Logistica e Trasporti</p>
-                <div class="space-y-2 text-xs text-slate-600 mb-4 font-semibold">
-                  <p><strong>Materie di indirizzo:</strong> Scienze della Navigazione, Struttura dei Mezzi, Logistica di Distribuzione, Diritto dei Trasporti, Pianificazione Supply Chain, Meccanica.</p>
-                  <p><strong>Sbocchi Futuri:</strong> Ingegneria Gestionale, Economia dei Trasporti, Gestione flotta/hub logistici, porti, aeroporti, spedizionieri internazionali e pianificazione industriale.</p>
-                </div>
-              </div>
-            </div>
-            <!-- CAT -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-emerald-600 flex flex-col justify-between shadow-sm bg-white">
-              <div>
-                <h4 class="font-outfit font-extrabold text-indigo-950 text-lg mb-1">CAT</h4>
-                <p class="text-xs font-bold text-emerald-600 uppercase mb-3">Costruzione, Ambiente e Territorio</p>
-                <div class="space-y-2 text-xs text-slate-600 mb-4 font-semibold">
-                  <p><strong>Materie di indirizzo:</strong> Progettazione, Costruzioni e Impianti (CAD/BIM), Topografia e Geomatica, Estimo immobiliare, Sicurezza Cantieri, Geopedologia.</p>
-                  <p><strong>Sbocchi Futuri:</strong> Facoltà di Architettura, Ingegneria Civile/Ambientale, Geologia, Geofisica, e abilitazione alla libera professione di Geometra ed esperto energetico.</p>
-                </div>
-              </div>
-            </div>
-            <!-- SM -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-rose-600 flex flex-col justify-between shadow-sm bg-white">
-              <div>
-                <h4 class="font-outfit font-extrabold text-indigo-950 text-lg mb-1">SM</h4>
-                <p class="text-xs font-bold text-rose-600 uppercase mb-3">Sistema Moda</p>
-                <div class="space-y-2 text-xs text-slate-600 mb-4 font-semibold">
-                  <p><strong>Materie di indirizzo:</strong> Chimica Tessile e Tintura, Tecnologie dei Materiali Moda, Ideazione, Progettazione e Industrializzazione dei Prodotti, Marketing della Moda.</p>
-                  <p><strong>Sbocchi Futuri:</strong> Accademie di Fashion Design, Facoltà di Chimica Industriale, Economia e ruoli nel settore modellistica, design tessile, showroom e uffici stile.</p>
+                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">LOG</h4>
+                <p class="text-xs font-bold text-orange-600 uppercase mb-2">Logistica e Trasporti</p>
+                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
+                  <p><strong>Materie:</strong> Navigazione, Logistica, Diritto Trasporti, Supply Chain, Meccanica.</p>
+                  <p><strong>Sbocchi:</strong> Ingegneria Gestionale, Economia, flotta/hub, spedizionieri internazionali.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- FAQ (DOMANDE FREQUENTI) POSIZIONATE IN BASSO DOPO GLI INDIRIZZI -->
-        <div class="space-y-6 pt-6">
-          <h3 class="text-2xl font-bold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="help-circle" class="text-sky-500"></i> Domande Frequenti</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm bg-white">
-              <h5 class="font-extrabold text-indigo-950 text-sm">Cosa ricevo subito dopo l'iscrizione?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-semibold">Riceverai immediatamente via e-mail il tuo <strong>Pass di Ammissione Ufficiale</strong>. Mostra il QR Code sul tuo smartphone all'ingresso dell'istituto per effettuare l'accredito immediato.</p>
+        <!-- Sezione FAQ avanzate per i Genitori -->
+        <div class="space-y-6 pt-10 border-t border-slate-200">
+          <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 font-outfit"><i data-lucide="help-circle" class="text-indigo-600"></i> Domande Frequenti per i Genitori</h3>
+          <div class="space-y-4 max-w-4xl mx-auto" id="faqAccordion">
+            
+            <div class="border border-indigo-200 rounded-2xl bg-indigo-50/50 overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Posso prenotare due eventi che non si sovrappongono nella stessa giornata?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-indigo-100 bg-white/40 leading-relaxed font-semibold">
+                <p>Sì, ma la doppia prenotazione deve essere eseguita con due account diversi (indirizzi e-mail differenti) per evitare che il sistema sovrascriva o blocchi le prenotazioni sul medesimo nominativo.</p>
+              </div>
             </div>
-            <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm bg-white">
-              <h5 class="font-extrabold text-indigo-950 text-sm">Quando riceverò l'attestato finale?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-semibold">Il sistema invia in automatico il <strong>Certificato Finale Conclusivo e Attestato di Ringraziamento</strong> al termine dell'evento. Insieme a questa e-mail, ti invieremo anche il link per il <strong>Questionario di Gradimento</strong>.</p>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Come funziona la registrazione e l'ingresso all'Open Day?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed space-y-2">
+                <p>Una volta selezionata la sessione d'aula desiderata, compila il modulo di iscrizione. Riceverai immediatamente un'e-mail di conferma contenente il tuo <b>Pass d'Ammissione Ufficiale</b> in formato PDF.</p>
+                <p>All'ingresso della scuola a Seregno, i docenti scansioneranno il QR code del tuo pass per registrare il tuo arrivo. Il tuo stato passerà automaticamente da <span class="font-bold text-indigo-600">Iscritto</span> ad <span class="font-bold text-sky-600">Ammesso</span> e riceverai un'e-mail istantanea di avvenuto check-in.</p>
+              </div>
             </div>
-            <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm bg-white">
-              <h5 class="font-extrabold text-indigo-950 text-sm">Posso registrarmi a più indirizzi nello stesso orario?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-semibold">No. Gli incontri e le visite avvengono contemporaneamente in laboratori diversi. Se desideri visitare più percorsi, ti consigliamo di prenotare slot orari differenti o di partecipare alle diverse giornate programmate.</p>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Ho smarrito il mio Pass d'Ammissione. Come posso recuperarlo?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+                <p>Niente panico! Puoi recuperare la tua prenotazione in qualsiasi momento cliccando sul tasto <b>"Recupera Pass"</b> nella barra di navigazione in alto. Inserisci il codice di prenotazione (es. <i>LEVI-1234</i>) oppure, se non lo ricordi, compila semplicemente il <b>Nome e Cognome dell'Alunno</b> per ricevere nuovamente il Pass d'Ammissione originale direttamente sulla tua e-mail.</p>
+              </div>
             </div>
-            <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm bg-white">
-              <h5 class="font-extrabold text-indigo-950 text-sm">Come posso cancellare o modificare una prenotazione?</h5>
-              <p class="text-xs text-slate-600 leading-relaxed font-semibold">Usa la funzione <strong>Annulla</strong> nella barra di navigazione in alto inserendo il tuo codice o cognome. Se invece vuoi modificare i dati, effettua l'annullamento e procedi a una nuova registrazione sullo slot di tuo interesse.</p>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Cos'è la Pergamena d'Onore e l'attestato conclusivo? (Stato Concluso)</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed space-y-2">
+                <p>Al termine dell'evento o a conclusione dell'Open day, i docenti imposteranno il tuo stato su <span class="font-bold text-emerald-600">Concluso</span>.</p>
+                <p>Questo genererà istantaneamente ed invierà via e-mail alle famiglie la prestigiosa <b>Pergamena d'Onore Conclusiva</b> in PDF, completa di firma della referente d'orientamento e link al questionario di gradimento.</p>
+              </div>
             </div>
+
           </div>
         </div>
+
       </main>
     </section>
 
-    <!-- INTERFACCIA SITO ACCESSO DOCENTI LOGIN (password "admin") -->
-    <section id="sectionLogin" class="hidden max-w-sm mx-auto my-auto p-6 glass-card rounded-2xl shadow-xl space-y-4">
+    <!-- FORM DI LOGIN AREA DOCENTI -->
+    <section id="sectionLogin" class="hidden max-w-sm mx-auto my-auto p-8 glass-card rounded-3xl shadow-xl space-y-5 border border-slate-200 text-slate-800">
       <div class="text-center">
-        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="lock" class="w-5 h-5"></i></div>
-        <h3 class="text-lg font-bold text-indigo-950">Accesso Area Docenti</h3>
-        <p class="text-xs text-slate-500 mt-0.5">Fornisci la chiave d'istituto per sbloccare il pannello.</p>
-      </div>
-      <form onsubmit="handleAdminLogin(event)" class="space-y-3">
-        <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 uppercase">Chiave Docenti</label>
-          <input required type="password" id="adminPasswordInput" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-bold text-center" placeholder="Scrivi la password">
+        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 border border-indigo-100">
+          <i data-lucide="lock" class="w-6 h-6"></i>
         </div>
-        <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition text-sm">Sblocca Dashboard</button>
+        <h3 class="text-xl font-bold text-slate-950">Accesso Area Docenti</h3>
+        <p class="text-xs text-slate-500 mt-1 font-semibold">Fornisci la chiave d'istituto per sbloccare la dashboard.</p>
+      </div>
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div class="space-y-1.5">
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Chiave Docenti</label>
+          <input required type="password" id="adminPasswordInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-bold text-center tracking-widest" placeholder="••••••••" value="admin">
+        </div>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition text-xs uppercase tracking-widest shadow-md">Sblocca Dashboard</button>
       </form>
     </section>
 
-    <!-- INTERFACCIA SITO AREA RISERVATA DOCENTI COCKPIT (Riorganizzato ed efficiente) -->
-    <section id="sectionAdmin" class="hidden container mx-auto px-4 py-6 max-w-5xl space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-slate-200 gap-4">
+    <!-- COCKPIT AREA DOCENTI -->
+    <section id="sectionAdmin" class="hidden container mx-auto px-4 py-8 max-w-5xl space-y-6 relative z-10 text-slate-800">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-6 border-b border-slate-200 gap-4">
         <div>
-          <h2 class="text-2xl font-black text-indigo-950 tracking-tight flex items-center gap-2"><i data-lucide="shield-check" class="text-emerald-500"></i> Dashboard Orientamento Docenti</h2>
-          <p class="text-xs text-slate-500 font-semibold">Monitora turni, iscritti e invia attestati/ricevute in un click.</p>
+          <span class="inline-flex items-center gap-1 py-1 px-2.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-wider mb-2">
+            Amministrazione Cloud Attiva
+          </span>
+          <h2 class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 font-outfit">
+            <i data-lucide="shield-check" class="text-emerald-600"></i> Dashboard Orientamento Docenti
+          </h2>
+          <p class="text-xs text-slate-500 font-semibold">Pannello di controllo ed accredito per i turni degli Open Day.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button onclick="switchAdminTab('tabRegistrations')" class="px-3.5 py-1.5 rounded-lg bg-indigo-950 text-white font-bold text-xs">Registro Iscritti</button>
-          <button onclick="switchAdminTab('tabLiveScanner')" class="px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">Scanner Accredito</button>
-          <button onclick="switchAdminTab('tabSettings')" class="px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">Pianificatore & Turni</button>
+          <button onclick="switchAdminTab('tabRegistrations')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-widest transition shadow-sm">Registro Iscritti</button>
+          <button onclick="switchAdminTab('tabLiveScanner')" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-black text-xs uppercase tracking-widest transition">Webcam Scanner</button>
+          <button onclick="switchAdminTab('tabSettings')" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-black text-xs uppercase tracking-widest transition">Pianificatore & Turni</button>
         </div>
       </div>
 
-      <!-- TIMER PANEL: NOTIFICA AUTOMATICA INVIO ATTESTATI COCKPIT -->
-      <div id="adminTimersContainer" class="p-4 bg-indigo-50 border border-indigo-200 rounded-2xl hidden shadow-sm transition"></div>
+      <div id="adminTimersContainer" class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl hidden shadow-sm transition"></div>
+
+      <!-- STATS GRID -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="adminStatsGrid">
+        <div class="glass-card p-5 rounded-2xl border border-slate-200">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Studenti Iscritti</span>
+          <span class="text-2xl font-black text-slate-900" id="statTotalIscritti">0</span>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border border-slate-200">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Accreditati (Ammesso)</span>
+          <span class="text-2xl font-black text-blue-600" id="statTotalEntrati">0</span>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border border-slate-200">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Conclusi (Stage/Certificati)</span>
+          <span class="text-2xl font-black text-emerald-600" id="statTotalCertificati">0</span>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border border-slate-200">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assenti Totali</span>
+          <span class="text-2xl font-black text-amber-600" id="statTotalAssenti">0</span>
+        </div>
+      </div>
 
       <!-- TAB 1: REGISTRAZIONI STUDENTI -->
       <div id="tabRegistrations" class="space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
-          <h3 class="font-extrabold text-indigo-950 text-sm flex items-center gap-1.5"><i data-lucide="users" class="text-indigo-600"></i> Registro Iscritti e Controllo Stato</h3>
-          <div class="flex gap-2">
-            <select id="filterDateSelect" onchange="renderRegistrations()" class="p-2 text-xs rounded-lg border bg-white font-bold text-indigo-950 outline-none">
-              <option value="all">Tutte le date</option>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <h3 class="font-black text-slate-900 text-base flex items-center gap-2"><i data-lucide="users" class="text-indigo-600"></i> Registro Iscritti d'Aula</h3>
+          
+          <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+            <button onclick="exportToExcel()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black uppercase transition shadow-md">
+              <i data-lucide="download" class="w-4 h-4"></i><span>Esporta Excel (.csv)</span>
+            </button>
+            <select id="filterDateSelect" onchange="renderRegistrations()" class="p-2 text-xs rounded-xl border border-slate-200 bg-white font-bold text-slate-700 outline-none shadow-sm">
+              <option value="all">Tutti i turni</option>
             </select>
           </div>
         </div>
 
-        <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <!-- Vista Desktop (Tabella) -->
+        <div class="hidden md:block overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="bg-slate-50 text-indigo-950 border-b border-slate-200 font-bold">
-                <th class="p-3">Codice</th>
-                <th class="p-3">Studente / Provenienza</th>
-                <th class="p-3">Recapito Genitore</th>
-                <th class="p-3">Sessione d'Aula</th>
-                <th class="p-3 text-center">Stato Controllo</th>
-                <th class="p-3 text-center">Emetti Documento</th>
-                <th class="p-3 text-right">Azioni</th>
+              <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
+                <th class="p-4">Codice & Stato</th>
+                <th class="p-4">Studente / Provenienza</th>
+                <th class="p-4">E-mail Genitore</th>
+                <th class="p-4">Turno Selezionato</th>
+                <th class="p-4 text-center">Cambia Stato Alunno</th>
+                <th class="p-4 text-center">Invia Documenti (Stato Invio)</th>
+                <th class="p-4 text-right">Rimuovi</th>
               </tr>
             </thead>
             <tbody id="registrationsTableBody">
@@ -467,38 +517,45 @@
             </tbody>
           </table>
         </div>
+
+        <div class="block md:hidden space-y-4" id="registrationsMobileCards">
+          <!-- Popolato dinamicamente da javascript in tempo reale -->
+        </div>
+
       </div>
 
-      <!-- TAB 2: SCANNER DI ACCREDITO -->
+      <!-- TAB 2: SCANNER DI ACCREDITO WEBCAM -->
       <div id="tabLiveScanner" class="hidden grid md:grid-cols-2 gap-8">
         <div class="space-y-6">
-          <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950 space-y-4">
-            <h4 class="font-black text-indigo-950 font-outfit flex items-center gap-2"><i data-lucide="usb" class="text-sky-500"></i> Hardware USB d'Istituto</h4>
+          <div class="p-6 bg-indigo-50 border border-indigo-100 rounded-3xl space-y-3">
+            <h4 class="font-black text-indigo-900 font-outfit flex items-center gap-2"><i data-lucide="usb" class="text-indigo-600"></i> Scanner Hardware USB</h4>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Il sistema supporta lettori laser emulazione tastiera nativa in background. Ti basterà sparare sul codice d'ingresso da qualsiasi punto per effettuare l'accredito automatico!
+              Il sistema supporta pistole laser tradizionali. Ti basterà scansionare il codice d'ingresso del pass per effettuare l'accredito istantaneo.
             </p>
           </div>
 
-          <div class="glass-card p-6 rounded-2xl border-2 border-indigo-950 bg-white flex flex-col items-center">
-            <h4 class="font-black text-indigo-950 mb-3 font-outfit flex items-center gap-2"><i data-lucide="aperture" class="text-sky-500"></i> Scanner Fotocamera / Webcam (Canvas IA)</h4>
-            <div class="w-full max-w-sm aspect-square bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-indigo-950">
-              <video id="scannerVideo" autoplay playsinline class="hidden"></video>
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 bg-white flex flex-col items-center">
+            <h4 class="font-black text-slate-900 mb-4 font-outfit flex items-center gap-2"><i data-lucide="camera" class="text-indigo-600"></i> Webcam Scanner (Auto-Checkin)</h4>
+            <div class="w-full max-w-sm aspect-square bg-slate-100 rounded-2xl overflow-hidden relative border border-slate-200 flex items-center justify-center">
+              <video id="scannerVideo" autoplay playsinline class="hidden w-full h-full object-cover"></video>
               <canvas id="scannerCanvas" class="w-full h-full object-cover rounded-2xl hidden"></canvas>
               <div id="scannerLaser" class="laser-line hidden"></div>
-              <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-                <i data-lucide="camera" class="w-12 h-12 mb-2 text-indigo-400"></i>
-                <p class="text-xs font-bold">Fotocamera non attiva</p>
-                <p class="text-[10px] mt-1 text-slate-500">Seleziona una sorgente e avvia lo scanner</p>
+              <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 p-6 text-center">
+                <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-3 text-indigo-600 border border-indigo-100">
+                  <i data-lucide="camera-off" class="w-8 h-8"></i>
+                </div>
+                <p class="text-sm font-bold text-slate-800">Fotocamera non attiva</p>
+                <p class="text-xs mt-1 text-slate-500">Seleziona una sorgente e avvia lo scanner</p>
               </div>
             </div>
-            <div class="w-full mt-4 space-y-3">
-              <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-bold text-xs"></select>
+            <div class="w-full mt-5 space-y-3">
+              <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs shadow-sm"></select>
               <div class="grid grid-cols-2 gap-2">
-                <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="py-2.5 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
-                  <i data-lucide="play" class="w-4 h-4"></i>Avvia / Ferma
+                <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2">
+                  <i data-lucide="play" class="w-4 h-4"></i><span>Avvia Scanner</span>
                 </button>
-                <button onclick="startWebcamDirectMobile()" class="py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
-                  <i data-lucide="smartphone" class="w-4 h-4"></i>Camera Posteriore
+                <button onclick="startWebcamDirectMobile()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2">
+                  <i data-lucide="smartphone" class="w-4 h-4"></i><span>Retro Camera</span>
                 </button>
               </div>
             </div>
@@ -506,92 +563,101 @@
         </div>
 
         <div class="space-y-4">
-          <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-            <h4 class="font-black text-indigo-950 mb-4 font-outfit">Digitazione Manuale Codice</h4>
+          <div class="p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+            <h4 class="font-black text-slate-900 mb-4 font-outfit">Inserimento Codice Manuale</h4>
             <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
               <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-black text-center uppercase tracking-widest" placeholder="LEVI-XXXX">
-              <button type="submit" class="px-6 py-3 bg-indigo-950 text-white rounded-xl font-black uppercase text-xs">Accredita</button>
+              <button type="submit" class="px-5 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-xs">Accredita</button>
             </form>
           </div>
 
-          <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-300 bg-white text-indigo-950 font-bold">
-            <div id="scanResultSuccess" class="hidden space-y-2">
-              <span id="scanFeedbackBadge" class="inline-block bg-emerald-700 text-white font-black px-3 py-1 rounded-full text-xs mb-2">ACCESSO AUTORIZZATO</span>
-              <h4 id="scanResultName" class="text-xl font-extrabold text-indigo-950"></h4>
-              <p id="scanResultPath" class="text-sm text-slate-600 font-semibold"></p>
-              <p id="scanResultCode" class="text-xs font-mono text-indigo-900"></p>
+          <div id="scanResultCard" class="glass-card p-6 rounded-3xl border border-slate-200 text-slate-700 font-bold shadow-sm">
+            <div id="scanResultSuccess" class="hidden space-y-3">
+              <span id="scanFeedbackBadge" class="inline-block bg-emerald-50 text-emerald-700 font-black px-3 py-1 rounded-full text-[10px] border border-emerald-100 tracking-wider">PRESENZA REGISTRATA ✓</span>
+              <h4 id="scanResultName" class="text-2xl font-black text-slate-900"></h4>
+              <p id="scanResultPath" class="text-sm text-indigo-600 font-semibold"></p>
+              <p id="scanResultCode" class="text-xs font-mono text-slate-400"></p>
             </div>
-            <div id="scanResultEmpty" class="text-center py-6 text-slate-400 font-semibold">
-               In attesa di scansionare un codice...
+            <div id="scanResultEmpty" class="text-center py-8 text-slate-400 font-semibold">
+               In attesa di scansionare un codice d'ingresso...
             </div>
-          </div>
-
-          <div class="p-6 bg-indigo-50 rounded-2xl border-2 border-indigo-900 text-center">
-            <h4 class="font-black text-indigo-950 mb-2 font-outfit">Associa Smartphone di Servizio</h4>
-            <p class="text-xs text-slate-600 mb-3 font-semibold">Inquadra questo codice con un altro telefono per usarlo come pistola laser d'ingresso in modalità cloud.</p>
-            <button onclick="openAddDeviceModal()" class="py-2 px-4 bg-indigo-900 text-white rounded-xl text-xs font-bold font-outfit uppercase shadow">Mostra QR Code Collegamento</button>
           </div>
         </div>
       </div>
 
-      <!-- SCHERMATA CONFIGURATORE IMPOSTAZIONI -->
+      <!-- TAB 3: CONFIGURATORE IMPOSTAZIONI -->
       <div id="tabSettings" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-          <h3 class="font-black text-indigo-950 font-outfit">Crea Nuova Sessione d'Incontro</h3>
-          <form id="newDateForm" onsubmit="handleCreateDate(event)" class="space-y-3 font-semibold text-xs">
-            <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300">
-            <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Orario (es. 09:00 - 11:00)">
-            
-            <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900">
-              <option value="" disabled selected>-- Scegli Indirizzo di Studio --</option>
-              <option value="LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE">LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE</option>
-              <option value="RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING">RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING</option>
-              <option value="LOG - LOGISTICA">LOG - LOGISTICA</option>
-              <option value="CAT - COSTRUZIONE AMBIENTE E TERRITORIO">CAT - COSTRUZIONE AMBIENTE E TERRITORIO</option>
-              <option value="SM - SISTEMA MODA">SM - SISTEMA MODA</option>
-            </select>
-
-            <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Aula d'incontro (es. Aula Magna)">
-            <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Posti d'aula massimi">
-            <button type="submit" class="w-full py-3 bg-indigo-950 text-white rounded-xl font-black uppercase tracking-wider text-sm border-2 border-indigo-900 shadow-md">Pubblica Turno d'Aula</button>
+        <div class="space-y-4 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm font-semibold text-xs text-slate-600">
+          <h3 class="font-black text-slate-900 font-outfit text-lg">Crea Nuova Sessione d'Incontro</h3>
+          <form id="newDateForm" onsubmit="handleCreateDate(event)" class="space-y-3 text-slate-600">
+            <div class="space-y-1.5">
+              <label class="text-[10px] uppercase text-slate-500 font-black">Data *</label>
+              <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 outline-none">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] uppercase text-slate-500 font-black">Fascia Oraria (es. 09:00 - 11:00) *</label>
+              <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 outline-none" placeholder="09:00 - 11:00">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] uppercase text-slate-500 font-black">Indirizzo di Studio *</label>
+              <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 font-bold text-xs outline-none">
+                <option value="" disabled selected>-- Scegli Indirizzo --</option>
+                <option value="LSA - Liceo Scientifico Opzione Scienze Applicate">LSA - Liceo Scientifico Opzione Scienze Applicate</option>
+                <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
+                <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
+                <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
+                <option value="SM - Sistema Moda">SM - Sistema Moda</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] uppercase text-slate-500 font-black">Aula d'Incontro *</label>
+              <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 outline-none" placeholder="es. Aula Magna">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] uppercase text-slate-500 font-black">Posti Massimi d'Aula *</label>
+              <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Posti d'aula massimi">
+            </div>
+            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase tracking-wider text-sm transition shadow-md">Pubblica Turno d'Aula</button>
           </form>
           <div id="adminDatesList" class="space-y-2 mt-4 max-h-48 overflow-y-auto border-t border-slate-200 pt-4"></div>
         </div>
 
-        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-          <h3 class="font-black text-indigo-950 font-outfit">Gestione Dati Massivi</h3>
-          <p class="text-xs text-slate-600">Configurazioni globali e manutenzione del database.</p>
-          <div class="pt-4 border-t border-slate-200 space-y-4">
-            <div>
-              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Pianificazione Invio Automatico Promemoria</label>
-              <div class="flex gap-2">
-                <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border-2 border-indigo-950 font-black text-indigo-950 text-lg" value="7">
-                <span class="py-2 text-[10px] font-bold text-slate-500">Giorni prima dell'evento per l'invio del Pass</span>
+        <div class="space-y-4 p-6 bg-white rounded-3xl border border-slate-200 flex flex-col justify-between shadow-sm">
+          <div class="font-semibold text-xs">
+            <h3 class="font-black text-slate-900 font-outfit text-lg mb-2">Manutenzione & Promemoria Cloud</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4">Gestisci i promemoria automatici programmati prima dell'incontro d'istituto.</p>
+            <div class="pt-4 border-t border-slate-200 space-y-4">
+              <div class="space-y-2">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Intervallo Invio Promemoria d'Istituto</label>
+                <div class="flex items-center gap-3">
+                  <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border border-slate-200 bg-slate-50 text-slate-800 font-black text-lg outline-none" value="7">
+                  <span class="text-xs text-slate-500">Giorni di preavviso per reinviare il Pass d'Ammissione</span>
+                </div>
+                <button onclick="saveReminderDays()" class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm">Salva Intervallo</button>
               </div>
-              <button onclick="saveReminderDays()" class="mt-2 px-4 py-2 bg-indigo-900 text-white rounded-xl text-xs font-black uppercase tracking-wide">Salva Promemoria</button>
             </div>
-            <div class="pt-4 border-t border-slate-200">
-              <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-black uppercase border-2 border-red-800 text-xs">Svuota database prenotazioni</button>
-            </div>
+          </div>
+          <div class="pt-6 border-t border-slate-200">
+            <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-black uppercase border border-rose-200 text-xs tracking-wider transition">Svuota Registro Prenotazioni</button>
           </div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- MODALE RECUPERO AVANZATO CON NOME/COGNOME E CODICE -->
+  <!-- MODALS DI SISTEMA -->
   <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200 bg-white space-y-4">
-      <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative border border-slate-200 space-y-4 text-slate-800">
+      <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-800 rounded-full bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="text-center">
-        <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="search" class="w-5 h-5"></i></div>
-        <h3 class="text-lg font-bold text-indigo-950 font-outfit">Recupera il tuo Pass di Ammissione</h3>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Trova la prenotazione inserendo il codice unico o nome e cognome dello studente.</p>
+        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 border border-indigo-100"><i data-lucide="search" class="w-5 h-5"></i></div>
+        <h3 class="text-lg font-bold text-slate-950 font-outfit">Recupera il tuo Pass di Ammissione</h3>
+        <p class="text-xs text-slate-500 mt-1 font-medium">Trova la prenotazione inserendo il codice unico o i dati dello studente.</p>
       </div>
-      <form onsubmit="handleRecovery(event)" class="space-y-3">
-        <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 uppercase">Codice Prenotazione (es. LEVI-1234)</label>
-          <input type="text" id="recoveryCode" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="Inserisci Codice">
+      <form onsubmit="handleRecovery(event)" class="space-y-3 font-semibold text-xs">
+        <div class="space-y-1.5">
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Codice Prenotazione (es. LEVI-1234)</label>
+          <input type="text" id="recoveryCode" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold" placeholder="Inserisci Codice">
         </div>
         <div class="relative flex py-1 items-center">
           <div class="flex-grow border-t border-slate-200"></div>
@@ -599,33 +665,32 @@
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-500 uppercase">Cognome Alunno *</label>
-            <input type="text" id="recoveryCognome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="es. Rossi">
+          <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cognome Alunno *</label>
+            <input required type="text" id="recoveryCognome" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold" placeholder="es. Rossi">
           </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-500 uppercase">Nome Alunno *</label>
-            <input type="text" id="recoveryNome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="es. Mario">
+          <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nome Alunno *</label>
+            <input required type="text" id="recoveryNome" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold" placeholder="es. Mario">
           </div>
         </div>
-        <button type="submit" id="submitRecoveryBtn" class="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition text-xs mt-2">Ricerca e Scarica Pass</button>
+        <button type="submit" id="submitRecoveryBtn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition text-xs tracking-wider uppercase mt-2 shadow-md shadow-indigo-600/10">Ricerca e Scarica Pass</button>
       </form>
     </div>
   </div>
 
-  <!-- MODALE ANNULLAMENTO CON NOME/COGNOME E CODICE -->
   <div id="cancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200 bg-white space-y-4">
-      <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative border border-slate-200 space-y-4 text-slate-800">
+      <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-800 rounded-full bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="text-center">
-        <div class="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="trash-2" class="w-5 h-5"></i></div>
-        <h3 class="text-lg font-bold text-indigo-950 font-outfit">Annulla Prenotazione d'Incontro</h3>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Trova la prenotazione per liberare il posto in aula.</p>
+        <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-2 border border-rose-100"><i data-lucide="trash-2" class="w-5 h-5"></i></div>
+        <h3 class="text-lg font-bold text-slate-950 font-outfit">Annulla Prenotazione</h3>
+        <p class="text-xs text-slate-500 mt-1 font-medium">Trova la prenotazione per liberare il posto in aula.</p>
       </div>
-      <form onsubmit="handleCancellation(event)" class="space-y-3">
-        <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 uppercase">Codice Prenotazione (es. LEVI-1234)</label>
-          <input type="text" id="cancelCode" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-xs text-slate-800 font-semibold" placeholder="Inserisci Codice">
+      <form onsubmit="handleCancellation(event)" class="space-y-3 font-semibold text-xs">
+        <div class="space-y-1.5">
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Codice Prenotazione (es. LEVI-1234)</label>
+          <input type="text" id="cancelCode" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-rose-500 text-xs font-semibold" placeholder="Inserisci Codice">
         </div>
         <div class="relative flex py-1 items-center">
           <div class="flex-grow border-t border-slate-200"></div>
@@ -633,41 +698,48 @@
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-500 uppercase">Cognome Alunno *</label>
-            <input type="text" id="cancelCognome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-xs text-slate-800 font-semibold" placeholder="es. Rossi">
+          <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cognome Alunno *</label>
+            <input required type="text" id="cancelCognome" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-rose-500 text-xs font-semibold" placeholder="es. Rossi">
           </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-500 uppercase">Nome Alunno *</label>
-            <input type="text" id="cancelNome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-sm" placeholder="es. Mario">
+          <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nome Alunno *</label>
+            <input required type="text" id="cancelNome" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-slate-800 outline-none focus:ring-2 focus:ring-rose-500 text-xs font-semibold" placeholder="es. Mario">
           </div>
         </div>
-        <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm mt-2">Procedi all'Annullamento</button>
+        <button type="submit" class="w-full py-2.5 bg-rose-600 hover:bg-rose-55 text-white font-bold rounded-xl transition text-xs tracking-wider uppercase mt-2 shadow-md">Procedi all'Annullamento</button>
       </form>
     </div>
   </div>
 
-  <!-- MODALE SELEZIONA AZIONE CONFERMA / ANNULLA CANCELLAZIONE -->
-  <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-sm p-6 text-center relative animate-in fade-in zoom-in-95 duration-200 bg-white rounded-3xl">
-      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
-      <h3 class="text-lg font-bold text-indigo-950 font-outfit">Confermi l'annullamento?</h3>
-      <p class="text-xs text-slate-500 mt-2">Eliminerai la prenotazione per lo studente <strong id="confirmCancelStudentName" class="text-indigo-950"></strong>.</p>
+  <div id="adminConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-sm p-6 text-center relative rounded-3xl border border-slate-200 shadow-xl text-slate-800">
+      <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-100"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+      <h3 id="adminConfirmTitle" class="text-lg font-bold text-slate-950 font-outfit">Sei sicuro?</h3>
+      <p id="adminConfirmMessage" class="text-xs text-slate-500 mt-2 font-semibold"></p>
+      
+      <div id="adminConfirmInputWrapper" class="hidden mt-3 space-y-1.5">
+        <label class="block text-[9px] uppercase font-bold text-rose-600 tracking-wider">Digita ELIMINA per confermare</label>
+        <input type="text" id="adminConfirmInput" class="w-full p-2 rounded-lg border border-slate-200 bg-white text-slate-800 text-center font-black focus:ring-1 focus:ring-rose-500 text-sm" placeholder="Scrivi ELIMINA">
+      </div>
       <div class="flex gap-3 mt-5">
-        <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">Indietro</button>
-        <button id="btnConfirmDelete" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition">Sì, Annulla</button>
+        <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs transition border border-slate-200">Indietro</button>
+        <button id="btnAdminConfirmAction" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-55 text-white font-bold rounded-xl text-xs transition">Conferma</button>
       </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-slate-950 text-slate-400 py-6 border-t border-slate-900 text-[11px] mt-auto relative z-10">
-    <div class="max-w-5xl mx-auto px-4 text-center sm:text-left">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-[11px] mt-auto relative z-10 font-semibold">
+    <div class="max-w-5xl mx-auto px-6 text-center sm:text-left">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
         <div>
+          <h4 class="text-white font-black mb-3 font-outfit text-xs uppercase tracking-wider">ITSCG "Primo Levi"</h4>
+          <p class="leading-relaxed">
+            Istituto Tecnico Statale con Liceo Scientifico Opzione Scienze Applicate d'eccellenza scolastica a Seregno.
+          </p>
         </div>
         <div>
-          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">Contatti Sede</h4>
+          <h4 class="text-white font-black mb-3 font-outfit text-xs uppercase tracking-wider">Contatti Sede</h4>
           <p class="leading-relaxed">
             Via Briantina, 68 - 20831 Seregno (MB)<br>
             Email: orientamento@leviseregno.edu.it<br>
@@ -675,27 +747,26 @@
           </p>
         </div>
         <div>
-          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">Collegamenti Utili</h4>
+          <h4 class="text-white font-black mb-3 font-outfit text-xs uppercase tracking-wider">Servizi d'Istituto</h4>
           <p class="leading-relaxed">
-            Sito Ufficiale: leviseregno.edu.it<br>
-            Referente d'Orientamento: Prof.ssa Mariagrazia Calabrese
+            Portali Cloud per l'accoglienza e l'accreditamento con invio automatizzato di certificati d'onore e ricevute alle famiglie.
           </p>
         </div>
       </div>
-      <div class="border-t border-slate-900 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="border-t border-slate-800 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
         <span>© 2026 ITSCG "Primo Levi" di Seregno. Tutti i diritti riservati.</span>
         <span>Codice Meccanografico: MBTD010005</span>
       </div>
     </div>
   </footer>
 
-  <!-- SCRIPT LOGICO UNIFICATO APPLICAZIONE -->
+  <!-- LOGICA COMPLETA DEL PORTALE E CONNESSIONI ENDPOINT -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- CONFIG FIREBASE ---
+    // --- CONFIG CONFIGURAZIONE FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDAQB-W-QTV1thVoCCifbdTFbpaYmAM4eQ",
       authDomain: "progetto-63fb3.firebaseapp.com",
@@ -710,44 +781,49 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-    // --- GOOGLE SCRIPT ENDPOINTS --- 
+    // --- GOOGLE SCRIPT ENDPOINTS ORIGINALI --- 
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec"; 
-    const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec"; 
+    const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyskgjUzvAs5grz0bOlzH9A5k1c0x4lpeoijQhtfNH3ieiO6eMBMLNdr6P5E2gYXDkH/exec"; 
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec"; 
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycby-DPMLD6imxqyp8HRuU30xKJDTRbcptkrhWpu4eqbVYIELydaKra63av7KKnbUz6XNtA/exec"; 
-    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbS2TXVtmPb6-xogKA9jdPdAgvHDTVOvqtBRMB0U8y2WiBsIzwqYbRfjheheEJyQhpF/exec";
+    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbyuGwbu03mgOyGkIAU2squjBbWrhJ6kx0eIhGwnQMPSI0TG_H6rEr0jdscoY2q5NlRg/exec";
 
     let state = {
       user: null, currentView: 'home', isAdminAuthed: false,
       settings: { reminderDaysBefore: 7, bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. L'open day, della durata di circa 2 ore, prevede un momento informativo di presentazione dell'offerta formativa e la visita degli ambienti dell'istituto. Per coloro che fossero interessati, al termine delle presentazioni sarà possibile avere un colloquio con i referenti dell'inclusione e con i docenti di sostegno." },
-      dates: [], registrations: [], selectedDate: null, isWebcamScanning: false, activeStream: null, animationFrameId: null,
-      pairedUsbDevices: []
+      dates: [], registrations: [], selectedDate: null, isWebcamScanning: false, activeStream: null, animationFrameId: null
     };
 
     window.processedSessions = {};
 
     initBubbles();
 
+    // Sincronizzazione dell'area di amministrazione dei docenti
     window.syncAdminView = () => {
-      renderRegistrations();
+      renderAdminStats();
+      window.renderRegistrations();
       renderAdminDatesList();
     };
 
-    // --- NAVIGAZIONE SPAs ---
     window.navigateTo = t => {
       state.currentView = t;
       document.getElementById('sectionHome').classList.add('hidden');
       document.getElementById('sectionLogin').classList.add('hidden');
       document.getElementById('sectionAdmin').classList.add('hidden');
-      if (t === 'home') { document.getElementById('sectionHome').classList.remove('hidden'); document.getElementById('adminButton').innerHTML = `Area Docenti`; stopWebcamScanner(); }
+      if (t === 'home') { 
+        document.getElementById('sectionHome').classList.remove('hidden'); 
+        document.getElementById('adminButton').innerHTML = `<i data-lucide="shield" class="w-4 h-4"></i><span>Area Docenti</span>`; 
+        stopWebcamScanner(); 
+      }
       else if (t === 'admin') {
         if (state.isAdminAuthed) { 
           document.getElementById('sectionAdmin').classList.remove('hidden'); 
-          document.getElementById('adminButton').innerHTML = `Esci Admin`; 
+          document.getElementById('adminButton').innerHTML = `<i data-lucide="log-out" class="w-4 h-4"></i><span>Esci Admin</span>`; 
           window.syncAdminView(); 
         }
         else { document.getElementById('sectionLogin').classList.remove('hidden'); }
       }
+      try { lucide.createIcons(); } catch(e) {}
     };
     
     window.scrollToSection = id => { 
@@ -762,10 +838,23 @@
     window.openRecoveryModal = () => document.getElementById('recoveryModal')?.classList.remove('hidden');
     window.openCancelModal = () => document.getElementById('cancelModal')?.classList.remove('hidden');
     window.closeModal = id => document.getElementById(id)?.classList.add('hidden');
-    window.openAddDeviceModal = () => {
-      const url = window.location.origin + window.location.pathname + "?mode=scanner";
-      document.getElementById('qrCodeDeviceLink').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(url);
-      document.getElementById('addDeviceModal').classList.remove('hidden');
+
+    // Gestione FAQ interattive
+    window.toggleFaq = btn => {
+      const parent = btn.parentElement;
+      const content = parent.querySelector('.faq-content');
+      const isExpanded = parent.classList.contains('faq-active');
+      
+      // Chiudi tutte le altre FAQ
+      document.querySelectorAll('#faqAccordion > div').forEach(item => {
+        item.classList.remove('faq-active');
+        item.querySelector('.faq-content').classList.add('hidden');
+      });
+
+      if (!isExpanded) {
+        parent.classList.add('faq-active');
+        content.classList.remove('hidden');
+      }
     };
 
     let isConfirming = false;
@@ -787,10 +876,20 @@
       const c = document.getElementById('toastContainer');
       if(!c) return;
       const t = document.createElement('div');
-      t.className = `p-4 rounded-xl shadow-lg border text-sm font-semibold glass-card mb-2 ${type==='success'?'border-emerald-500 text-emerald-800 bg-white':type==='error'?'border-red-500 text-red-800 bg-white':'border-sky-500 text-sky-800 bg-white'}`;
-      t.innerText = msg;
+      t.className = `p-4 rounded-2xl shadow-lg border text-xs font-black glass-card mb-2 transition-all duration-300 pointer-events-auto flex items-center gap-2 ${type==='success'?'border-emerald-200 text-emerald-700':type==='error'?'border-rose-200 text-rose-700':'border-sky-200 text-sky-700'}`;
+      
+      let icon = '<i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>';
+      if(type === 'error') icon = '<i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>';
+      if(type === 'info') icon = '<i data-lucide="info" class="w-4 h-4 shrink-0"></i>';
+
+      t.innerHTML = `${icon}<span>${msg}</span>`;
       c.appendChild(t);
-      setTimeout(() => t.remove(), 4000);
+      try { lucide.createIcons(); } catch(e) {}
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(10px)';
+        setTimeout(() => t.remove(), 300);
+      }, 4000);
     };
 
     function playAudioTone(success=true) {
@@ -798,70 +897,37 @@
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator(), gain = ctx.createGain();
         osc.connect(gain); gain.connect(ctx.destination);
-        if (success) { osc.type = 'sine'; osc.frequency.setValueAtTime(950, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(1300, ctx.currentTime+0.1); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.1); osc.start(); osc.stop(ctx.currentTime+0.1); }
-        else { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, ctx.currentTime); osc.frequency.setValueAtTime(140, ctx.currentTime+0.2); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.2); osc.start(); osc.stop(ctx.currentTime+0.2); }
+        if (success) { 
+          osc.type = 'sine'; 
+          osc.frequency.setValueAtTime(880, ctx.currentTime); 
+          osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime+0.1); 
+          gain.gain.setValueAtTime(0.12, ctx.currentTime); 
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.12); 
+          osc.start(); osc.stop(ctx.currentTime+0.12); 
+        } else { 
+          osc.type = 'sawtooth'; 
+          osc.frequency.setValueAtTime(180, ctx.currentTime); 
+          osc.frequency.setValueAtTime(110, ctx.currentTime+0.25); 
+          gain.gain.setValueAtTime(0.15, ctx.currentTime); 
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.25); 
+          osc.start(); osc.stop(ctx.currentTime+0.25); 
+        }
       } catch(e) {}
     }
 
-    // --- CODA DI MONITORAGGIO TEMPORALE SESSIONI ---
-    function runAdminTimers() {
-      const container = document.getElementById('adminTimersContainer');
-      if (!container || state.currentView !== 'admin') return;
-
-      const todayStr = new Date().toISOString().split('T')[0];
-      const todaysSessions = state.dates.filter(d => d.date === todayStr);
-
-      if (todaysSessions.length === 0) {
-        container.classList.add('hidden');
-        return;
-      }
-
-      container.classList.remove('hidden');
-      let html = '<h4 class="font-extrabold text-indigo-950 mb-2 flex items-center gap-2 text-xs"><i data-lucide="timer" class="w-5 h-5 text-sky-500"></i> STATO SESSIONI OGGI (Invio automatico attestato dopo 2h 10m)</h4>';
-
-      todaysSessions.forEach(session => {
-        const timeMatch = (session.timeSlot || '').match(/(\d{2}):(\d{2})/);
-        if (timeMatch) {
-          const start = new Date(`${session.date}T${timeMatch[1]}:${timeMatch[2]}:00`).getTime();
-          const triggerTime = start + (130 * 60 * 1000); // 130 min
-          const now = Date.now();
-          const diff = triggerTime - now;
-
-          if (diff > 0) {
-            const mins = Math.floor(diff / 60000);
-            const secs = Math.floor((diff % 60000) / 1000);
-            html += `<div class="p-3 bg-white border border-slate-300 rounded-xl text-xs flex justify-between items-center mt-2">
-                <span class="truncate pr-4 text-indigo-950"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,30)}...</span>
-                <span class="font-mono text-indigo-950 font-black bg-slate-100 px-2 py-1 rounded whitespace-nowrap">Invio tra: ${mins}m ${secs}s</span>
-            </div>`;
-          } else {
-             html += `<div class="p-3 bg-emerald-100 border border-emerald-300 rounded-xl text-xs flex justify-between items-center mt-2">
-                <span class="truncate pr-4 text-emerald-950"><strong>${session.timeSlot}</strong> - ${session.studyPath.substring(0,30)}...</span>
-                <span class="font-bold text-emerald-800 whitespace-nowrap">Invio completato ✓</span>
-            </div>`;
-            triggerExitEmailsForSession(session.id);
-          }
-        }
-      });
-      container.innerHTML = html;
-      try { lucide.createIcons(); } catch(e) {}
-    }
-
-    // --- INTEGRAZIONE DATABASE CLOUD E AVVIO ---
     async function startApp() {
-      try { await signInAnonymously(auth); } catch(e) { showToast("Errore di connessione", "error"); }
+      try { await signInAnonymously(auth); } catch(e) { showToast("Errore di connessione cloud", "error"); }
       onAuthStateChanged(auth, u => {
         state.user = u;
         if(u) {
           setupRealtimeListeners();
-          const p = new URLSearchParams(window.location.search);
-          if (p.get('mode') === 'scanner') setupIsolatedScannerMode();
-          else if (p.get('checkin')) executeAutoCheckin(p.get('checkin').toUpperCase());
         }
       });
     }
 
-    function getOccupiedSeats(sid) { return state.registrations.filter(r => r.dateId === sid).reduce((s, r) => s + (parseInt(r.totalPeople)||1), 0); }
+    function getOccupiedSeats(sid) { 
+      return state.registrations.filter(r => r.dateId === sid).reduce((s, r) => s + (parseInt(r.totalPeople)||1), 0);
+    }
 
     function setupRealtimeListeners() {
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), s => {
@@ -877,41 +943,50 @@
       }, err => console.error("Settings error:", err));
 
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), s => {
-        state.dates = []; s.forEach(d => state.dates.push({id: d.id, ...d.data()})); state.dates.sort((a,b)=>new Date(a.date)-new Date(b.date));
-        renderHomeDates(); renderAdminDatesList();
+        state.dates = []; 
+        s.forEach(d => state.dates.push({id: d.id, ...d.data()})); 
+        state.dates.sort((a,b) => new Date(a.date + 'T' + (a.timeSlot ? a.timeSlot.split(' ')[0] : '00:00')) - new Date(b.date + 'T' + (b.timeSlot ? b.timeSlot.split(' ')[0] : '00:00')));
+        renderHomeDates(); 
+        renderAdminDatesList();
+        
         const f = document.getElementById('filterDateSelect');
-        if(f) { const v=f.value; f.innerHTML='<option value="all">Tutte le date</option>'+state.dates.map(x=>`<option value="${x.id}">${x.date} ${x.timeSlot} ${x.studyPath}</option>`).join(''); f.value=v; }
-      }, err => console.error("Dates error:", err));
+        if(f) { 
+          const v = f.value; 
+          f.innerHTML = '<option value="all">Tutti i turni</option>' + state.dates.map(x => `<option value="${x.id}">${x.date} ${x.timeSlot} - ${x.studyPath.substring(0,30)}...</option>`).join(''); 
+          f.value = v; 
+        }
+      });
 
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), s => {
-        state.registrations = []; s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); state.registrations.sort((a,b)=>b.timestamp-a.timestamp);
-        renderHomeDates(); renderRegistrations(); checkAndTriggerAutomaticReminders();
-      }, err => console.error("Registrations error:", err));
-      
-      setInterval(runAdminTimers, 1000);
+        state.registrations = []; 
+        s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); 
+        state.registrations.sort((a,b) => b.timestamp - a.timestamp);
+        renderHomeDates(); 
+        window.renderRegistrations(); 
+        renderAdminStats(); 
+        checkAndTriggerAutomaticReminders();
+      });
     }
 
-    async function triggerExitEmailsForSession(sessionId) {
-      if (window.processedSessions[sessionId]) return;
-      const regs = state.registrations.filter(r => r.dateId === sessionId && r.status === 'Ammesso' && !r.certificate2Sent);
-      if (regs.length === 0) {
-        window.processedSessions[sessionId] = true;
+    function renderAdminStats() {
+      const iscrittiEl = document.getElementById('statTotalIscritti');
+      const entratiEl = document.getElementById('statTotalEntrati');
+      const certificatiEl = document.getElementById('statTotalCertificati');
+      const assentiEl = document.getElementById('statTotalAssenti');
+
+      if (!iscrittiEl || !entratiEl || !certificatiEl || !assentiEl) return;
+
+      if(state.registrations.length === 0) {
+        iscrittiEl.innerText = "0";
+        entratiEl.innerText = "0";
+        certificatiEl.innerText = "0";
+        assentiEl.innerText = "0";
         return;
       }
-      window.processedSessions[sessionId] = true;
-      showToast("Invio automatico certificati conclusivi in corso...", "info");
-
-      for (const reg of regs) {
-        try {
-          await fetch(ATTESTATO_USCITA_URL, { 
-            method: "POST", 
-            mode: "no-cors", 
-            headers: { "Content-Type": "text/plain" }, 
-            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome }) 
-          });
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), { certificate2Sent: true, certificate2SentAt: Date.now() });
-        } catch(e) {}
-      }
+      iscrittiEl.innerText = state.registrations.length;
+      entratiEl.innerText = state.registrations.filter(r => r.status === 'Ammesso').length;
+      certificatiEl.innerText = state.registrations.filter(r => r.status === 'Concluso').length;
+      assentiEl.innerText = state.registrations.filter(r => r.status === 'Assente').length;
     }
 
     async function checkAndTriggerAutomaticReminders() {
@@ -919,9 +994,10 @@
       const daysBeforeSetting = state.settings.reminderDaysBefore !== undefined ? state.settings.reminderDaysBefore : 7;
       
       for (const reg of state.registrations) {
-        const evDate = new Date(reg.dateStr);
+        if (!reg.dateStr) continue;
+        const evDate = new Date(reg.dateStr.split(' • ')[0]);
         const diffDays = Math.ceil((evDate - today) / 86400000);
-        if (diffDays <= daysBeforeSetting && diffDays >= 0 && !reg.reminderSent) {
+        if (diffDays === daysBeforeSetting && !reg.reminderSent) {
           reg.reminderSent = true; 
           try {
             const pdf = await generateReceiptPDF(reg, reg.code, 'entrata');
@@ -937,7 +1013,6 @@
       }
     }
 
-    // --- BARCODE E QR CODE JSPDF ---
     function drawBarcode(docObj, code, x, y) {
       docObj.setFont("Courier", "bold"); docObj.setFontSize(10); docObj.setTextColor(0,0,0); docObj.text(code, x+25, y+22, {align:"center"}); docObj.setFillColor(0,0,0);
       let cx = x; for (let i=0; i<35; i++) { let w=(i%3===0)?1.4:(i%2===0)?0.8:0.4; let s=(i%4===0)?1.0:0.6; docObj.rect(cx, y, w, 15, 'F'); cx+=w+s; }
@@ -951,15 +1026,22 @@
       } catch (e) { console.error("Errore QR Code:", e); }
     }
 
-    // --- COMPILAZIONE PDF AD ALTA DEFINIZIONE VETTORIALE ---
     async function generateReceiptPDF(data, code, type = 'entrata') {
       const { jsPDF } = window.jspdf;
       const docObj = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const isCertificate = (type === 'uscita');
       
       if (isCertificate) {
-        // Attestato conclusivo
-        docObj.setFillColor(250, 246, 235); docObj.rect(0, 0, 210, 297, 'F');
+        // PERGAMENA D'ONORE FINALE CON BOLLE SFUMATE
+        docObj.setFillColor(254, 253, 249); docObj.rect(0, 0, 210, 297, 'F');
+
+        docObj.setFillColor(239, 246, 255); 
+        docObj.circle(30, 60, 15, 'F'); docObj.circle(180, 120, 22, 'F');
+        docObj.setFillColor(243, 244, 246);
+        docObj.circle(50, 220, 18, 'F'); docObj.circle(160, 40, 10, 'F');
+        docObj.setFillColor(224, 242, 254);
+        docObj.circle(140, 260, 25, 'F'); docObj.circle(25, 170, 12, 'F');
+
         docObj.setDrawColor(30, 27, 75); docObj.setLineWidth(4); docObj.rect(8, 8, 194, 281, 'D');
         docObj.setDrawColor(202, 138, 4); docObj.setLineWidth(1); docObj.rect(12, 12, 186, 273, 'D');
 
@@ -980,7 +1062,7 @@
         docObj.setDrawColor(202, 138, 4); docObj.line(45, 114, 165, 114);
 
         docObj.setFont('times', 'italic'); docObj.setFontSize(12.5); docObj.setTextColor(71, 85, 105);
-        docObj.text('per aver partecipato alle sessioni informative ed approfondimenti laboratoriali', 105, 132, { align: 'center' });
+        docObj.text('per aver partecipato con eccellente dedizione alle giornate conoscitive d\'orientamento', 105, 132, { align: 'center' });
         docObj.text('per l\'anno scolastico 2026/2027 d\'istituto relativi al percorso d\'eccellenza:', 105, 140, { align: 'center' });
 
         docObj.setFont('helvetica', 'bold'); docObj.setFontSize(13); docObj.setTextColor(30, 27, 75);
@@ -1004,7 +1086,7 @@
         docObj.setFontSize(8); docObj.setTextColor(148, 163, 184); docObj.setFont("helvetica", "normal");
         docObj.text("Referente d'Orientamento d'Istituto", 155, 257, {align: "center"});
       } else {
-        // Pass ammissione ingresso
+        // PASS AMMISSIONE DETTAGLIATO
         docObj.setFillColor(30, 27, 75); docObj.rect(0, 0, 210, 52, 'F');
         docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(22);
         docObj.text('ITSCG "PRIMO LEVI" - SEREGNO', 15, 22);
@@ -1014,7 +1096,7 @@
 
         docObj.setFillColor(14, 165, 233); docObj.rect(15, 62, 180, 14, 'F');
         docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(11);
-        docObj.text(`RICEVUTA DI PRENOTAZIONE UFFICIALE: ${code}`, 20, 71);
+        docObj.text(`PASS D'AMMISSIONE UFFICIALE: ${code}`, 20, 71);
 
         docObj.setDrawColor(226, 232, 240); docObj.setFillColor(248, 250, 252); docObj.rect(15, 85, 180, 74, 'FD');
         docObj.setTextColor(30, 27, 75); docObj.setFontSize(11); docObj.text('DETTAGLI REGISTRAZIONE STUDENTE:', 20, 95);
@@ -1043,18 +1125,17 @@
         drawQRCode(docObj, code, 140, 170, 42);
 
         docObj.setFillColor(254, 251, 235); docObj.setDrawColor(254, 243, 199); docObj.rect(15, 222, 180, 28, 'FD');
-        docObj.setTextColor(180, 83, 9); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(9.5);
+        docObj.setTextColor(180, 83, 9); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(10);
         docObj.text('INDICAZIONI ACCESSO:', 20, 228);
         docObj.setFont('helvetica', 'normal'); docObj.setFontSize(8.5); docObj.setTextColor(120, 53, 4);
-        docObj.text('1. Mostra questo PDF all\'accoglienza (verrà scansionato per l\'ingresso d\'aula).', 20, 234);
-        docObj.text('2. All\'uscita riceverai automaticamente l\'attestato d\'orientamento.', 20, 240);
+        docObj.text('1. Mostra questo PDF all\'accoglienza (verrà scansionato per la registrazione immediata).', 20, 234);
+        docObj.text('2. La rilevazione di presenza abiliterà l\'invio automatico del Certificato Conclusivo.', 20, 240);
       }
 
       const pdfDataUri = docObj.output('datauristring');
       return pdfDataUri.split(',')[1];
     }
 
-    // --- PRENOTAZIONI FRONTEND ---
     window.startBookingProcess = sid => {
       const d = state.dates.find(x => x.id === sid);
       if(!d) return;
@@ -1093,7 +1174,7 @@
 
       const occupied = getOccupiedSeats(sid);
       if (occupied + totalPeople > targetSession.maxSeats) {
-        showToast("Posti d'aula esauriti per questa sessione d'incontro.", "error");
+        showToast("Posti esauriti per questa sessione d'incontro.", "error");
         return;
       }
 
@@ -1113,7 +1194,7 @@
       }
 
       try {
-        setLoaderState(15, "Generazione del codice unico...");
+        setLoaderState(20, "Generazione del codice unico...");
         const code = `LEVI-${Math.floor(1000 + Math.random()*9000)}`;
 
         const regData = {
@@ -1122,23 +1203,23 @@
           timestamp: Date.now(), status: 'Iscritto'
         };
 
-        setLoaderState(45, "Generazione del pass PDF...");
+        setLoaderState(50, "Generazione del pass d'ammissione PDF...");
         const pdf = await generateReceiptPDF(regData, code, 'entrata');
 
-        setLoaderState(75, "Connessione con Google Apps Script d'istituto...");
+        setLoaderState(80, "Invio immediato e-mail di conferma...");
         try {
           await fetch(CONFIRM_SCRIPT_URL, {
             method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ email, nome, cognome, codice_prenotazione: code, pdfBase64: pdf, type: 'entrata' })
+            body: JSON.stringify({ email, nome, cognome, codice_prenotazione: code, pdfBase64: pdf, type: 'pass' })
           });
         } catch(gasErr) {}
 
-        setLoaderState(95, "Registrazione definitiva nel database...");
+        setLoaderState(95, "Registrazione nel database cloud...");
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
 
         state.currentBooking = regData;
 
-        // Render ticket
+        // Renderizza il ticket
         document.getElementById('ticketCode').innerText = code;
         document.getElementById('ticketStudent').innerText = `${cognome.toUpperCase()} ${nome.toUpperCase()}`;
         document.getElementById('ticketPath').innerText = targetSession.studyPath;
@@ -1159,13 +1240,13 @@
           document.getElementById('bookingSection').classList.add('hidden');
           document.getElementById('confirmationSection').classList.remove('hidden');
           document.getElementById('confirmationSection').scrollIntoView({ behavior: 'smooth' });
-          showToast("Prenotazione registrata! Pass inviato via e-mail.", "success");
+          showToast("Prenotazione registrata! Pass inviato immediatamente via e-mail.", "success");
         }, 800);
 
       } catch(err) {
         loader.classList.add('hidden');
         submitBtn.disabled = false;
-        showToast("Impossibile salvare: " + err.message, "error");
+        showToast("Impossibile salvare la prenotazione.", "error");
       }
     };
 
@@ -1194,7 +1275,6 @@
       return new Blob(byteArrays, {type: contentType});
     }
 
-    // --- GESTIONE MODALI DI RECUPERO E CANCELLAZIONE AVANZATA ---
     window.handleRecovery = async (e) => {
       e.preventDefault();
       const codeTerm = document.getElementById('recoveryCode').value.trim();
@@ -1205,13 +1285,13 @@
 
       let reg = null;
       if (codeTerm) {
-        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase() || x.email.toLowerCase() === codeTerm.toLowerCase());
+        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase());
       } else if (cognomeTerm && nomeTerm) {
         reg = state.registrations.find(x => x.cognome.toLowerCase() === cognomeTerm.toLowerCase() && x.nome.toLowerCase() === nomeTerm.toLowerCase());
       }
 
       if(!reg) { 
-        showToast("Nessuna prenotazione trovata con i parametri inseriti.", "error"); 
+        showToast("Nessun iscritto trovato con i parametri specificati.", "error"); 
         btn.disabled = false; 
         return; 
       }
@@ -1220,9 +1300,9 @@
         const pdf = await generateReceiptPDF(reg, reg.code, 'entrata');
         await fetch(CONFIRM_SCRIPT_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'entrata' })
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'recupero' })
         });
-        showToast("Pass d'ingresso reinviato con successo via e-mail!", "success");
+        showToast("Pass d'ammissione rinviato immediatamente via e-mail!", "success");
         closeModal('recoveryModal');
       } catch(err) { showToast("Errore di rete.", "error"); }
       btn.disabled = false;
@@ -1232,34 +1312,32 @@
       e.preventDefault();
       const codeTerm = document.getElementById('cancelCode').value.trim();
       const cognomeTerm = document.getElementById('cancelCognome').value.trim();
-      const nomeTerm = document.getElementById('cancelNome').value.trim();
+      const textNomeTerm = document.getElementById('cancelNome').value.trim();
 
       let reg = null;
       if (codeTerm) {
-        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase() || x.email.toLowerCase() === codeTerm.toLowerCase());
-      } else if (cognomeTerm && nomeTerm) {
-        reg = state.registrations.find(x => x.cognome.toLowerCase() === cognomeTerm.toLowerCase() && x.nome.toLowerCase() === nomeTerm.toLowerCase());
+        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase());
+      } else if (cognomeTerm && textNomeTerm) {
+        reg = state.registrations.find(x => x.cognome.toLowerCase() === cognomeTerm.toLowerCase() && x.nome.toLowerCase() === textNomeTerm.toLowerCase());
       }
 
-      if(!reg) { showToast("Nessuna prenotazione trovata.", "error"); return; }
+      if(!reg) { showToast("Nessuna registrazione trovata.", "error"); return; }
 
-      showAdminConfirm("Annulla Prenotazione", `Vuoi rimuovere l'iscrizione dello studente ${reg.cognome} ${reg.nome}?`, false, async () => {
+      showAdminConfirm("Annulla Prenotazione", `Vuoi rimuovere definitivamente l'iscrizione per ${reg.cognome} ${reg.nome}?`, false, async () => {
         try {
           await fetch(CANCEL_SCRIPT_URL, {
             method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code })
+            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, type: 'cancellazione' })
           });
           if(state.user) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
           state.registrations = state.registrations.filter(r => r.code !== reg.code);
           renderHomeDates();
-          showToast("Prenotazione rimossa, posti in aula riceduti.", "success");
-          closeModal('confirmCancelModal');
+          showToast("Prenotazione annullata. Posti d'aula rilasciati e mail di cancellazione inviata.", "success");
           closeModal('cancelModal');
-        } catch (err) {}
+        } catch (err) { showToast("Impossibile annullare.", "error"); }
       });
     };
 
-    // --- COCKPIT DOCENTI ---
     window.handleAdminLogin = (e) => {
       e.preventDefault();
       const p = document.getElementById('adminPasswordInput').value;
@@ -1282,7 +1360,7 @@
 
     window.handleCreateDate = async e => {
       e.preventDefault();
-      if(!state.user) return showToast("Connessione cloud Firebase assente.", "error");
+      if(!state.user) return showToast("Connessione cloud assente.", "error");
       
       const date = document.getElementById('newDateValue').value;
       const timeSlot = document.getElementById('newDateTimeSlot').value.trim();
@@ -1294,12 +1372,12 @@
       try {
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id), { id, date, timeSlot, studyPath, aula, maxSeats });
         document.getElementById('newDateForm').reset();
-        showToast("Sessione creata ed inserita a registro.", "success");
-      } catch(err) { showToast("Errore database.", "error"); }
+        showToast("Sessione d'incontro aggiunta con successo.", "success");
+      } catch(err) { showToast("Errore di rete.", "error"); }
     };
 
     window.handleDeleteDate = id => {
-      showAdminConfirm("Rimuovi Turno d'Aula", "Rimuovendo questa sessione, eliminerai anche la disponibilità di posti per gli studenti.", false, async () => {
+      showAdminConfirm("Rimuovi Turno d'Aula", "Sei sicuro di voler rimuovere questa sessione?", false, async () => {
         try {
           await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
           showToast("Sessione rimossa.", "success");
@@ -1308,11 +1386,11 @@
     };
 
     window.handleClearAllRegistrations = () => {
-      showAdminConfirm("Azione Pericolosa!", "Vuoi eliminare TUTTI gli iscritti al database? Questa azione non è reversibile.", true, async () => {
+      showAdminConfirm("Svuota Archivio Iscritti", "Stai per eliminare tutti i record di iscritti presenti. Digita ELIMINA.", true, async () => {
         for (const reg of state.registrations) {
           await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
         }
-        showToast("Database iscritti svuotato con successo.", "success");
+        showToast("Registro iscritti svuotato con successo.", "success");
       });
     };
 
@@ -1320,75 +1398,158 @@
       const val = parseInt(document.getElementById('reminderDaysInput').value);
       try {
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { reminderDaysBefore: val }, { merge: true });
-        showToast("Configurazione promemoria salvata.", "success");
+        showToast("Intervallo promemoria aggiornato.", "success");
       } catch(e) { showToast("Errore database.", "error"); }
     };
 
-    // --- ACCREDITO E CAMBIO STATO DOCENTI ---
+    window.exportToExcel = () => {
+      if (state.registrations.length === 0) {
+        showToast("Nessun dato da esportare.", "error");
+        return;
+      }
+      
+      let csv = "\ufeff"; // BOM per supportare lettere accentate in Excel
+      csv += "Codice;Cognome;Nome;Email;Provenienza;Partecipanti;Turno;Indirizzo;Stato Alunno\n";
+      
+      state.registrations.forEach(r => {
+        csv += `${r.code};${r.cognome.toUpperCase()};${r.nome.toUpperCase()};${r.email};${r.provenienza || 'Terza media'};${r.totalPeople};${r.dateStr};${r.studyPath};${r.status}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", `registro_iscritti_leviseregno_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("File Excel/CSV scaricato correttamente!", "success");
+    };
+
+    // FUNZIONE DI AGGIORNAMENTO STATO ED INVIO AUTOMATICO DELLE EMAIL
     window.updateStudentStatus = async (code, nextStatus) => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
       try {
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { status: nextStatus });
-        showToast(`Stato studente aggiornato in: ${nextStatus.toUpperCase()}`, "success");
+        showToast(`Stato aggiornato: ${nextStatus.toUpperCase()}`, "success");
         
-        if (nextStatus === 'Entrato') {
+        // Gestione degli indicatori visivi di stato dell'invio
+        if (nextStatus === 'Ammesso') {
           playAudioTone(true);
+          updateButtonUI(code, 'btn-att-', 'Invio in corso...');
           try {
             await fetch(ATTESTATO_ENTRATA_URL, {
               method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, type: 'accredito' })
             });
-          } catch(e) {}
+            updateButtonUI(code, 'btn-att-', 'Inviato', 'bg-emerald-500', 'text-white');
+          } catch(e) {
+            updateButtonUI(code, 'btn-att-', 'In attesa');
+          }
+        } 
+        else if (nextStatus === 'Concluso') {
+          playAudioTone(true);
+          updateButtonUI(code, 'btn-concl-', 'Invio in corso...');
+          try {
+            const pdf = await generateReceiptPDF(reg, reg.code, 'uscita');
+            await fetch(ATTESTATO_USCITA_URL, {
+              method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'certificato' })
+            });
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { certificate2Sent: true, certificate2SentAt: Date.now() });
+            updateButtonUI(code, 'btn-concl-', 'Inviato definitivamente', 'bg-teal-600', 'text-white');
+            showToast("Pergamena d'Onore inviata con successo via e-mail!", "success");
+          } catch(e) { 
+            updateButtonUI(code, 'btn-concl-', 'In attesa');
+            showToast("Attestato non inviato.", "error"); 
+          }
         }
-      } catch(e) { showToast("Errore database.", "error"); }
+      } catch(e) { showToast("Errore di rete.", "error"); }
     };
+
+    // Helper per l'aggiornamento visivo dello stato degli invii all'interno della dashboard docenti
+    function updateButtonUI(code, prefix, text, addBg = '', addText = '') {
+      const btn = document.getElementById(prefix + code);
+      if (btn) {
+        btn.innerText = text;
+        if (addBg) {
+          btn.className = `px-2 py-1 ${addBg} ${addText} rounded text-[9px] font-black uppercase tracking-wider transition border-none`;
+        }
+      }
+    }
 
     window.triggerManualEntryPass = async code => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
-      showToast("Rigenerazione ed invio manuale del Pass d'ingresso...", "info");
+      showToast("Emissione e reinvio del Pass d'ammissione...", "info");
+      updateButtonUI(code, 'btn-pass-', 'Invio in corso...');
       try {
         const pdf = await generateReceiptPDF(reg, reg.code, 'entrata');
         await fetch(CONFIRM_SCRIPT_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'entrata' })
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'pass' })
         });
-        showToast("Pass d'ingresso rinviato via e-mail con successo!", "success");
-      } catch(e) { showToast("Errore d'invio.", "error"); }
+        updateButtonUI(code, 'btn-pass-', 'Inviato', 'bg-emerald-500', 'text-white');
+        showToast("Pass d'Ammissione inviato con successo!", "success");
+      } catch(e) { 
+        updateButtonUI(code, 'btn-pass-', 'In attesa');
+        showToast("Errore d'invio.", "error"); 
+      }
+    };
+
+    window.triggerManualEntryAttendance = async code => {
+      const reg = state.registrations.find(x => x.code === code);
+      if(!reg) return;
+      showToast("Emissione e invio dell'Attestato di Presenza d'aula...", "info");
+      updateButtonUI(code, 'btn-att-', 'Invio in corso...');
+      try {
+        await fetch(ATTESTATO_ENTRATA_URL, {
+          method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, type: 'accredito' })
+        });
+        updateButtonUI(code, 'btn-att-', 'Inviato', 'bg-emerald-500', 'text-white');
+        showToast("Attestato di Presenza (Ammesso) inviato!", "success");
+      } catch(e) { 
+        updateButtonUI(code, 'btn-att-', 'In attesa');
+        showToast("Errore d'invio.", "error"); 
+      }
     };
 
     window.triggerManualExitAttestato = async code => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
-      showToast("Generazione ed invio manuale dell'Attestato in corso...", "info");
+      showToast("Emissione e invio dell'Attestato Conclusivo (Pergamena d'Onore)...", "info");
+      updateButtonUI(code, 'btn-concl-', 'Invio in corso...');
       try {
         const pdf = await generateReceiptPDF(reg, reg.code, 'uscita');
         await fetch(ATTESTATO_USCITA_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf })
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'certificato' })
         });
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { certificate2Sent: true, certificate2SentAt: Date.now() });
-        showToast("Attestato Conclusivo spedito con successo alla famiglia!", "success");
-      } catch(e) { showToast("Errore di invio.", "error"); }
+        updateButtonUI(code, 'btn-concl-', 'Inviato definitivamente', 'bg-teal-600', 'text-white');
+        showToast("Pergamena d'Onore inviata con successo via e-mail!", "success");
+      } catch(e) { 
+        updateButtonUI(code, 'btn-concl-', 'In attesa');
+        showToast("Errore d'invio.", "error"); 
+      }
     };
 
     window.triggerManualDelete = code => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
-      showAdminConfirm("Rimuovi Registrazione", `Vuoi cancellare definitivamente lo studente ${reg.cognome} ${reg.nome}? Questa azione invierà un'email d'annullamento.`, true, async () => {
+      showAdminConfirm("Rimuovi Alunno", `Cancellare definitivamente lo studente ${reg.cognome} ${reg.nome}? Questa azione invierà un'e-mail d'annullamento.`, true, async () => {
         try {
           await fetch(CANCEL_SCRIPT_URL, {
             method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, code: reg.code })
+            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, type: 'cancellazione' })
           });
           await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code));
-          showToast("Studente eliminato d'aula.", "success");
+          showToast("Iscritto rimosso d'aula e mail inviata.", "success");
         } catch(e) { showToast("Errore di rete.", "error"); }
       });
     };
 
-    // --- ACCREDITO AUTOMATICO BARCODE, QR E TERMINALE PORTATILE ---
     window.handleManualBarcodeSubmit = e => {
       e.preventDefault();
       const code = document.getElementById('manualBarcodeField').value.trim().toUpperCase();
@@ -1406,7 +1567,7 @@
         if(resSuccess) resSuccess.classList.add('hidden');
         if(resEmpty) {
           resEmpty.classList.remove('hidden');
-          resEmpty.innerHTML = `<span class="text-red-600 block animate-shake">⚠️ CODICE NON VALIDO: ${scannedCode}</span>`;
+          resEmpty.innerHTML = `<span class="text-rose-600 block animate-shake">⚠️ CODICE ASSENTE: ${scannedCode}</span>`;
         }
         showToast("Codice d'accredito non trovato.", "error");
         return;
@@ -1421,30 +1582,30 @@
       
       if(nameEl) nameEl.innerText = `${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
       if(pathEl) pathEl.innerText = reg.studyPath;
-      if(codeEl) codeEl.innerText = `CODICE REGISTRAZIONE: ${reg.code}`;
+      if(codeEl) codeEl.innerText = `CODICE PRENOTAZIONE: ${reg.code}`;
 
-      if (reg.status !== 'Entrato') {
+      if (reg.status !== 'Ammesso') {
         try {
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Entrato' });
-          showToast(`Accredito istantaneo registrato per ${reg.cognome}!`, "success");
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Ammesso' });
+          showToast(`Check-In avvenuto con successo per ${reg.cognome}!`, "success");
           try {
             await fetch(ATTESTATO_ENTRATA_URL, {
               method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, type: 'accredito' })
             });
           } catch(e) {}
         } catch(e) {}
       } else {
-        showToast(`Lo studente ${reg.cognome} risulta già entrato d'aula.`, "info");
+        showToast(`Studente già registrato come Ammesso d'aula.`, "info");
       }
     }
 
-    // --- EMULAZIONE TASTIERA DI BACKGROUND (PER PISTOLE BARCODE LASER USB) ---
+    // Emulatore scanner USB
     let keyboardBuffer = '';
     let lastKeyTime = Date.now();
 
     window.addEventListener('keypress', e => {
-      if (state.currentView !== 'admin' && document.getElementById('scannerActiveView').classList.contains('hidden')) return;
+      if (state.currentView !== 'admin') return;
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') return;
 
       const currentTime = Date.now();
@@ -1459,110 +1620,16 @@
       }
     });
 
-    // --- APPLICAZIONE MODALITA' SCANNER TERMINALE PORTATILE SMARTPHONE ---
-    function setupIsolatedScannerMode() {
-      document.getElementById('wrapperMainSite').classList.add('hidden');
-      document.getElementById('wrapperIsolatedScanner').classList.remove('hidden');
-      stopWebcamScanner();
-    }
-
-    window.handleIsolatedLogin = e => {
-      e.preventDefault();
-      const p = document.getElementById('isolatedPasswordInput').value;
-      if (p === 'admin') {
-        document.getElementById('scannerLockScreen').classList.add('hidden');
-        document.getElementById('scannerActiveView').classList.remove('hidden');
-        startIsolatedWebcamScanner();
-      } else { showToast("Password terminale errata.", "error"); }
-    };
-
-    window.exitIsolatedMode = () => {
-      stopIsolatedWebcamScanner();
-      window.location.href = window.location.origin + window.location.pathname;
-    };
-
-    async function startIsolatedWebcamScanner() {
-      const video = document.getElementById('isolatedScannerVideo');
-      const canvas = document.getElementById('isolatedScannerCanvas');
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        video.srcObject = stream;
-        video.classList.remove('hidden');
-        video.play();
-        state.activeStream = stream;
-        state.isWebcamScanning = true;
-        requestAnimationFrame(tickIsolatedScanner);
-      } catch(e) { showToast("Impossibile sbloccare la camera posteriore.", "error"); }
-    }
-
-    function stopIsolatedWebcamScanner() {
-      state.isWebcamScanning = false;
-      if (state.activeStream) {
-        state.activeStream.getTracks().forEach(track => track.stop());
-        state.activeStream = null;
-      }
-    }
-
-    function tickIsolatedScanner() {
-      if(!state.isWebcamScanning) return;
-      const video = document.getElementById('isolatedScannerVideo');
-      const canvas = document.getElementById('isolatedScannerCanvas');
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
-        if (code) {
-          handleIsolatedCodeResult(code.data);
-          setTimeout(() => { if(state.isWebcamScanning) requestAnimationFrame(tickIsolatedScanner); }, 2500);
-          return;
-        }
-      }
-      requestAnimationFrame(tickIsolatedScanner);
-    }
-
-    async function handleIsolatedCodeResult(codeStr) {
-      const reg = state.registrations.find(x => x.code.toUpperCase() === codeStr.toUpperCase());
-      const f = document.getElementById('isolatedScanFeedback');
-      f.classList.remove('hidden', 'bg-emerald-600', 'bg-red-600');
-      
-      if (!reg) {
-        playAudioTone(false);
-        f.classList.add('bg-red-600');
-        f.innerText = `NON VALIDO: ${codeStr}`;
-      } else {
-        playAudioTone(true);
-        f.classList.add('bg-emerald-600');
-        f.innerText = `ENTRATO: ${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
-        if (reg.status !== 'Entrato') {
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Entrato' });
-          try {
-            await fetch(ATTESTATO_ENTRATA_URL, {
-              method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
-            });
-          } catch(e) {}
-        }
-      }
-      setTimeout(() => f.classList.add('hidden'), 2500);
-    }
-
-    window.handleIsolatedManualSubmit = e => {
-      e.preventDefault();
-      const code = document.getElementById('isolatedManualCode').value.trim().toUpperCase();
-      document.getElementById('isolatedManualCode').value = '';
-      if(code) handleIsolatedCodeResult(code);
-    };
-
-    // --- COCKPIT WEBCAM ---
     window.toggleWebcamScanner = async () => {
       const video = document.getElementById('scannerVideo');
       const placeholder = document.getElementById('scannerPlaceholder');
+      const laser = document.getElementById('scannerLaser');
+      
       if (state.isWebcamScanning) { stopWebcamScanner(); return; }
 
       if(placeholder) placeholder.classList.add('hidden');
       if(video) video.classList.remove('hidden');
+      if(laser) laser.classList.remove('hidden');
 
       try {
         const sourceId = document.getElementById('cameraSourceSelect').value;
@@ -1574,26 +1641,31 @@
         state.isWebcamScanning = true;
         requestAnimationFrame(tickWebcamScanner);
         showToast("Scanner fotocamera attivato.", "success");
-      } catch(e) { showToast("Sorgente webcam non disponibile.", "error"); stopWebcamScanner(); }
+        document.getElementById('btnToggleCamera').innerText = "Ferma Scanner";
+      } catch(e) { showToast("Sorgente camera non disponibile.", "error"); stopWebcamScanner(); }
     };
 
     function stopWebcamScanner() {
       state.isWebcamScanning = false;
       const video = document.getElementById('scannerVideo');
       const placeholder = document.getElementById('scannerPlaceholder');
+      const laser = document.getElementById('scannerLaser');
       if (state.activeStream) {
         state.activeStream.getTracks().forEach(track => track.stop());
         state.activeStream = null;
       }
       if(video) video.classList.add('hidden');
+      if(laser) laser.classList.add('hidden');
       if(placeholder) placeholder.classList.remove('hidden');
+      const btn = document.getElementById('btnToggleCamera');
+      if(btn) btn.innerText = "Avvia Scanner";
     }
 
     function tickWebcamScanner() {
       if(!state.isWebcamScanning) return;
       const video = document.getElementById('scannerVideo');
       const canvas = document.getElementById('scannerCanvas');
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
         canvas.width = video.videoWidth; canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -1619,16 +1691,14 @@
       } catch(e) { select.innerHTML = `<option value="">Nessuna camera rilevata</option>`; }
     }
 
-    // --- POPOLAMENTO HOME DATE CON RAGGRUPPAMENTO ---
     function renderHomeDates() {
       const container = document.getElementById('groupedDatesGrid');
       if(!container) return;
       if(state.dates.length === 0) {
-        container.innerHTML = `<div class="col-span-2 p-8 text-center text-slate-400 font-bold glass-card rounded-2xl border border-dashed bg-white">Nessun turno programmato nel database.</div>`;
+        container.innerHTML = `<div class="col-span-2 p-8 text-center text-slate-400 font-bold glass-card rounded-2xl border border-dashed border-slate-200">Nessuna sessione programmata d'aula.</div>`;
         return;
       }
 
-      // Raggruppamento per data unica
       const groups = {};
       state.dates.forEach(d => {
         if(!groups[d.date]) groups[d.date] = [];
@@ -1641,16 +1711,16 @@
           const available = Math.max(0, s.maxSeats - booked);
           const isFull = available <= 0;
           return `
-            <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+            <div class="p-3 bg-white/80 rounded-xl border border-slate-200 flex justify-between items-center text-xs shadow-sm font-semibold">
               <div class="pr-2 truncate">
-                <span class="font-extrabold text-indigo-950 block text-[11px] truncate">${s.studyPath}</span>
-                <span class="text-[10px] text-slate-500 font-semibold block mt-0.5">Ore ${s.timeSlot} • Aula: ${s.aula}</span>
+                <span class="font-extrabold text-slate-800 block text-[11px] truncate">${s.studyPath}</span>
+                <span class="text-[10px] text-slate-500 font-semibold block mt-1">Ore ${s.timeSlot} • Aula: ${s.aula}</span>
               </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${isFull ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'}">
-                  ${isFull ? 'PIENO' : `${available} liberi`}
+              <div class="flex items-center gap-3 shrink-0 font-bold">
+                <span class="text-[10px] px-2.5 py-1 rounded-lg ${isFull ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}">
+                  ${isFull ? 'COMPLETO' : `${available} posti`}
                 </span>
-                <button ${isFull ? 'disabled' : `onclick="startBookingProcess('${s.id}')"`} class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-[10px] font-black rounded uppercase tracking-wide transition shadow-sm">
+                <button ${isFull ? 'disabled' : `onclick="startBookingProcess('${s.id}')"`} class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 text-white text-[10px] font-black rounded uppercase tracking-wider transition shadow-sm">
                   Iscriviti
                 </button>
               </div>
@@ -1659,10 +1729,10 @@
         }).join('');
 
         return `
-          <div class="glass-card p-5 rounded-3xl border border-white space-y-3.5 shadow-sm transition hover:shadow-md flex flex-col justify-between">
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 space-y-4 shadow-sm transition hover:shadow-md flex flex-col justify-between">
             <div class="space-y-1">
-              <span class="text-[9px] font-black tracking-widest text-sky-600 uppercase block">Giorno Open Day d'Istituto</span>
-              <h4 class="text-xl font-extrabold text-indigo-950 font-outfit capitalize leading-none">${new Date(dateVal).toLocaleDateString('it-IT', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'})}</h4>
+              <span class="text-[9px] font-black tracking-widest text-indigo-600 uppercase block">Incontro Scolastico</span>
+              <h4 class="text-xl font-extrabold text-slate-900 font-outfit capitalize leading-none">${new Date(dateVal).toLocaleDateString('it-IT', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'})}</h4>
             </div>
             <div class="space-y-2">
               ${slotsHtml}
@@ -1673,80 +1743,131 @@
       try { lucide.createIcons(); } catch(e) {}
     }
 
-    function renderRegistrations() {
+    window.renderRegistrations = () => {
       const tbody = document.getElementById('registrationsTableBody');
-      if(!tbody) return;
+      const mobileContainer = document.getElementById('registrationsMobileCards');
+      if(!tbody || !mobileContainer) return;
       
       const filterVal = document.getElementById('filterDateSelect')?.value || 'all';
       const list = filterVal === 'all' ? state.registrations : state.registrations.filter(r => r.dateId === filterVal);
 
       if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic font-semibold">Nessuno studente iscritto a registro.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic font-semibold">Nessun alunno registrato.</td></tr>`;
+        mobileContainer.innerHTML = `<div class="p-6 text-center text-slate-400 italic font-semibold glass-card rounded-2xl">Nessun alunno registrato.</div>`;
         return;
       }
 
+      // 1. RENDER DESKTOP TABLE
       tbody.innerHTML = list.map(r => {
-        let badge = '<span class="bg-slate-100 text-slate-600 border border-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">Iscritto</span>';
-        if (r.status === 'Entrato') badge = '<span class="bg-blue-100 text-blue-900 border border-blue-900 px-2 py-0.5 rounded text-[10px] font-black">Entrato</span>';
-        else if (r.status === 'Ammesso') badge = '<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-black">Ammesso</span>';
-        else if (r.status === 'Assente') badge = '<span class="bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-0.5 rounded text-[10px] font-bold">Assente</span>';
-        else if (r.status === 'Non Ammesso') badge = '<span class="bg-red-100 text-red-800 border border-red-300 px-2 py-0.5 rounded text-[10px] font-bold">Non Ammesso</span>';
+        let badge = '<span class="bg-indigo-50 text-indigo-600 border border-indigo-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Iscritto</span>';
+        if (r.status === 'Ammesso') badge = '<span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Ammesso</span>';
+        else if (r.status === 'Concluso') badge = '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Concluso</span>';
+        else if (r.status === 'Assente') badge = '<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Assente</span>';
 
         return `
-          <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs font-semibold">
-            <td class="p-3 font-mono font-black text-indigo-950">${r.code}</td>
-            <td class="p-3">
-              <strong class="text-slate-800 block text-sm">${r.cognome.toUpperCase()} ${r.nome.toUpperCase()}</strong>
-              <span class="text-[10px] text-slate-400 font-medium">Scuola: ${r.provenienza || 'Terza media'}</span>
+          <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs font-semibold text-slate-700">
+            <td class="p-4">
+              <div class="font-mono font-black text-indigo-600">${r.code}</div>
+              <div class="mt-1">${badge}</div>
             </td>
-            <td class="p-3">
+            <td class="p-4">
+              <strong class="text-slate-900 block text-sm">${r.cognome.toUpperCase()} ${r.nome.toUpperCase()}</strong>
+              <span class="text-[10px] text-slate-400 font-semibold">Scuola: ${r.provenienza || 'Terza media'}</span>
+            </td>
+            <td class="p-4">
               <span class="block">${r.email}</span>
-              <span class="text-[10px] text-slate-400 font-medium">Posti riservati: ${r.totalPeople}</span>
+              <span class="text-[10px] text-slate-400 font-semibold">Posti: ${r.totalPeople} (Accompagnatori: ${r.numAccompagnatori})</span>
             </td>
-            <td class="p-3">
-              <strong class="text-slate-700 block">${r.studyPath.substring(0, 30)}...</strong>
+            <td class="p-4">
+              <strong class="text-slate-600 block">${r.studyPath.substring(0, 25)}...</strong>
               <span class="text-[10px] text-slate-400 font-semibold block">${r.dateStr}</span>
             </td>
-            <td class="p-3 text-center">
-              <div class="flex flex-col gap-1 items-center">
-                ${badge}
-                <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-1 text-[10px] rounded border bg-white outline-none font-bold text-slate-700 mt-1.5">
-                  <option value="" disabled selected>Cambia...</option>
-                  <option value="Iscritto">Iscritto</option>
-                  <option value="Entrato">Entrato</option>
-                  <option value="Assente">Assente</option>
-                  <option value="Non Ammesso">Non Ammesso</option>
-                  <option value="Ammesso">Ammesso</option>
-                </select>
+            <td class="p-4 text-center">
+              <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-2 text-xs rounded-xl border border-slate-200 bg-white outline-none font-bold text-slate-700 shadow-sm">
+                <option value="" disabled selected>Cambia stato...</option>
+                <option value="Iscritto" ${r.status==='Iscritto'?'selected':''}>Iscritto</option>
+                <option value="Ammesso" ${r.status==='Ammesso'?'selected':''}>Ammesso</option>
+                <option value="Concluso" ${r.status==='Concluso'?'selected':''}>Concluso</option>
+                <option value="Assente" ${r.status==='Assente'?'selected':''}>Assente</option>
+              </select>
+            </td>
+            <td class="p-4">
+              <div class="flex flex-col gap-1 w-32 mx-auto">
+                <button id="btn-pass-${r.code}" onclick="triggerManualEntryPass('${r.code}')" class="px-2 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded text-[9px] font-black uppercase tracking-wider transition border border-indigo-200">1. Rinvia Pass</button>
+                <button id="btn-att-${r.code}" onclick="triggerManualEntryAttendance('${r.code}')" class="px-2 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded text-[9px] font-black uppercase tracking-wider transition border border-sky-200">2. Rinvia Presenza</button>
+                <button id="btn-concl-${r.code}" onclick="triggerManualExitAttestato('${r.code}')" class="px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[9px] font-black uppercase tracking-wider transition border border-emerald-200">3. Rinvia Pergamena</button>
               </div>
             </td>
-            <td class="p-3 text-center">
-              <div class="flex flex-col gap-1 w-24 mx-auto">
-                <button onclick="triggerManualEntryPass('${r.code}')" class="px-2 py-1 bg-indigo-900 text-white rounded text-[9px] font-black uppercase">Pass</button>
-                <button onclick="triggerManualExitAttestato('${r.code}')" class="px-2 py-1 bg-amber-600 text-white rounded text-[9px] font-black uppercase">Pergamena</button>
-              </div>
-            </td>
-            <td class="p-3 text-right">
-              <button onclick="triggerManualDelete('${r.code}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <td class="p-4 text-right">
+              <button onclick="triggerManualDelete('${r.code}')" class="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition border border-transparent hover:border-rose-200"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </td>
           </tr>
         `;
       }).join('');
+
+      // 2. RENDER MOBILE CARDS
+      mobileContainer.innerHTML = list.map(r => {
+        let badge = '<span class="bg-indigo-50 text-indigo-600 border border-indigo-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Iscritto</span>';
+        if (r.status === 'Ammesso') badge = '<span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Ammesso</span>';
+        else if (r.status === 'Concluso') badge = '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Concluso</span>';
+        else if (r.status === 'Assente') badge = '<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Assente</span>';
+
+        return `
+          <div class="glass-card p-5 rounded-2xl border border-slate-200 space-y-3 font-semibold text-xs shadow-sm text-slate-700">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="font-mono font-black text-indigo-600 text-sm block">${r.code}</span>
+                <span class="text-[10px] text-slate-400 block">${r.dateStr}</span>
+              </div>
+              <div>${badge}</div>
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-sm font-black text-slate-900 uppercase">${r.cognome} ${r.nome}</h4>
+              <p class="text-slate-500 text-[10px]">Scuola: ${r.provenienza || 'Terza media'}</p>
+              <p class="text-slate-500 text-[10px]">Genitore: ${r.email} • Posti: ${r.totalPeople}</p>
+              <p class="text-indigo-600 font-bold text-[10px]">${r.studyPath}</p>
+            </div>
+            <div class="pt-3 border-t border-slate-100 space-y-2">
+              <div class="flex items-center gap-2 justify-between">
+                <span class="text-[10px] text-slate-400">Imposta Stato:</span>
+                <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-1.5 text-xs rounded-lg border border-slate-200 bg-white outline-none font-bold text-slate-700 shadow-sm">
+                  <option value="" disabled selected>Cambia stato...</option>
+                  <option value="Iscritto" ${r.status==='Iscritto'?'selected':''}>Iscritto</option>
+                  <option value="Ammesso" ${r.status==='Ammesso'?'selected':''}>Ammesso</option>
+                  <option value="Concluso" ${r.status==='Concluso'?'selected':''}>Concluso</option>
+                  <option value="Assente" ${r.status==='Assente'?'selected':''}>Assente</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-3 gap-1 pt-2">
+                <button onclick="triggerManualEntryPass('${r.code}')" class="py-1.5 bg-indigo-50 text-indigo-700 rounded text-[9px] font-black uppercase tracking-wider transition border border-indigo-200">1. Pass</button>
+                <button onclick="triggerManualEntryAttendance('${r.code}')" class="py-1.5 bg-sky-50 text-sky-700 rounded text-[9px] font-black uppercase tracking-wider transition border border-sky-200">2. Presenza</button>
+                <button onclick="triggerManualExitAttestato('${r.code}')" class="py-1.5 bg-emerald-50 text-emerald-700 rounded text-[9px] font-black uppercase tracking-wider transition border border-emerald-200">3. Pergamena</button>
+              </div>
+              <div class="text-right pt-1">
+                <button onclick="triggerManualDelete('${r.code}')" class="text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg text-[10px] font-bold border border-rose-200 inline-flex items-center gap-1">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Elimina Iscritto
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
       try { lucide.createIcons(); } catch(e) {}
     }
 
     function renderAdminDatesList() {
       const container = document.getElementById('adminDatesList');
       if(!container) return;
-      if(state.dates.length === 0) { container.innerHTML = `<p class="text-slate-400 italic text-xs">Nessuna sessione creata.</p>`; return; }
+      if(state.dates.length === 0) { container.innerHTML = `<p class="text-slate-400 italic text-xs">Nessun turno inserito.</p>`; return; }
       
       container.innerHTML = state.dates.map(d => `
-        <div class="p-3 bg-white border rounded-xl flex justify-between items-center text-xs shadow-sm font-bold font-sans">
+        <div class="p-3 bg-white border border-slate-200 rounded-xl flex justify-between items-center text-xs shadow-sm font-bold text-slate-800">
           <div>
-            <strong class="text-indigo-950">${d.date} • ${d.timeSlot}</strong>
-            <span class="block text-[10px] text-slate-500 font-semibold">${d.studyPath} (${getOccupiedSeats(d.id)}/${d.maxSeats} occupati)</span>
+            <strong class="text-slate-800">${d.date} • ${d.timeSlot}</strong>
+            <span class="block text-[10px] text-slate-400 font-semibold">${d.studyPath.substring(0,35)}... (${getOccupiedSeats(d.id)}/${d.maxSeats} occupati)</span>
           </div>
-          <button onclick="handleDeleteDate('${d.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <button onclick="handleDeleteDate('${d.id}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition border border-rose-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       `).join('');
       try { lucide.createIcons(); } catch(e) {}
@@ -1756,32 +1877,24 @@
       const c = document.getElementById('bubbleContainer');
       if(!c) return;
       c.innerHTML = '';
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 55; i++) {
         const b = document.createElement('div');
         b.className = 'bubble';
-        const s = Math.random() * 45 + 35;
-        b.style.width = `${s}px`; b.style.height = `${s}px`;
-        b.style.left = `${Math.random() * 92}vw`; b.style.top = `${Math.random() * 92}vh`;
-        b.style.setProperty('--moveX', `${Math.random() * 120 - 60}px`);
-        b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
-        b.style.animation = `driftAllAround ${Math.random()*15 + 15}s infinite ease-in-out`;
+        const s = Math.random() * 15 + 10; 
+        b.style.width = `${s}px`; 
+        b.style.height = `${s}px`;
+        b.style.left = `${Math.random() * 95}vw`; 
+        b.style.top = `${Math.random() * 95}vh`;
+        b.style.setProperty('--moveX', `${Math.random() * 160 - 80}px`);
+        b.style.setProperty('--moveY', `${Math.random() * 160 - 80}px`);
+        b.style.animation = `driftAllAround ${Math.random()*8 + 7}s infinite ease-in-out`;
         b.style.animationDelay = `${Math.random() * -5}s`;
         
-        // Creazione dell'immagine del logo identica a quella iniziale dell'header
-        const img = document.createElement('img');
-        img.src = 'levi.png';
-        img.alt = 'Logo';
-        img.className = 'w-1/2 h-1/2 object-contain opacity-25 pointer-events-none';
-        img.onerror = function() {
-          this.onerror = null;
-          // Fallback testuale "PL" (Primo Levi) se l'immagine locale o remota non viene caricata
-          const fallback = document.createElement('div');
-          fallback.className = 'text-indigo-950 font-black text-[10px] opacity-25 tracking-tighter';
-          fallback.innerText = 'PL';
-          this.replaceWith(fallback);
-        };
+        const txt = document.createElement('div');
+        txt.className = 'fallback-txt';
+        txt.innerText = 'PL';
+        b.appendChild(txt);
         
-        b.appendChild(img);
         c.appendChild(b);
       }
     }
@@ -1792,4 +1905,4 @@
     };
   </script>
 </body>
-</html>
+  </html>
