@@ -11,7 +11,7 @@
   <!-- Google Fonts - Outfit & Plus Jakarta per un'eccellente leggibilità -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Icone Lucide per elementi visuali moderni -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,72 +24,76 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 50%, #ecfdf5 100%);
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #eff6ff 100%);
       overflow-x: hidden;
       min-height: 100vh;
     }
     h1, h2, h3, h4, .font-outfit { font-family: 'Outfit', sans-serif; }
     
-    /* Animazione fluida delle bolle d'acqua di sfondo */
+    /* Animazione fluida delle bolle d'acqua di sfondo (molto discrete, eleganti, dai colori azzurri) */
     @keyframes driftAllAround {
-      0%, 100% { transform: translate(0px, 0px) scale(0.8) rotate(0deg); }
-      25% { transform: translate(var(--moveX), var(--moveY)) scale(1.15) rotate(90deg); }
-      50% { transform: translate(calc(var(--moveX) * -0.6), calc(var(--moveY) * 1.3)) scale(0.9) rotate(180deg); }
-      75% { transform: translate(calc(var(--moveX) * 1.4), calc(var(--moveY) * -0.7)) scale(1.25) rotate(270deg); }
+      0%, 100% { transform: translate(0px, 0px) scale(0.9) rotate(0deg); }
+      25% { transform: translate(var(--moveX), var(--moveY)) scale(1.05) rotate(45deg); }
+      50% { transform: translate(calc(var(--moveX) * -0.4), calc(var(--moveY) * 0.8)) scale(0.95) rotate(90deg); }
+      75% { transform: translate(calc(var(--moveX) * 0.8), calc(var(--moveY) * -0.4)) scale(1.1) rotate(135deg); }
     }
 
     .bubble-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; z-index: 0; }
     .bubble {
       position: absolute;
-      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.55) 15%, rgba(14, 165, 233, 0.3) 45%, rgba(236, 72, 153, 0.2) 70%, rgba(255, 255, 255, 0) 100%);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.6) 20%, rgba(56, 189, 248, 0.25) 50%, rgba(59, 130, 246, 0.1) 80%, rgba(255, 255, 255, 0) 100%);
       border-radius: 50%;
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.9), inset -5px -5px 15px rgba(56, 189, 248, 0.35), inset 5px 5px 15px rgba(244, 114, 182, 0.3), 0 8px 25px rgba(14, 165, 233, 0.1);
-      backdrop-filter: blur(1px); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply;
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.95), inset -3px -3px 10px rgba(56, 189, 248, 0.3), inset 3px 3px 10px rgba(59, 130, 246, 0.15), 0 6px 18px rgba(37, 99, 235, 0.06);
+      backdrop-filter: blur(0.5px); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply;
     }
-    .bubble img, .bubble svg { width: 55%; height: 55%; object-fit: contain; opacity: 0.25; pointer-events: none; }
+    .bubble img, .bubble svg { width: 50%; height: 50%; object-fit: contain; opacity: 0.22; pointer-events: none; }
 
-    .glass-card { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.05); }
-    .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.6); }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 4px 24px 0 rgba(30, 41, 59, 0.04); }
+    .glass-nav { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255, 255, 255, 0.75); }
 
-    /* Animazione shake in caso di scansione duplicata o errore */
+    /* Animazione laser dello scanner */
+    .laser-line { position: absolute; width: 100%; height: 4px; background-color: #ef4444; box-shadow: 0 0 12px #f87171, 0 0 24px #ef4444; animation: laserMove 2s infinite ease-in-out; z-index: 10; }
+    @keyframes laserMove { 0%, 100% { top: 8%; } 50% { top: 92%; } }
+
+    /* Animazione shake per messaggi di errore */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
     .animate-shake { animation: shake 0.4s ease-in-out; }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
 
-  <!-- Sfondo animato fluido -->
+  <!-- Bolle decorative di sfondo azzurre e cangianti -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
-  <!-- INTERFACCIA 1: SITO PUBBLICO GENERALE -->
+  <!-- INTESTAZIONE BARRA DI NAVIGAZIONE -->
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
-    <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
+    <nav class="glass-nav sticky top-0 z-40 px-5 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
-        <div class="relative w-12 h-12 flex items-center justify-center">
-          <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl shadow-lg border-2 border-white/80">
+        <div class="relative w-11 h-11 flex items-center justify-center">
+          <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-11 h-11 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-md border border-white/80\'>PL</div>';" class="w-11 h-11 object-contain rounded-xl shadow-md border border-white/80">
         </div>
         <div>
-          <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
-          <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
+          <h1 class="text-xl font-bold text-indigo-950 leading-none">ITSCG "Primo Levi"</h1>
+          <p class="text-xs text-sky-600 font-bold uppercase tracking-wider mt-0.5">Seregno (MB)</p>
         </div>
       </div>
       
       <div class="flex flex-wrap items-center justify-center gap-2">
-        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
-          <i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota</span>
+        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-black transition">
+          <i data-lucide="calendar" class="w-4 h-4"></i><span>PRENOTA POSTO</span>
         </button>
-        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
-          <i data-lucide="search" class="w-4 h-4"></i><span>Recupera</span>
+        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black transition">
+          <i data-lucide="search" class="w-4 h-4"></i><span>RECUPERA PRENOTAZIONE</span>
         </button>
-        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
-          <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla</span>
+        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-xs font-black transition">
+          <i data-lucide="trash-2" class="w-4 h-4"></i><span>ANNULLA PRENOTAZIONE</span>
         </button>
         <div class="h-6 w-px bg-slate-300 mx-1 hidden md:block"></div>
-        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm">
+        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black transition shadow-sm uppercase">
           <i data-lucide="shield-alert" class="w-4 h-4"></i><span>Area Docenti</span>
         </button>
       </div>
@@ -98,217 +102,223 @@
     <!-- Contenitore Notifiche Toast -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- MODALE AUTO CHECK-IN ACCREDIAMENTO RAPIDO -->
-    <div id="autoCheckinModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-      <div class="glass-card w-full max-w-md p-8 rounded-3xl text-center relative animate-in fade-in zoom-in-95 duration-200 shadow-2xl border border-white">
-        <div id="checkinLoading" class="space-y-4">
-          <div class="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <h3 class="text-xl font-bold text-indigo-950">Elaborazione Check-in...</h3>
-        </div>
-        <div id="checkinSuccess" class="hidden space-y-4">
-          <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
-            <i data-lucide="check-check" class="w-12 h-12"></i>
-          </div>
-          <h3 class="text-2xl font-extrabold text-indigo-950">Accesso Autorizzato!</h3>
-          <p class="text-sm text-slate-600">Lo studente <strong id="checkinStudentName" class="text-indigo-950"></strong> è registrato come <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">ENTRATO</span>.</p>
-          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-left text-xs text-slate-500 space-y-2">
-            <p id="checkinStudyPath"></p>
-          </div>
-          <p class="text-xs text-emerald-600 font-semibold flex items-center justify-center gap-1 mt-2">
-            <i data-lucide="award" class="w-4 h-4"></i> Pass di Ammissione attivato con successo!
-          </p>
-          <button onclick="closeAutoCheckin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-md mt-4">Chiudi</button>
-        </div>
-        <div id="checkinError" class="hidden space-y-4">
-          <div id="checkinErrorIcon" class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto shadow-md">
-            <i data-lucide="alert-triangle" class="w-12 h-12"></i>
-          </div>
-          <h3 id="checkinErrorTitle" class="text-2xl font-extrabold text-indigo-950">Attenzione</h3>
-          <p id="checkinErrorMessage" class="text-sm text-slate-700 font-semibold"></p>
-          <button onclick="closeAutoCheckin()" class="w-full py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition mt-4">Chiudi Finestra</button>
-        </div>
-      </div>
-    </div>
+    <!-- SEZIONE SITO HOME PRINCIPALE -->
+    <section id="sectionHome" class="space-y-6">
+      <main class="flex-grow container mx-auto px-4 py-6 max-w-5xl relative z-10 space-y-6">
 
-    <!-- MODALI UTENTE (Recupero, Annullamento) -->
-    <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
-        <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
-        <div class="text-center mb-6">
-          <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="download" class="w-6 h-6"></i></div>
-          <h3 class="text-xl font-bold text-indigo-950">Recupera il tuo Pass di Ammissione</h3>
-        </div>
-        <form onsubmit="handleRecovery(event)" class="space-y-4">
-          <input required type="text" id="recoveryInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500" placeholder="Codice o Cognome Studente">
-          <button type="submit" id="submitRecoveryBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition font-outfit">Invia Mail e Scarica Pass</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="cancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200">
-        <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
-        <div class="text-center mb-6">
-          <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="trash-2" class="w-6 h-6"></i></div>
-          <h3 class="text-xl font-bold text-indigo-950">Annulla Prenotazione</h3>
-        </div>
-        <form id="cancelForm" onsubmit="handleCancellation(event)" class="space-y-4">
-          <input required type="text" id="cancelTerm" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 font-semibold" placeholder="Codice Prenotazione o Cognome Studente *">
-          <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition font-outfit">Procedi all'Annullamento</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
-        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
-        <h3 class="text-xl font-bold text-indigo-950">Confermi l'eliminazione?</h3>
-        <p class="text-sm text-slate-500 mt-2">Eliminerai la prenotazione per lo studente <span id="confirmCancelStudentName" class="font-bold text-indigo-950"></span>.</p>
-        <div class="flex gap-3 mt-6">
-          <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Indietro</button>
-          <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition">Sì, Annulla</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODALE CONFERMA DOCENTI -->
-    <div id="adminConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200">
-        <h3 id="adminConfirmTitle" class="text-xl font-bold text-indigo-950">Sei sicuro?</h3>
-        <p id="adminConfirmMessage" class="text-sm text-slate-500 mt-2"></p>
-        <div id="adminConfirmInputWrapper" class="mt-4 hidden">
-          <input type="text" id="adminConfirmInput" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-center uppercase font-bold text-slate-900" placeholder="Scrivi ELIMINA">
-        </div>
-        <div class="flex gap-3 mt-6">
-          <button onclick="closeModal('adminConfirmModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Annulla</button>
-          <button id="btnAdminConfirmAction" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl">Conferma</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONTENUTO PRINCIPALE -->
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl relative z-10">
-      
-      <!-- SEZIONE HOME -->
-      <section id="sectionHome" class="space-y-8 animate-in fade-in duration-500">
-        
-        <!-- TOP ROW: Banner Introduttivo + Info Sede Scolastica -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Banner Principale -->
-          <div class="lg:col-span-2 glass-card p-8 rounded-3xl relative overflow-hidden shadow-xl border border-white/60 flex flex-col justify-center min-h-[280px]">
-            <div class="relative z-10 text-left">
-              <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">Orientamento Classi Terze Medie</span>
-              <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mt-4 mb-4 leading-tight">Progetta il tuo futuro formativo all'ITSCG Primo Levi</h2>
-              <p id="bannerText" class="text-base md:text-lg text-sky-600 font-semibold leading-relaxed">Caricamento delle comunicazioni in corso...</p>
-            </div>
+        <!-- RESTYLING: CENTRATO CON SINISTRA-DESTRA SENZA BLOCCO BLU SUPERIORE -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- COLONNA SINISTRA: Benvenuto Istituzionale -->
+          <div class="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl border border-white flex flex-col justify-center space-y-4">
+            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/50 uppercase tracking-wider self-start">
+              Orientamento A.S. 2026/2027
+            </span>
+            <h2 class="text-3xl font-extrabold text-indigo-950 tracking-tight leading-tight">
+              Disegna il tuo futuro, costruisci il tuo successo con il <span class="text-sky-600">Primo Levi</span>
+            </h2>
+            <p id="bannerText" class="text-xs md:text-sm text-slate-600 leading-relaxed font-semibold">
+              BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. L'open day, della durata di circa 2 ore, prevede un momento informativo di presentazione dell'offerta formativa e la visita degli ambienti dell'istituto. Per coloro che fossero interessati, al termine delle presentazioni sarà possibile avere un colloquio con i referenti dell'inclusione e con i docenti di sostegno.
+            </p>
           </div>
 
-          <!-- Info Sede -->
-          <div class="glass-card p-6 rounded-3xl border-2 border-indigo-950 flex flex-col justify-between shadow-lg bg-white">
-            <div>
-              <h4 class="text-lg font-bold text-indigo-950 flex items-center gap-2 mb-3"><i data-lucide="info" class="text-sky-500"></i> Informazioni Sede</h4>
-              <ul class="text-xs text-slate-700 space-y-3 font-semibold">
-                <li class="flex items-start gap-2">
-                 <i data-lucide="user" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                   <span><b>Referente Orientamento</b>: Prof. ssa Mariagrazia Calabrese</span>
-               </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="map-pin" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
+          <!-- COLONNA DESTRA: Informazioni Sede (Elegante, ad alto contrasto) -->
+          <div class="lg:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-6 rounded-3xl flex flex-col justify-between shadow-xl space-y-4 border border-indigo-950">
+            <div class="space-y-3.5">
+              <h4 class="text-sm font-black uppercase text-sky-400 tracking-wider flex items-center gap-2 border-b border-indigo-900 pb-2">
+                <i data-lucide="info" class="w-4 h-4"></i> Informazioni Sede d'Istituto
+              </h4>
+              <ul class="text-xs space-y-2.5 font-bold text-slate-200">
+                <li class="flex items-start gap-2.5">
+                  <i data-lucide="user" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+                  <span>Referente Orientamento: Prof.ssa Mariagrazia Calabrese</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <i data-lucide="map-pin" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
                   <span>Via Briantina, 68 - 20831 Seregno (MB)</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="mail" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                  <span><a href="mailto:orientamento@leviseregno.edu.it" class="text-indigo-900 underline font-extrabold">orientamento@leviseregno.edu.it</a></span>
+                <li class="flex items-start gap-2.5">
+                  <i data-lucide="mail" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+                  <span>orientamento@leviseregno.edu.it</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="award" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                  <span><b>Certificazione Ufficiale</b>: Pass di Ammissione per l'ingresso e Certificato Finale Conclusivo all'uscita.</span>
+                <li class="flex items-start gap-2.5">
+                  <i data-lucide="award" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+                  <span>Certificazione Ufficiale: Pass di Ammissione per l'ingresso e Certificato Finale Conclusivo all'uscita.</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="clipboard-list" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
-                  <span><b>Questionario di Gradimento</b>: Allegato direttamente alla mail dell'attestato finale!</span>
+                <li class="flex items-start gap-2.5">
+                  <i data-lucide="message-square" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+                  <span>Questionario di Gradimento: Allegato direttamente alla mail dell'attestato finale!</span>
                 </li>
               </ul>
             </div>
-            <div class="pt-4 border-t border-slate-200 mt-4">
-              <span class="text-[10px] text-slate-500 block">ITSCG "Primo Levi" Seregno - Codice Meccanografico: MBTD430001</span>
+            <div class="pt-3 border-t border-indigo-900/60 flex items-center justify-between text-[9px] text-slate-400 font-bold">
+              <span>ITSCG "Primo Levi" Seregno</span>
+              <span>Cod. Mecc: MBTD430001</span>
             </div>
           </div>
         </div>
 
-        <!-- SEZIONE SELEZIONE DATA PRENOTAZIONE -->
-        <div id="datesSection" class="space-y-6">
-          <h3 class="text-2xl font-bold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="calendar" class="text-sky-500"></i> Seleziona una Data Disponibile</h3>
-          <div id="datesGrid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div class="col-span-3 text-center p-8 text-slate-500 glass-card">Caricamento dei turni in corso...</div>
+        <!-- SEZIONE GRUPPO DI SELEZIONE DATE (Unificato a Calcolo Unico) -->
+        <div id="datesSection" class="space-y-4 scroll-mt-20 animate-in fade-in duration-300">
+          <div class="text-center sm:text-left">
+            <h3 class="text-2xl font-black text-indigo-950 font-outfit">Seleziona un Giorno Disponibile</h3>
+            <p class="text-xs text-slate-500 font-bold">Le sessioni d'indirizzo sono raggruppate per data per darti una panoramica chiara d'aula.</p>
           </div>
 
-          <!-- SCHEDA COMPILAZIONE ISCRIZIONE -->
-          <div id="bookingCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-sky-500 animate-in slide-in-from-bottom duration-300 max-w-3xl mx-auto shadow-xl">
-            <div class="flex justify-between items-center mb-4">
-              <h4 id="selectedDateTitle" class="text-xl font-bold text-indigo-950 font-outfit">Compila Modulo</h4>
-              <button onclick="closeBookingForm()"><i data-lucide="x" class="w-6 h-6 text-slate-400 hover:text-slate-600"></i></button>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="groupedDatesGrid">
+            <!-- Calcolato e popolarizzato dinamicamente con calcolo posti unificato -->
+          </div>
+        </div>
+
+        <!-- MODULO FORM REGISTRAZIONE -->
+        <div id="bookingSection" class="hidden max-w-xl mx-auto scroll-mt-24">
+          <div class="glass-card p-6 rounded-3xl border border-white space-y-4 shadow-xl">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="inline-block py-0.5 px-2 text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 rounded uppercase">Step d'Iscrizione</span>
+                <h3 class="text-lg font-bold text-indigo-950 font-outfit mt-1">Completa Prenotazione</h3>
+              </div>
+              <button onclick="cancelBookingProcess()" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-full transition">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
             </div>
 
-            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100 text-xs text-amber-900 leading-relaxed mb-4">
-              <p class="font-bold flex items-center gap-1"><i data-lucide="alert-circle" class="w-4 h-4"></i> Nota importante sulla contemporaneità:</p>
-              <p>Gli indirizzi nello stesso orario avvengono in laboratori diversi. Puoi iscriverti ad <strong>un solo indirizzo per fascia oraria</strong>.</p>
+            <div class="p-3.5 bg-indigo-50/60 border border-indigo-100 rounded-2xl text-xs space-y-1 text-slate-700 font-bold">
+              <p class="text-indigo-950 text-sm font-black" id="lblBookingPath"></p>
+              <p id="lblBookingDate"></p>
+              <p class="text-indigo-600 font-semibold" id="lblBookingAula"></p>
             </div>
 
-            <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-4">
-              <div class="grid sm:grid-cols-2 gap-4">
-                <input required type="text" id="studentName" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 text-sm" placeholder="Nome dello Studente *">
-                <input required type="text" id="studentSurname" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 text-sm" placeholder="Cognome dello Studente *">
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-3 font-semibold text-xs">
+              <input type="hidden" id="formEventId">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">Cognome Alunno *</label>
+                  <input required type="text" id="formCognome" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rossi">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">Nome Alunno *</label>
+                  <input required type="text" id="formNome" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Mario">
+                </div>
               </div>
-              <div class="grid sm:grid-cols-2 gap-4">
-                <input required type="email" id="parentEmail" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 text-sm" placeholder="E-mail del Genitore Referente *">
-                <input required type="tel" id="parentPhone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 text-sm" placeholder="Telefono Genitore *">
+
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">Provenienza (Terza Media) *</label>
+                  <input required type="text" id="formProvenienza" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="es. Media Don Milani">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">E-mail del Genitore *</label>
+                  <input required type="email" id="formEmail" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="genitore@email.it">
+                </div>
               </div>
-              
-              <div class="space-y-4">
-                <select required id="studyPathSelect" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700 text-sm"></select>
-                
-                <div class="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Numero Alunni (Incluso Studente Referente) *</label>
-                    <input required type="number" min="1" max="5" id="numAlunni" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700 text-sm" value="1" oninput="calculateTotalFormSeats()">
+
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">Numero Alunni *</label>
+                  <input required type="number" min="1" max="5" id="formNumAlunni" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" value="1" oninput="recalcTotalSeats()">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-500 uppercase">Numero Accompagnatori *</label>
+                  <input required type="number" min="0" max="8" id="formNumAccompagnatori" class="w-full p-2.5 rounded-lg border bg-white outline-none focus:ring-2 focus:ring-indigo-500" value="1" oninput="recalcTotalSeats()">
+                </div>
+              </div>
+
+              <div class="text-right text-[11px] text-slate-500 font-bold">Posti totali da riservare in aula: <span id="lblTotalFormSeats" class="text-indigo-900 text-sm font-black">2</span></div>
+
+              <div class="p-3 bg-sky-50/50 rounded-xl border border-sky-100 flex items-start gap-2.5">
+                <input type="checkbox" id="formSupportRequired" class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 mt-0.5">
+                <label for="formSupportRequired" class="text-[11px] text-slate-600 font-bold select-none cursor-pointer">Richiesta colloquio individuale per Inclusione / Supporto D.S.A. (fine incontro)</label>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+                <input required type="checkbox" id="formPrivacy" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                <label for="formPrivacy" class="text-[10px] text-slate-500 leading-normal select-none cursor-pointer">Dichiaro di aver preso visione dell'Informativa d'istituto sul trattamento dei dati personali ai sensi del GDPR (Regolamento UE 2016/679). *</label>
+              </div>
+
+              <div class="pt-2">
+                <div id="bookingLoader" class="hidden space-y-1 mb-2">
+                  <div class="flex justify-between items-center text-[10px] text-indigo-950 font-black">
+                    <span id="bookingLoaderText">Esecuzione...</span>
+                    <span id="bookingLoaderPercent">0%</span>
                   </div>
-                  <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Numero Accompagnatori (Familiari) *</label>
-                    <input required type="number" min="0" max="10" id="numAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 font-semibold text-slate-700 text-sm" value="0" oninput="calculateTotalFormSeats()">
+                  <div class="w-full bg-slate-100 rounded-full h-1">
+                    <div id="bookingLoaderBar" class="bg-indigo-600 h-1 transition-all" style="width:0%"></div>
                   </div>
                 </div>
-                <div class="text-right text-slate-500 text-sm font-bold">Posti totali da riservare in aula: <span id="lblTotalFormSeats" class="text-indigo-900 text-lg">1</span></div>
-              </div>
 
-              <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 flex items-start gap-3">
-                <input type="checkbox" id="supportRequired" class="w-5 h-5 rounded border-slate-300 text-sky-600 mt-0.5">
-                <label for="supportRequired" class="text-sm text-slate-700 font-semibold">Richiesta colloquio individuale post-evento per Inclusione / Supporto D.S.A.</label>
+                <button type="submit" id="btnSubmitBooking" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl transition text-xs uppercase tracking-wider shadow">
+                  Conferma e Emetti Pass
+                </button>
               </div>
-
-              <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <input required type="checkbox" id="privacyConsent" class="w-5 h-5 rounded border-slate-300 mt-0.5">
-                <label for="privacyConsent" class="text-xs text-slate-600">Prendo visione della Privacy Policy scolastica ai sensi del GDPR (UE 2016/679). I dati verranno eliminati a conclusione degli Open Day. *</label>
-              </div>
-
-              <button type="submit" id="submitBookingBtn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition shadow-md font-outfit">Completa Registrazione e Ricevi Pass d'Ammissione</button>
             </form>
-          </div>
-
-          <!-- CARD DI SUCCESSO -->
-          <div id="successCard" class="hidden glass-card p-8 rounded-3xl border-t-4 border-emerald-500 text-center space-y-6 max-w-md mx-auto shadow-2xl">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto"><i data-lucide="check-circle" class="w-10 h-10"></i></div>
-            <h4 class="text-2xl font-extrabold text-indigo-950 font-outfit">Iscrizione Completata!</h4>
-            <p class="text-slate-600 text-sm font-semibold">Riceverai un messaggio all'indirizzo e-mail indicato contenente il tuo <strong>Pass di Ammissione Ufficiale</strong> con il codice d'accredito da mostrare all'ingresso della scuola.</p>
-            <div class="bg-slate-50 p-4 rounded-2xl inline-block border border-slate-200">
-              <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Il tuo Codice Unico d'Ammissione</p>
-              <p id="successRegCode" class="text-3xl font-mono font-black text-sky-600 mt-1">-</p>
-            </div>
-            <button onclick="resetBookingFlow()" class="block w-full max-w-xs mx-auto py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md font-outfit">Torna alla Home</button>
           </div>
         </div>
 
-        <!-- SEZIONE DETTAGLIATA INDIRIZZI DI STUDIO -->
+        <!-- SEZIONE CONFERMA AVVENUTA REGISTRAZIONE CON DOWNLOAD PASS -->
+        <div id="confirmationSection" class="hidden max-w-md mx-auto scroll-mt-24">
+          <div class="glass-card rounded-3xl border border-white overflow-hidden shadow-2xl space-y-4">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-600 p-5 text-white text-center space-y-1">
+              <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <i data-lucide="check" class="w-5 h-5"></i>
+              </div>
+              <h3 class="text-xl font-extrabold font-outfit">Iscrizione Ricevuta!</h3>
+              <p class="text-[10px] text-teal-100 font-bold">Un messaggio con allegato il Pass d'Ammissione è in arrivo via e-mail.</p>
+            </div>
+
+            <div class="p-5 space-y-4">
+              <div class="border border-slate-100 rounded-xl p-3 bg-slate-50/50 space-y-3 relative">
+                <div class="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#dbeafe] border-r border-slate-100 rounded-full"></div>
+                <div class="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#dbeafe] border-l border-slate-100 rounded-full"></div>
+                
+                <div class="flex justify-between items-center border-b border-slate-200/60 pb-2 text-[11px]">
+                  <div>
+                    <h4 class="font-extrabold text-indigo-950">ITSCG Primo Levi</h4>
+                    <p class="text-[9px] text-slate-400 font-bold">Via Briantina, 68 Seregno</p>
+                  </div>
+                  <div class="text-right">
+                    <span id="ticketCode" class="font-mono text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded">LEVI-0000</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-[10px] font-bold">
+                  <div>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Studente Referente</span>
+                    <p id="ticketStudent" class="text-slate-800 mt-0.5 uppercase"></p>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Incontro d'Aula</span>
+                    <p id="ticketDate" class="text-slate-800 mt-0.5"></p>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Indirizzo Scelto</span>
+                    <p id="ticketPath" class="text-slate-800 mt-0.5"></p>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-slate-400 font-semibold uppercase">Posti totali riservati</span>
+                    <p id="ticketPeople" class="text-slate-800 mt-0.5"></p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col items-center justify-center pt-2 border-t border-dashed border-slate-200">
+                  <canvas id="ticketQrCanvas" class="bg-white p-1 rounded-xl border border-slate-100 shadow-sm"></canvas>
+                  <p class="text-[8px] text-slate-400 uppercase tracking-widest font-black mt-1">Scanner d'Ingresso</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <button onclick="downloadTicketPDF()" class="w-full py-2 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-lg transition flex items-center justify-center gap-1.5 text-xs shadow-md">
+                  <i data-lucide="download" class="w-4 h-4"></i><span>SCARICA PASS VETTORIALE PDF</span>
+                </button>
+                <button onclick="navigateTo('home')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs">
+                  Torna alla Home
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE DETTAGLIATA INDIRIZZI DI STUDIO (Inserita come richiesto) -->
         <div class="space-y-6 pt-8">
           <h3 class="text-2xl font-extrabold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="graduation-cap" class="text-sky-500"></i> I Nostri Indirizzi di Studio</h3>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -373,7 +383,7 @@
         <!-- FAQ (DOMANDE FREQUENTI) POSIZIONATE IN BASSO DOPO GLI INDIRIZZI -->
         <div class="space-y-6 pt-6">
           <h3 class="text-2xl font-bold text-indigo-950 flex items-center gap-2 font-outfit"><i data-lucide="help-circle" class="text-sky-500"></i> Domande Frequenti</h3>
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="glass-card p-5 rounded-2xl space-y-2 shadow-sm bg-white">
               <h5 class="font-extrabold text-indigo-950 text-sm">Cosa ricevo subito dopo l'iscrizione?</h5>
               <p class="text-xs text-slate-600 leading-relaxed font-semibold">Riceverai immediatamente via e-mail il tuo <strong>Pass di Ammissione Ufficiale</strong>. Mostra il QR Code sul tuo smartphone all'ingresso dell'istituto per effettuare l'accredito immediato.</p>
@@ -392,245 +402,298 @@
             </div>
           </div>
         </div>
-      </section>
+      </main>
+    </section>
 
-      <!-- ACCESSO LOGIN DOCENTI -->
-      <section id="sectionLogin" class="hidden max-w-md mx-auto mt-12 animate-in fade-in">
-        <div class="glass-card p-8 rounded-3xl text-center space-y-6 border border-slate-300 shadow-xl bg-white">
-          <h2 class="text-2xl font-bold text-indigo-950 font-outfit">Area Autenticazione Docenti</h2>
-          <form onsubmit="handleLogin(event)" class="space-y-4">
-            <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-300 text-center font-bold tracking-widest outline-none focus:ring-2 focus:ring-indigo-600 bg-white text-indigo-950" placeholder="PASSWORD DOCENTE">
-            <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl hover:bg-indigo-950 transition font-outfit">Accedi</button>
-          </form>
+    <!-- INTERFACCIA SITO ACCESSO DOCENTI LOGIN (password "admin") -->
+    <section id="sectionLogin" class="hidden max-w-sm mx-auto my-auto p-6 glass-card rounded-2xl shadow-xl space-y-4">
+      <div class="text-center">
+        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="lock" class="w-5 h-5"></i></div>
+        <h3 class="text-lg font-bold text-indigo-950">Accesso Area Docenti</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Fornisci la chiave d'istituto per sbloccare il pannello.</p>
+      </div>
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-500 uppercase">Chiave Docenti</label>
+          <input required type="password" id="adminPasswordInput" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-bold text-center" placeholder="Scrivi admin">
         </div>
-      </section>
+        <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition text-sm">Sblocca Dashboard</button>
+      </form>
+    </section>
 
-      <!-- DASHBOARD AMMINISTRATIVA AD ALTO CONTRASTO (OTTIMIZZATA PER L'ESTERNO SOTTO IL SOLE) -->
-      <section id="sectionAdmin" class="hidden space-y-6 animate-in fade-in">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h2 class="text-3xl font-black text-indigo-950 font-outfit">Amministrazione Registrazioni</h2>
-            <p class="text-xs text-slate-700 font-bold">Interfaccia ad altissimo contrasto visivo per la lettura ottimale all'esterno sotto il sole.</p>
+    <!-- INTERFACCIA SITO AREA RISERVATA DOCENTI COCKPIT (Riorganizzato ed efficiente) -->
+    <section id="sectionAdmin" class="hidden container mx-auto px-4 py-6 max-w-5xl space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-indigo-950 tracking-tight flex items-center gap-2"><i data-lucide="shield-check" class="text-emerald-500"></i> Dashboard Orientamento Docenti</h2>
+          <p class="text-xs text-slate-500 font-semibold">Monitora turni, iscritti e invia attestati/ricevute in un click.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="switchAdminTab('tabRegistrations')" class="px-3.5 py-1.5 rounded-lg bg-indigo-950 text-white font-bold text-xs">Registro Iscritti</button>
+          <button onclick="switchAdminTab('tabLiveScanner')" class="px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">Scanner Accredito</button>
+          <button onclick="switchAdminTab('tabSettings')" class="px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">Pianificatore & Turni</button>
+        </div>
+      </div>
+
+      <!-- TIMER PANEL: NOTIFICA AUTOMATICA INVIO ATTESTATI COCKPIT -->
+      <div id="adminTimersContainer" class="p-4 bg-indigo-50 border border-indigo-200 rounded-2xl hidden shadow-sm transition"></div>
+
+      <!-- TAB 1: REGISTRAZIONI STUDENTI -->
+      <div id="tabRegistrations" class="space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+          <h3 class="font-extrabold text-indigo-950 text-sm flex items-center gap-1.5"><i data-lucide="users" class="text-indigo-600"></i> Registro Iscritti e Controllo Stato</h3>
+          <div class="flex gap-2">
+            <select id="filterDateSelect" onchange="renderRegistrations()" class="p-2 text-xs rounded-lg border bg-white font-bold text-indigo-950 outline-none">
+              <option value="all">Tutte le date</option>
+            </select>
           </div>
-          <button onclick="navigateTo('home')" class="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl font-bold text-sm shadow font-outfit">Chiudi Pannello</button>
         </div>
 
-        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl border-2 border-indigo-950 bg-white">
-          <div class="flex border-b-2 border-indigo-950 bg-slate-100">
-            <button id="tabIscrittiBtn" onclick="switchAdminTab('iscritti')" class="flex-1 py-4 font-black text-base border-b-4 border-indigo-900 text-indigo-950 bg-white">Iscritti & Statistiche</button>
-            <button id="tabScannerBtn" onclick="switchAdminTab('scanner')" class="flex-1 py-4 font-black text-base border-b-4 border-transparent text-indigo-900">Scanner Accoglienza</button>
-            <button id="tabSettingsBtn" onclick="switchAdminTab('settings')" class="flex-1 py-4 font-black text-base border-b-4 border-transparent text-indigo-900">Configuratore</button>
+        <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 text-indigo-950 border-b border-slate-200 font-bold">
+                <th class="p-3">Codice</th>
+                <th class="p-3">Studente / Provenienza</th>
+                <th class="p-3">Recapito Genitore</th>
+                <th class="p-3">Sessione d'Aula</th>
+                <th class="p-3 text-center">Stato Controllo</th>
+                <th class="p-3 text-center">Emetti Documento</th>
+                <th class="p-3 text-right">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+              <!-- Sincronizzato con Firestore in tempo reale -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: SCANNER DI ACCREDITO -->
+      <div id="tabLiveScanner" class="hidden grid md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950 space-y-4">
+            <h4 class="font-black text-indigo-950 font-outfit flex items-center gap-2"><i data-lucide="usb" class="text-sky-500"></i> Hardware USB d'Istituto</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Il sistema supporta lettori laser emulazione tastiera nativa in background. Ti basterà sparare sul codice d'ingresso da qualsiasi punto per effettuare l'accredito automatico!
+            </p>
           </div>
 
-          <div class="p-4 md:p-6">
+          <div class="glass-card p-6 rounded-2xl border-2 border-indigo-950 bg-white flex flex-col items-center">
+            <h4 class="font-black text-indigo-950 mb-3 font-outfit flex items-center gap-2"><i data-lucide="aperture" class="text-sky-500"></i> Scanner Fotocamera / Webcam (Canvas IA)</h4>
+            <div class="w-full max-w-sm aspect-square bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-indigo-950">
+              <video id="scannerVideo" autoplay playsinline class="hidden"></video>
+              <canvas id="scannerCanvas" class="w-full h-full object-cover rounded-2xl hidden"></canvas>
+              <div id="scannerLaser" class="laser-line hidden"></div>
+              <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+                <i data-lucide="camera" class="w-12 h-12 mb-2 text-indigo-400"></i>
+                <p class="text-xs font-bold">Fotocamera non attiva</p>
+                <p class="text-[10px] mt-1 text-slate-500">Seleziona una sorgente e avvia lo scanner</p>
+              </div>
+            </div>
+            <div class="w-full mt-4 space-y-3">
+              <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-bold text-xs"></select>
+              <div class="grid grid-cols-2 gap-2">
+                <button id="btnToggleCamera" onclick="toggleWebcamScanner()" class="py-2.5 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
+                  <i data-lucide="play" class="w-4 h-4"></i>Avvia / Ferma
+                </button>
+                <button onclick="startWebcamDirectMobile()" class="py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
+                  <i data-lucide="smartphone" class="w-4 h-4"></i>Camera Posteriore
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
+            <h4 class="font-black text-indigo-950 mb-4 font-outfit">Digitazione Manuale Codice</h4>
+            <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
+              <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-black text-center uppercase tracking-widest" placeholder="LEVI-XXXX">
+              <button type="submit" class="px-6 py-3 bg-indigo-950 text-white rounded-xl font-black uppercase text-xs">Accredita</button>
+            </form>
+          </div>
+
+          <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-300 bg-white text-indigo-950 font-bold">
+            <div id="scanResultSuccess" class="hidden space-y-2">
+              <span id="scanFeedbackBadge" class="inline-block bg-emerald-700 text-white font-black px-3 py-1 rounded-full text-xs mb-2">ACCESSO AUTORIZZATO</span>
+              <h4 id="scanResultName" class="text-xl font-extrabold text-indigo-950"></h4>
+              <p id="scanResultPath" class="text-sm text-slate-600 font-semibold"></p>
+              <p id="scanResultCode" class="text-xs font-mono text-indigo-900"></p>
+            </div>
+            <div id="scanResultEmpty" class="text-center py-6 text-slate-400 font-semibold">
+               In attesa di scansionare un codice...
+            </div>
+          </div>
+
+          <div class="p-6 bg-indigo-50 rounded-2xl border-2 border-indigo-900 text-center">
+            <h4 class="font-black text-indigo-950 mb-2 font-outfit">Associa Smartphone di Servizio</h4>
+            <p class="text-xs text-slate-600 mb-3 font-semibold">Inquadra questo codice con un altro telefono per usarlo come pistola laser d'ingresso in modalità cloud.</p>
+            <button onclick="openAddDeviceModal()" class="py-2 px-4 bg-indigo-900 text-white rounded-xl text-xs font-bold font-outfit uppercase shadow">Mostra QR Code Collegamento</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHERMATA CONFIGURATORE IMPOSTAZIONI -->
+      <div id="tabSettings" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
+          <h3 class="font-black text-indigo-950 font-outfit">Crea Nuova Sessione d'Incontro</h3>
+          <form id="newDateForm" onsubmit="handleCreateDate(event)" class="space-y-3 font-semibold text-xs">
+            <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300">
+            <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Orario (es. 09:00 - 11:00)">
             
-            <!-- SCHERMATA ELENCO ISCRITTI CON STATISTICHE VISIVE -->
-            <div id="tabIscritti" class="space-y-6">
-              
-              <!-- Pannello Statistico Dinamico in tempo reale -->
-              <div id="adminStatisticsContainer"></div>
+            <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900">
+              <option value="" disabled selected>-- Scegli Indirizzo di Studio --</option>
+              <option value="LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE">LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE</option>
+              <option value="RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING">RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING</option>
+              <option value="LOG - LOGISTICA">LOG - LOGISTICA</option>
+              <option value="CAT - COSTRUZIONE AMBIENTE E TERRITORIO">CAT - COSTRUZIONE AMBIENTE E TERRITORIO</option>
+              <option value="SM - SISTEMA MODA">SM - SISTEMA MODA</option>
+            </select>
 
-              <div id="adminTimersContainer" class="hidden glass-card p-4 rounded-2xl border-2 border-indigo-950 bg-indigo-50 text-indigo-950 text-sm font-bold"></div>
+            <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Aula d'incontro (es. Aula Magna)">
+            <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Posti d'aula massimi">
+            <button type="submit" class="w-full py-3 bg-indigo-950 text-white rounded-xl font-black uppercase tracking-wider text-sm border-2 border-indigo-900 shadow-md">Pubblica Turno d'Aula</button>
+          </form>
+          <div id="adminDatesList" class="space-y-2 mt-4 max-h-48 overflow-y-auto border-t border-slate-200 pt-4"></div>
+        </div>
 
-              <div class="flex flex-col md:flex-row gap-4">
-                <input type="text" id="searchBar" oninput="renderRegistrations()" class="flex-grow p-3 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-bold outline-none placeholder-slate-600 shadow-sm" placeholder="🔍 Cerca per Cognome, Nome o Codice...">
-                <select id="filterDateSelect" onchange="renderRegistrations()" class="p-3 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-bold outline-none shadow-sm"></select>
-                <button onclick="exportToCSV()" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-black text-sm uppercase tracking-wide border-2 border-emerald-900 shadow-md font-outfit">Scarica in Excel (CSV)</button>
+        <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
+          <h3 class="font-black text-indigo-950 font-outfit">Gestione Dati Massivi</h3>
+          <p class="text-xs text-slate-600">Configurazioni globali e manutenzione del database.</p>
+          <div class="pt-4 border-t border-slate-200 space-y-4">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Pianificazione Invio Automatico Promemoria</label>
+              <div class="flex gap-2">
+                <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border-2 border-indigo-950 font-black text-indigo-950 text-lg" value="7">
+                <span class="py-2 text-[10px] font-bold text-slate-500">Giorni prima dell'evento per l'invio del Pass</span>
               </div>
-
-              <!-- Tabella ad alto contrasto per la lettura esterna -->
-              <div class="overflow-x-auto rounded-2xl border-2 border-indigo-950 bg-white">
-                <table class="w-full text-left border-collapse text-sm text-indigo-950">
-                  <thead>
-                    <tr class="bg-indigo-950 text-white font-black uppercase text-[11px] tracking-wider border-b-2 border-indigo-950">
-                      <th class="p-4 border-r border-indigo-900">Stato Check-In</th>
-                      <th class="p-4 border-r border-indigo-900">Studente & Contatti</th>
-                      <th class="p-4 border-r border-indigo-900">Indirizzo Prenotato</th>
-                      <th class="p-4 border-r border-indigo-900 text-center">Fase 1: Ammissione</th>
-                      <th class="p-4 border-r border-indigo-900 text-center">Fase 2: Certificato Finale</th>
-                      <th class="p-4 text-center">Azioni Flusso</th>
-                    </tr>
-                  </thead>
-                  <tbody id="registrationsTableBody" class="font-bold divide-y divide-slate-300">
-                    <!-- I dati verranno inseriti dinamicamente -->
-                  </tbody>
-                </table>
-              </div>
+              <button onclick="saveReminderDays()" class="mt-2 px-4 py-2 bg-indigo-900 text-white rounded-xl text-xs font-black uppercase tracking-wide">Salva Promemoria</button>
             </div>
-
-            <!-- SCHERMATA SCANNER E HARDWARE USB -->
-            <div id="tabScanner" class="hidden grid md:grid-cols-2 gap-8">
-              <div class="space-y-4">
-                <!-- Rilevamento tramite WebUSB per Datalogic -->
-                <div class="p-4 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-                  <h4 class="font-black text-indigo-950 mb-2 font-outfit flex items-center gap-2"><i data-lucide="usb" class="text-sky-500"></i> Hardware Scanner USB</h4>
-                  <p class="text-xs text-slate-600 mb-2 font-semibold">Associa direttamente la pistola Datalogic QW2100 tramite WebUSB per il tracciamento diretto del flusso di ingresso.</p>
-                  
-                  <div class="p-2 mb-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center gap-2">
-                    <span class="w-3.5 h-3.5 bg-emerald-500 rounded-full animate-ping flex-shrink-0"></span>
-                    <span class="text-xs text-indigo-900 font-extrabold">● Pistola USB Datalogic Pronta (Cattura background attiva)</span>
-                  </div>
-
-                  <div class="flex gap-2 mb-3">
-                    <button onclick="requestUsbHardwareDevice()" class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow">
-                      <i data-lucide="plus" class="w-4 h-4"></i>Rileva Lettore USB
-                    </button>
-                    <button onclick="clearPairedUsbDevices()" class="py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs">
-                      Scollega tutti
-                    </button>
-                  </div>
-
-                  <!-- Lista Dispositivi USB Abilitati -->
-                  <div class="border border-slate-300 rounded-xl p-3 bg-white space-y-2">
-                    <span class="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Hardware Attivo</span>
-                    <div id="usbDeviceListContainer" class="space-y-1 text-xs text-indigo-950 font-bold">
-                      <p class="text-slate-400 italic font-semibold">Nessun hardware WebUSB associato. (Usa la pistola USB in modalità emulazione tastiera in background).</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Scanner Fotocamera / Webcam del Telefono basato su Canvas -->
-                <div class="glass-card p-6 rounded-2xl border-2 border-indigo-950 bg-white flex flex-col items-center">
-                  <h4 class="font-black text-indigo-950 mb-3 font-outfit flex items-center gap-2"><i data-lucide="aperture" class="text-sky-500"></i> Scanner Fotocamera / Webcam (Canvas IA)</h4>
-                  <div class="w-full max-w-sm aspect-square bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-indigo-950">
-                    <video id="scannerVideo" autoplay playsinline class="hidden"></video>
-                    <canvas id="scannerCanvas" class="w-full h-full object-cover rounded-2xl hidden"></canvas>
-                    <div id="scannerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-                      <i data-lucide="camera" class="w-12 h-12 mb-2 text-indigo-400"></i>
-                      <p class="text-xs font-bold">Fotocamera non attiva</p>
-                      <p class="text-[10px] mt-1 text-slate-500">Seleziona una sorgente e avvia lo scanner</p>
-                    </div>
-                  </div>
-                  <div class="w-full mt-4 space-y-3">
-                    <select id="cameraSourceSelect" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-bold text-xs"></select>
-                    <div class="grid grid-cols-2 gap-2">
-                      <button onclick="toggleWebcamScanner()" class="py-2.5 bg-indigo-900 hover:bg-indigo-950 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
-                        <i data-lucide="play" class="w-4 h-4"></i>Avvia / Ferma
-                      </button>
-                      <button onclick="startWebcamDirectMobile()" class="py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase shadow-md flex items-center justify-center gap-1">
-                        <i data-lucide="smartphone" class="w-4 h-4"></i>Camera Posteriore
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Risultato Scansione e Digitazione Manuale -->
-              <div class="space-y-4">
-                <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-                  <h4 class="font-black text-indigo-950 mb-4 font-outfit">Digitazione Manuale Codice</h4>
-                  <form onsubmit="handleManualBarcodeSubmit(event)" class="flex gap-2">
-                    <input type="text" id="manualBarcodeField" class="flex-grow p-3 rounded-xl border-2 border-slate-700 bg-white text-indigo-950 font-black text-center uppercase tracking-widest placeholder-slate-400" placeholder="DIGITA CODICE...">
-                    <button type="submit" class="px-6 py-3 bg-indigo-950 text-white rounded-xl font-black uppercase text-xs tracking-wider">Invia</button>
-                  </form>
-                </div>
-
-                <div id="scanResultCard" class="glass-card p-6 rounded-3xl border-2 border-slate-300 bg-white text-indigo-950 font-bold">
-                  <div id="scanResultSuccess" class="hidden space-y-2">
-                    <span id="scanFeedbackBadge" class="inline-block bg-emerald-700 text-white font-black px-3 py-1 rounded-full text-xs mb-2">ACCESSO AUTORIZZATO</span>
-                    <h4 id="scanResultName" class="text-xl font-extrabold text-indigo-950"></h4>
-                    <p id="scanResultPath" class="text-sm text-slate-600 font-semibold"></p>
-                    <p id="scanResultCode" class="text-xs font-mono text-indigo-900"></p>
-                  </div>
-                  <div id="scanResultEmpty" class="text-center py-6 text-slate-400 font-semibold">
-                     In attesa di scansionare un codice...
-                  </div>
-                </div>
-
-                <div class="p-6 bg-indigo-50 rounded-2xl border-2 border-indigo-900 text-center">
-                  <h4 class="font-black text-indigo-950 mb-2 font-outfit">Associa Smartphone di Servizio</h4>
-                  <p class="text-xs text-slate-600 mb-3 font-semibold">Inquadra questo codice con un altro telefono per usarlo come pistola laser d'ingresso in modalità cloud.</p>
-                  <button onclick="openAddDeviceModal()" class="py-2 px-4 bg-indigo-900 text-white rounded-xl text-xs font-bold font-outfit uppercase shadow">Mostra QR Code Collegamento</button>
-                </div>
-              </div>
+            <div class="pt-4 border-t border-slate-200">
+              <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-black uppercase border-2 border-red-800 text-xs">Svuota database prenotazioni</button>
             </div>
-
-            <!-- SCHERMATA CONFIGURATORE IMPOSTAZIONI -->
-            <div id="tabSettings" class="hidden grid md:grid-cols-2 gap-8">
-              <div class="space-y-6">
-                <div class="p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-                  <h3 class="font-black text-indigo-950 mb-2 font-outfit">Pianificazione Invio Automatico</h3>
-                  <div class="flex gap-2 mb-2">
-                    <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border-2 border-indigo-950 font-black text-indigo-950 text-lg" value="7">
-                    <span class="py-2 text-xs font-bold text-slate-700">Giorni prima dell'evento per l'invio del Pass d'Ammissione</span>
-                  </div>
-                  <button onclick="saveReminderDays()" class="px-4 py-2 bg-indigo-900 text-white rounded-xl text-xs font-black uppercase tracking-wide font-outfit">Salva Configurazione</button>
-                </div>
-                <div class="p-6 bg-red-50 rounded-2xl border-2 border-red-900">
-                  <h3 class="font-black text-red-900 mb-2 font-outfit">Svuotamento Prenotazioni</h3>
-                  <p class="text-xs text-red-700 mb-4">Usa questo comando solo a conclusione degli Open Day per cancellare tutte le liste.</p>
-                  <button onclick="handleClearAllRegistrations()" class="w-full py-3 bg-red-600 text-white rounded-xl font-black uppercase border-2 border-red-800 font-outfit">Svuota database</button>
-                </div>
-              </div>
-              <div class="space-y-4 p-6 bg-slate-50 rounded-2xl border-2 border-indigo-950">
-                <h3 class="font-black text-indigo-950 font-outfit">Crea Nuova Sessione d'Incontro</h3>
-                <form id="newDateForm" onsubmit="handleCreateDate(event)" class="space-y-3 font-semibold">
-                  <input required type="date" id="newDateValue" class="w-full p-2.5 rounded-lg border border-slate-300">
-                  <input required type="text" id="newDateTimeSlot" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Orario (es. 09:00)">
-                  
-                  <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900">
-                    <option value="" disabled selected>-- Scegli Indirizzo di Studio --</option>
-                    <option value="RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING">RIM - RELAZIONI INTERNAZIONALI PER IL MARKETING</option>
-                    <option value="LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE">LSA - LICEO SCIENTIFICO OPZIONE SCIENZE APPLICATE</option>
-                    <option value="LOG - LOGISTICA">LOG - LOGISTICA</option>
-                    <option value="CAT - COSTRUZIONE AMBIENTE E TERRITORIO">CAT - COSTRUZIONE AMBIENTE E TERRITORIO</option>
-                    <option value="SM - SISTEMA MODA">SM - SISTEMA MODA</option>
-                  </select>
-
-                  <input required type="text" id="newAula" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Aula d'incontro (es. Aula Magna)">
-                  <input required type="number" min="5" id="newDateMaxSeats" class="w-full p-2.5 rounded-lg border border-slate-300 text-slate-900" placeholder="Posti d'aula massimi">
-                  <button type="submit" class="w-full py-3 bg-indigo-950 text-white rounded-xl font-black uppercase tracking-wider text-sm border-2 border-indigo-900 shadow-md font-outfit">Crea Turno d'Aula</button>
-                </form>
-                <div id="adminDatesList" class="space-y-2 mt-4 max-h-48 overflow-y-auto border-t border-slate-200 pt-4"></div>
-              </div>
-            </div>
-
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
   </div>
 
-  <!-- MODALE SCANNER DISPOSITIVO PORTATILE QR -->
-  <div id="addDeviceModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md p-6 text-center relative animate-in fade-in zoom-in-95 duration-200 bg-white">
-      <button onclick="closeModal('addDeviceModal')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
-      <h3 class="text-xl font-bold text-indigo-950 font-outfit">Collega Dispositivo Scanner</h3>
-      <div class="my-6 flex justify-center bg-white p-4 rounded-2xl w-48 h-48 mx-auto shadow-inner border border-slate-100">
-        <img id="qrCodeDeviceLink" src="" alt="QR Link" class="w-full h-full object-contain">
+  <!-- MODALE RECUPERO AVANZATO CON NOME/COGNOME E CODICE -->
+  <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200 bg-white space-y-4">
+      <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <div class="text-center">
+        <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="search" class="w-5 h-5"></i></div>
+        <h3 class="text-lg font-bold text-indigo-950 font-outfit">Recupera il tuo Pass di Ammissione</h3>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Trova la prenotazione inserendo il codice unico o nome e cognome dello studente.</p>
       </div>
-      <button onclick="closeModal('addDeviceModal')" class="w-full py-3 bg-indigo-900 hover:bg-indigo-950 text-white font-bold rounded-xl transition font-outfit">Chiudi</button>
-    </div>
-  </div>
-
-  <!-- INTERFACCIA 2: SCANNER TERMINALE PORTATILE SMARTPHONE -->
-  <div id="wrapperIsolatedScanner" class="hidden min-h-screen flex flex-col p-4 bg-slate-950">
-    <div id="scannerLockScreen" class="w-full max-w-sm mx-auto my-auto p-8 glass-card rounded-3xl text-center space-y-6 bg-white">
-      <h2 class="text-xl font-bold text-indigo-950 font-outfit">Terminale Scanner Cloud</h2>
-      <form onsubmit="handleIsolatedLogin(event)" class="space-y-4">
-        <input required type="password" id="isolatedPasswordInput" class="w-full p-4 rounded-xl text-center font-bold tracking-widest text-lg bg-white text-slate-900 border" placeholder="PASSWORD">
-        <button type="submit" class="w-full py-3.5 bg-indigo-900 text-white font-bold rounded-xl font-outfit">Sblocca Terminale</button>
-      </form>
-    </div>
-
-    <div id="scannerActiveView" class="hidden w-full max-w-md mx-auto flex-grow flex flex-col gap-4 py-4">
-      <div class="flex justify-between items-center text-white">
-        <h2 class="font-bold">Scanner Portatile</h2>
-        <button onclick="exitIsolatedMode()" class="bg-red-600 px-3 py-1 rounded text-xs font-bold">Esci</button>
-      </div>
-      <div class="relative flex-grow w-full bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-indigo-500">
-        <video id="isolatedScannerVideo" autoplay playsinline class="hidden"></video>
-        <canvas id="isolatedScannerCanvas" class="w-full h-full object-cover rounded-2xl hidden"></canvas>
-      </div>
-      <div id="isolatedScanFeedback" class="p-4 rounded-2xl text-center font-bold text-lg hidden"></div>
-      <form onsubmit="handleIsolatedManualSubmit(event)" class="flex gap-2">
-        <input required type="text" id="isolatedManualCode" class="flex-grow p-3 rounded-xl text-center font-mono uppercase font-bold text-slate-900 bg-white" placeholder="DIGITAZIONE MANUALE">
-        <button type="submit" class="px-5 bg-indigo-600 text-white rounded-xl font-bold font-outfit">INVIA</button>
+      <form onsubmit="handleRecovery(event)" class="space-y-3">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-500 uppercase">Codice Prenotazione (es. LEVI-1234)</label>
+          <input type="text" id="recoveryCode" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="Inserisci Codice">
+        </div>
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[10px] font-bold uppercase text-slate-400">Oppure</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase">Cognome Alunno *</label>
+            <input type="text" id="recoveryCognome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="es. Rossi">
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase">Nome Alunno *</label>
+            <input type="text" id="recoveryNome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-sky-500 text-xs text-slate-800 font-semibold" placeholder="es. Mario">
+          </div>
+        </div>
+        <button type="submit" id="submitRecoveryBtn" class="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl transition text-xs mt-2">Ricerca e Scarica Pass</button>
       </form>
     </div>
   </div>
 
-  <!-- LOGICA COMPLETA E COLLEGAMENTO DATABASE CLOUD -->
+  <!-- MODALE ANNULLAMENTO CON NOME/COGNOME E CODICE -->
+  <div id="cancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-6 rounded-3xl relative animate-in fade-in zoom-in-95 duration-200 bg-white space-y-4">
+      <button onclick="closeModal('cancelModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <div class="text-center">
+        <div class="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="trash-2" class="w-5 h-5"></i></div>
+        <h3 class="text-lg font-bold text-indigo-950 font-outfit">Annulla Prenotazione d'Incontro</h3>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Trova la prenotazione per liberare il posto in aula.</p>
+      </div>
+      <form onsubmit="handleCancellation(event)" class="space-y-3">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-500 uppercase">Codice Prenotazione (es. LEVI-1234)</label>
+          <input type="text" id="cancelCode" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-xs text-slate-800 font-semibold" placeholder="Inserisci Codice">
+        </div>
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[10px] font-bold uppercase text-slate-400">Oppure</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase">Cognome Alunno *</label>
+            <input type="text" id="cancelCognome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-xs text-slate-800 font-semibold" placeholder="es. Rossi">
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase">Nome Alunno *</label>
+            <input type="text" id="cancelNome" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-red-500 text-sm" placeholder="es. Mario">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm mt-2">Procedi all'Annullamento</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODALE SELEZIONA AZIONE CONFERMA / ANNULLA CANCELLAZIONE -->
+  <div id="confirmCancelModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-sm p-6 text-center relative animate-in fade-in zoom-in-95 duration-200 bg-white rounded-3xl">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+      <h3 class="text-lg font-bold text-indigo-950 font-outfit">Confermi l'annullamento?</h3>
+      <p class="text-xs text-slate-500 mt-2">Eliminerai la prenotazione per lo studente <strong id="confirmCancelStudentName" class="text-indigo-950"></strong>.</p>
+      <div class="flex gap-3 mt-5">
+        <button onclick="closeModal('confirmCancelModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">Indietro</button>
+        <button id="btnConfirmDelete" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition">Sì, Annulla</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-400 py-6 border-t border-slate-900 text-[11px] mt-auto relative z-10">
+    <div class="max-w-5xl mx-auto px-4 text-center sm:text-left">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div>
+          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">ITSCG "Primo Levi"</h4>
+          <p class="leading-relaxed">
+            Istituto Tecnico Statale Commerciale e per Geometri con annesso Liceo Scientifico Opzione Scienze Applicate. Seregno (MB).
+          </p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">Contatti Sede</h4>
+          <p class="leading-relaxed">
+            Via Briantina, 68 - 20831 Seregno (MB)<br>
+            Email: orientamento@leviseregno.edu.it<br>
+            Tel: (+39) 0362 224164
+          </p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">Collegamenti Utili</h4>
+          <p class="leading-relaxed">
+            Sito Ufficiale: leviseregno.edu.it<br>
+            Referente d'Orientamento: Prof.ssa Mariagrazia Calabrese
+          </p>
+        </div>
+      </div>
+      <div class="border-t border-slate-900 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>© 2026 ITSCG "Primo Levi" di Seregno. Tutti i diritti riservati.</span>
+        <span>Codice Meccanografico: MBTD010005</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGICO UNIFICATO APPLICAZIONE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -651,31 +714,21 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-// --- GOOGLE SCRIPT ENDPOINTS --- 
+    // --- GOOGLE SCRIPT ENDPOINTS --- 
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykSqdkUsENMNIbMQWOVgQEvnypdZN51GWdoM3sJ_Cnh2WyGFmT61JWR0JB8eqcrMuq/exec"; 
     const REMINDER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOQHgWE1Lcl-EqG1P2ZKDn_DLUsOFcYYxUV70ZqlDe6sI5WZNKJUfjodykyIT7rWyEGw/exec"; 
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec"; 
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycby-DPMLD6imxqyp8HRuU30xKJDTRbcptkrhWpu4eqbVYIELydaKra63av7KKnbUz6XNtA/exec"; 
-    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbxS2TXVtmPb6-xogKA9jdPdAgvHDTVOvqtBRMB0U8y2WiBsIzwqYbRfjheheEJyQhpF/exec";
+    const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbS2TXVtmPb6-xogKA9jdPdAgvHDTVOvqtBRMB0U8y2WiBsIzwqYbRfjheheEJyQhpF/exec";
 
     let state = {
       user: null, currentView: 'home', isAdminAuthed: false,
-      settings: { reminderDaysBefore: 7, bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. Al termine dell'evento riceverete il Certificato Finale Conclusivo e un questionario di gradimento!" },
+      settings: { reminderDaysBefore: 7, bannerText: "BENVENUTI! La partecipazione agli Open Day è riservata agli alunni di terza media e ai loro genitori. L'open day, della durata di circa 2 ore, prevede un momento informativo di presentazione dell'offerta formativa e la visita degli ambienti dell'istituto. Per coloro che fossero interessati, al termine delle presentazioni sarà possibile avere un colloquio con i referenti dell'inclusione e con i docenti di sostegno." },
       dates: [], registrations: [], selectedDate: null, isWebcamScanning: false, activeStream: null, animationFrameId: null,
       pairedUsbDevices: []
     };
 
     window.processedSessions = {};
-
-    // --- FRASI MOTIVAZIONALI PER PERCORSO ---
-    const pathMotivationalQuotes = {
-      "LSA": "La scienza non è solo ragione, ma anche passione ed immensa immaginazione. Trova la tua scintilla e programma il futuro!",
-      "RIM": "I confini geografici esistono solo nella nostra mente. Apriti alle culture del mondo e scrivi il tuo domani senza limiti.",
-      "LOG": "Ogni incredibile viaggio di successo ha bisogno di una pianificazione geniale. Disegna la rotta della tua eccellenza.",
-      "CAT": "Costruire il futuro significa poggiare su fondamenta solide oggi. Progetta, proteggi la terra e lascia il tuo segno.",
-      "SM": "La creatività è l'intelligenza che si diverte. Esprimi la tua prima ispirazione in puro stile ed eccellenza d'opera.",
-      "GENERICA": "Coltiva le tue passioni con coraggio ed entusiasmo. Il cammino verso la conoscenza è l'avventura più bella."
-    };
 
     initBubbles();
 
@@ -684,7 +737,7 @@
       renderAdminDatesList();
     };
 
-    // --- FUNZIONI DI NAVIGAZIONE E DI INTERFACCIA ---
+    // --- NAVIGAZIONE SPAs ---
     window.navigateTo = t => {
       state.currentView = t;
       document.getElementById('sectionHome').classList.add('hidden');
@@ -705,9 +758,7 @@
       navigateTo('home'); 
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
-        }
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
       }, 150);
     };
     
@@ -770,13 +821,13 @@
       }
 
       container.classList.remove('hidden');
-      let html = '<h4 class="font-extrabold text-indigo-950 mb-2 flex items-center gap-2"><i data-lucide="timer" class="w-5 h-5"></i> Stato Sessioni Odierne (Invio Automatico Attestato a +2h 10m)</h4>';
+      let html = '<h4 class="font-extrabold text-indigo-950 mb-2 flex items-center gap-2 text-xs"><i data-lucide="timer" class="w-5 h-5 text-sky-500"></i> STATO SESSIONI OGGI (Invio automatico attestato dopo 2h 10m)</h4>';
 
       todaysSessions.forEach(session => {
         const timeMatch = (session.timeSlot || '').match(/(\d{2}):(\d{2})/);
         if (timeMatch) {
           const start = new Date(`${session.date}T${timeMatch[1]}:${timeMatch[2]}:00`).getTime();
-          const triggerTime = start + (130 * 60 * 1000); // 130 minuti (2h 10m)
+          const triggerTime = start + (130 * 60 * 1000); // 130 min
           const now = Date.now();
           const diff = triggerTime - now;
 
@@ -800,125 +851,13 @@
       try { lucide.createIcons(); } catch(e) {}
     }
 
-    // --- GESTIONE HARDWARE WEBUSB (Datalogic QW2100) ---
-    async function initUsbHardwareListeners() {
-      if (!('usb' in navigator)) {
-        console.warn("Le WebUSB API non sono supportate da questo browser.");
-        return;
-      }
-
-      try {
-        navigator.usb.addEventListener('connect', (event) => {
-          showToast(`Dispositivo USB connesso: ${event.device.productName || 'Lettore Barcode'}`, 'info');
-          updateUsbDevicesList();
-        });
-
-        navigator.usb.addEventListener('disconnect', (event) => {
-          showToast(`Dispositivo USB disconnesso: ${event.device.productName || 'Lettore Barcode'}`, 'info');
-          updateUsbDevicesList();
-        });
-
-        state.pairedUsbDevices = await navigator.usb.getDevices();
-        updateUsbDevicesList();
-      } catch (err) {
-        console.warn("Errore o blocco di sicurezza nell'inizializzazione dei dispositivi WebUSB: ", err);
-        const container = document.getElementById('usbDeviceListContainer');
-        if (container) {
-          container.innerHTML = `
-            <div class="p-2 border border-amber-200 rounded-lg bg-amber-50 text-[11px] text-amber-900 font-semibold leading-relaxed">
-              ⚠️ <strong>Nota sulle restrizioni di sicurezza del browser:</strong> L'accesso WebUSB diretto è bloccato dalle politiche di sicurezza del browser (es. Sandbox / Iframe). 
-              <br><br>
-              <strong>Nessun problema!</strong> Il lettore barcode Datalogic QW2100 funzionerà comunque in modalità emulazione tastiera nativa in background. Ti basterà sparare sul codice d'ingresso da qualsiasi punto per effettuare l'accredito automatico!
-            </div>
-          `;
-        }
-      }
-    }
-
-    window.requestUsbHardwareDevice = async () => {
-      if (!('usb' in navigator)) {
-        showToast("WebUSB non supportato su questo browser. Prova con Google Chrome o Microsoft Edge.", "error");
-        return;
-      }
-      try {
-        const device = await navigator.usb.requestDevice({ filters: [] });
-        state.pairedUsbDevices = await navigator.usb.getDevices();
-        updateUsbDevicesList();
-        showToast(`Dispositivo USB associato con successo: ${device.productName || 'Sconosciuto'}`, 'success');
-        
-        await device.open();
-        if (device.configuration === null) {
-          await device.selectConfiguration(1);
-        }
-        await device.claimInterface(0);
-        readUsbDataStream(device);
-      } catch (err) {
-        console.error(err);
-        if (err.name === 'SecurityError') {
-          showToast("Accesso USB bloccato dalle politiche del browser (Permissions Policy). Spara il codice direttamente!", "error");
-        } else {
-          showToast("Accoppiamento dispositivo USB annullato o fallito.", "error");
-        }
-      }
-    };
-
-    window.clearPairedUsbDevices = () => {
-      state.pairedUsbDevices = [];
-      updateUsbDevicesList();
-      showToast("Tutti i dispositivi WebUSB sono stati scollegati.", "info");
-    };
-
-    function updateUsbDevicesList() {
-      const container = document.getElementById('usbDeviceListContainer');
-      if (!container) return;
-      if (state.pairedUsbDevices.length === 0) {
-        if (container.querySelector('.bg-amber-50')) {
-          return;
-        }
-        container.innerHTML = `<p class="text-slate-400 italic font-semibold">Nessun hardware WebUSB associato. (Usa la pistola USB in modalità emulazione tastiera in background).</p>`;
-        return;
-      }
-      container.innerHTML = state.pairedUsbDevices.map(device => {
-        const vid = device.vendorId.toString(16).toUpperCase().padStart(4, '0');
-        const pid = device.productId.toString(16).toUpperCase().padStart(4, '0');
-        return `
-          <div class="p-2 border border-slate-200 rounded-lg bg-slate-50 flex justify-between items-center text-xs">
-            <div>
-              <p class="font-extrabold text-indigo-950 flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                ${device.productName || 'Dispositivo USB Generico'}
-              </p>
-              <p class="text-[10px] text-slate-500 font-semibold">${device.manufacturerName || 'Vendor'} | VID: 0x${vid} - PID: 0x${pid}</p>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-black text-[9px] uppercase">Connesso</span>
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function readUsbDataStream(device) {
-      try {
-        while (device.opened) {
-          const result = await device.transferIn(1, 64);
-          const decoder = new TextDecoder();
-          const text = decoder.decode(result.data).trim();
-          if (text.length > 0) {
-            processScannedCode(text);
-          }
-        }
-      } catch (e) {
-        console.warn("Dispositivo USB disconnesso durante la lettura stream.", e);
-      }
-    }
-
-    // --- LOGICA DI FUNZIONAMENTO E INTEGRAZIONE DATABASE ---
+    // --- INTEGRAZIONE DATABASE CLOUD E AVVIO ---
     async function startApp() {
       try { await signInAnonymously(auth); } catch(e) { showToast("Errore di connessione", "error"); }
       onAuthStateChanged(auth, u => {
         state.user = u;
         if(u) {
           setupRealtimeListeners();
-          initUsbHardwareListeners();
           const p = new URLSearchParams(window.location.search);
           if (p.get('mode') === 'scanner') setupIsolatedScannerMode();
           else if (p.get('checkin')) executeAutoCheckin(p.get('checkin').toUpperCase());
@@ -930,18 +869,28 @@
 
     function setupRealtimeListeners() {
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), s => {
-        s.forEach(d => { if(d.id==='general') { state.settings = d.data(); document.getElementById('bannerText').innerText = state.settings.bannerText; } });
-      });
+        s.forEach(d => { 
+          if(d.id==='general') { 
+            state.settings = d.data(); 
+            const banner = document.getElementById('bannerText');
+            if (banner) {
+              banner.innerText = state.settings.bannerText; 
+            }
+          } 
+        });
+      }, err => console.error("Settings error:", err));
+
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), s => {
         state.dates = []; s.forEach(d => state.dates.push({id: d.id, ...d.data()})); state.dates.sort((a,b)=>new Date(a.date)-new Date(b.date));
         renderHomeDates(); renderAdminDatesList();
         const f = document.getElementById('filterDateSelect');
         if(f) { const v=f.value; f.innerHTML='<option value="all">Tutte le date</option>'+state.dates.map(x=>`<option value="${x.id}">${x.date} ${x.timeSlot} ${x.studyPath}</option>`).join(''); f.value=v; }
-      });
+      }, err => console.error("Dates error:", err));
+
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), s => {
         state.registrations = []; s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); state.registrations.sort((a,b)=>b.timestamp-a.timestamp);
         renderHomeDates(); renderRegistrations(); checkAndTriggerAutomaticReminders();
-      });
+      }, err => console.error("Registrations error:", err));
       
       setInterval(runAdminTimers, 1000);
     }
@@ -992,1043 +941,851 @@
       }
     }
 
-    // --- BARCODE E QR CODE ---
+    // --- BARCODE E QR CODE JSPDF ---
     function drawBarcode(docObj, code, x, y) {
       docObj.setFont("Courier", "bold"); docObj.setFontSize(10); docObj.setTextColor(0,0,0); docObj.text(code, x+25, y+22, {align:"center"}); docObj.setFillColor(0,0,0);
       let cx = x; for (let i=0; i<35; i++) { let w=(i%3===0)?1.4:(i%2===0)?0.8:0.4; let s=(i%4===0)?1.0:0.6; docObj.rect(cx, y, w, 15, 'F'); cx+=w+s; }
     }
-    function drawQRCode(docObj, code, x, y) { try { const qr = new QRious({value: code, size: 200, level: 'H'}); docObj.addImage(qr.toDataURL('image/png'), 'PNG', x, y, 32, 32); } catch(e){} }
-
-    // --- GENERAZIONE DEI PDF: BENVENUTO E CERTIFICATO CONCLUSIVO ---
-    async function generateReceiptPDF(data, code, type='entrata') {
-      const { jsPDF } = window.jspdf;
-      const p = new jsPDF();
-      
-      const cleanPath = (data.studyPath || '').toUpperCase();
-      let primaryColor = [30, 41, 59]; 
-      let secondaryColor = [71, 85, 105]; 
-      let lightBgColor = [248, 250, 252]; 
-      let pathName = "Sito Istituzionale";
-      let quote = pathMotivationalQuotes["GENERICA"];
-      
-      if (cleanPath.includes("LSA") || cleanPath.includes("SCIENTIFICO")) {
-        primaryColor = [49, 46, 129]; secondaryColor = [99, 102, 241]; lightBgColor = [244, 246, 255];
-        pathName = "L.S.A. - LICEO SCIENTIFICO SCIENZE APPLICATE"; quote = pathMotivationalQuotes["LSA"];
-      } else if (cleanPath.includes("RIM") || cleanPath.includes("RELAZIONI")) {
-        primaryColor = [13, 148, 136]; secondaryColor = [6, 182, 212]; lightBgColor = [236, 254, 255];
-        pathName = "R.I.M. - RELAZIONI INTERNAZIONALI MARKETING"; quote = pathMotivationalQuotes["RIM"];
-      } else if (cleanPath.includes("LOG") || cleanPath.includes("LOGISTICA")) {
-        primaryColor = [194, 65, 12]; secondaryColor = [249, 115, 22]; lightBgColor = [255, 247, 237];
-        pathName = "L.O.G. - LOGISTICA E TRASPORTI"; quote = pathMotivationalQuotes["LOG"];
-      } else if (cleanPath.includes("CAT") || cleanPath.includes("COSTRUZIONE")) {
-        primaryColor = [4, 120, 87]; secondaryColor = [16, 185, 129]; lightBgColor = [240, 253, 244];
-        pathName = "C.A.T. - COSTRUZIONE AMBIENTE TERRITORIO"; quote = pathMotivationalQuotes["CAT"];
-      } else if (cleanPath.includes("SM") || cleanPath.includes("MODA")) {
-        primaryColor = [190, 24, 74]; secondaryColor = [244, 63, 94]; lightBgColor = [255, 241, 242];
-        pathName = "S.M. - SISTEMA MODA"; quote = pathMotivationalQuotes["SM"];
-      }
-
-      function getBlendedColor(color, alpha, bg = [255, 255, 255]) {
-        return [
-          Math.round(color[0] * alpha + bg[0] * (1 - alpha)),
-          Math.round(color[1] * alpha + bg[1] * (1 - alpha)),
-          Math.round(color[2] * alpha + bg[2] * (1 - alpha))
-        ];
-      }
-
-      p.setFillColor(lightBgColor[0], lightBgColor[1], lightBgColor[2]);
-      p.rect(0, 0, 210, 297, 'F');
-
-      for (let i = 1; i <= 6; i++) {
-        const col = getBlendedColor(primaryColor, 0.015 * i, lightBgColor);
-        p.setFillColor(col[0], col[1], col[2]);
-        p.ellipse(0, 297, 130 - (i * 15), 130 - (i * 15), 'F');
-      }
-      for (let i = 1; i <= 5; i++) {
-        const col = getBlendedColor(secondaryColor, 0.02 * i, lightBgColor);
-        p.setFillColor(col[0], col[1], col[2]);
-        p.ellipse(210, 0, 100 - (i * 12), 100 - (i * 12), 'F');
-      }
-
-      p.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      p.setLineWidth(1.2); p.rect(8, 8, 194, 281); 
-      p.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-      p.setLineWidth(0.4); p.rect(10, 10, 190, 277);
-
-      const corners = [[8, 8, 20, 20], [202, 8, 190, 20], [8, 289, 20, 277], [202, 289, 190, 277]];
-      p.setLineWidth(2.0); p.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      corners.forEach(c => { p.line(c[0], c[1], c[2], c[1]); p.line(c[0], c[1], c[0], c[3]); });
-
-      p.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      p.rect(12, 12, 186, 42, 'F');
-      p.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-      p.rect(12, 54, 186, 2, 'F');
-
-      p.setDrawColor(255, 255, 255); p.setLineWidth(0.2);
-      for(let step = 15; step < 190; step += 12) { p.line(step, 14, step + 4, 19); }
-
-      p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(22);
-      p.text("ITSCG PRIMO LEVI - SEREGNO", 105, 28, {align: "center"});
-      p.setFont("Helvetica", "normal"); p.setFontSize(11);
-      p.text("Istituto Tecnico Statale Commerciale e Geometri", 105, 38, {align: "center"});
-      p.setFont("Helvetica", "italic"); p.setFontSize(9);
-      p.text("Eccellenza Formativa e Orientamento per le Scuole Medie", 105, 46, {align: "center"});
-
-      if (type === 'entrata' || type === 'conferma') {
-        p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(14);
-        p.text("PASS DI AMMISSIONE E BENVENUTO UFFICIALE", 105, 72, {align: "center"});
-
-        p.setTextColor(15, 23, 42); p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("Abilitiamo formalmente all'ingresso lo studente", 105, 82, {align: "center"});
-        p.setFont("Helvetica", "bold"); p.setFontSize(19);
-        p.text(`${(data.cognome || '').toUpperCase()} ${(data.nome || '').toUpperCase()}`, 105, 94, {align: "center"});
-
-        p.setFillColor(255, 255, 255); p.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setLineWidth(0.5);
-        p.rect(16, 102, 178, 48, 'FD');
-
-        p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-        p.text("PERCORSO DI STUDIO DI INTERESSE:", 22, 110);
-        p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFontSize(11);
-        p.text(pathName, 22, 115);
-
-        p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-        p.text("GIORNO E TURNO DI VISITA GUIDATA:", 22, 126);
-        p.setTextColor(15, 23, 42); p.setFontSize(11);
-        p.text(`${data.dataEvento || data.dateStr} | Ore: ${data.orarioEvento || data.timeSlot}`, 22, 131);
-
-        p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-        p.text("DETTAGLIO PARTECIPAZIONE:", 22, 141);
-        p.setTextColor(15, 23, 42); p.setFontSize(11.5);
-        p.text(`Alunni: ${data.numAlunni || 1}  -  Accompagnatori: ${data.accompanyingPersons || 0}  (Posti Totali: ${data.totalPeople})`, 22, 146);
-
-        if (data.supportRequired) {
-          p.setFillColor(254, 242, 242); p.setDrawColor(239, 68, 68); p.rect(16, 155, 178, 9, 'FD');
-          p.setTextColor(185, 28, 28); p.setFont("Helvetica", "bold"); p.setFontSize(8.5);
-          p.text("PASS ATTIVATO: AREA COLLOQUIO PERSONALIZZATO / INCLUSIONE", 105, 161, {align: "center"});
-        }
-
-        p.setFillColor(255, 255, 255); p.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.rect(16, 170, 178, 44, 'FD');
-        p.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.rect(16, 170, 178, 7, 'F');
-        p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(8.5);
-        p.text("CODICE PRENOTAZIONE PER ACCREDITO RAPIDO", 105, 175, {align: "center"});
-
-        drawBarcode(p, code, 24, 187); 
-        drawQRCode(p, window.location.origin + window.location.pathname + "?checkin=" + code, 155, 180);
-
-        const boxColor = getBlendedColor(primaryColor, 0.05, lightBgColor);
-        p.setFillColor(boxColor[0], boxColor[1], boxColor[2]); p.rect(16, 222, 178, 20, 'F');
-        p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFont("Helvetica", "bolditalic"); p.setFontSize(9);
-        p.text(`"${quote}"`, 105, 233, {align: "center", maxWidth: 165});
-
-        p.setTextColor(71, 85, 105); p.setFont("Helvetica", "italic"); p.setFontSize(9.5);
-        p.text("Esibisci questo Pass d'Ammissione all'ingresso per consentire l'accredito immediato.", 105, 252, {align: "center"});
-      } else {
-        // ATTESTATO DI RINGRAZIAMENTO E CERTIFICATO FINALE CONCLUSIVO
-        p.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(16);
-        p.text("CERTIFICATO FINALE CONCLUSIVO DI PARTECIPAZIONE", 105, 72, {align: "center"});
-
-        p.setTextColor(15, 23, 42); p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("L'Istituto ringrazia vivamente lo studente", 105, 82, {align: "center"});
-        p.setFont("Helvetica", "bold"); p.setFontSize(22);
-        p.text(`${(data.cognome || '').toUpperCase()} ${(data.nome || '').toUpperCase()}`, 105, 96, {align: "center"});
-
-        p.setFont("Helvetica", "normal"); p.setFontSize(11);
-        p.text("per la partecipazione attiva e con merito all'Open Day d'istituto.", 105, 107, {align: "center"});
-
-        p.setFillColor(255, 255, 255); p.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setLineWidth(0.4);
-        p.rect(16, 114, 178, 48, 'FD');
-
-        p.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.rect(16, 114, 178, 8, 'F');
-        p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-        p.text("IL FUTURO APPARTIENE A CHI SI PREPARA OGGI", 105, 120, {align: "center"});
-
-        p.setTextColor(15, 23, 42); p.setFont("Helvetica", "italic"); p.setFontSize(10.5);
-        p.text(`"${quote}"`, 105, 134, {align: "center", maxWidth: 165});
-
-        p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]); p.setFont("Helvetica", "bold"); p.setFontSize(8.5);
-        p.text(`Percorso concluso con successo: ${pathName}`, 105, 154, {align: "center"});
-
-        const mx = 60, my = 195;
-        p.setFillColor(251, 191, 36); p.circle(mx, my, 18, 'F');
-        p.setFillColor(245, 158, 11); p.circle(mx, my, 15, 'F');
-        p.setDrawColor(217, 119, 6); p.setLineWidth(0.5);
-        for(let a = 0; a < 360; a += 15) {
-          let r = a * Math.PI / 180;
-          p.line(mx, my, mx + Math.cos(r)*14, my + Math.sin(r)*14);
-        }
-        p.setFillColor(254, 243, 199); p.circle(mx, my, 11, 'F');
-        p.setTextColor(180, 83, 9); p.setFont("Helvetica", "bold"); p.setFontSize(8);
-        p.text("LEVI", mx, my + 1, {align: "center"});
-
-        p.setFillColor(180, 83, 9);
-        p.triangle(mx - 8, my + 13, mx - 15, my + 32, mx - 2, my + 13, 'F');
-        p.triangle(mx + 8, my + 13, mx + 15, my + 32, mx + 2, my + 13, 'F');
-
-        p.setTextColor(15, 23, 42); p.setFont("Helvetica", "bold"); p.setFontSize(10);
-        p.text("Il Docente Referente", 145, 180, {align: "center"});
-        p.setFont("Courier", "italic"); p.setFontSize(12);
-        p.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-        p.text("Prof. F. Castiglioni", 145, 192, {align: "center"});
-        p.setDrawColor(148, 163, 184); p.setLineWidth(0.4);
-        p.line(115, 198, 175, 198);
-
-        p.setTextColor(71, 85, 105); p.setFont("Helvetica", "italic"); p.setFontSize(9.5);
-        p.text("Questo attestato finale certifica la presenza ai fini del portfolio delle competenze.", 105, 246, {align: "center"});
-      }
-
-      p.text("Via Luigi Briantina, 68 - Seregno (MB). Tel: 0362 224164  - mbtd43001@istruzione.it", 105, 252, {align: "center"});
-      p.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); p.rect(12, 268, 186, 17, 'F');
-      p.setTextColor(255, 255, 255); p.setFont("Helvetica", "bold"); p.setFontSize(9);
-      p.text("DISEGNA IL TUO FUTURO, COSTRUISCI IL TUO SUCCESSO CON IL PRIMO LEVI", 105, 278.5, {align: "center"});
-
-      return p.output('datauristring').split(',')[1];
-    }
-
-    // --- ACCREDITO RAPIDO DA SCANNER ---
-    async function executeAutoCheckin(code) {
-      document.getElementById('autoCheckinModal').classList.remove('hidden');
-      document.getElementById('checkinLoading').classList.remove('hidden');
-      document.getElementById('checkinSuccess').classList.add('hidden');
-      document.getElementById('checkinError').classList.add('hidden');
-      try {
-        let attempts=0; while(!db && attempts<50) { await new Promise(r=>setTimeout(r,100)); attempts++; }
-        const rRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code);
-        const rSnap = await getDoc(rRef);
-        if (rSnap.exists()) {
-          const reg = rSnap.data();
-          if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
-             throw new Error(`Codice QR già scansionato per lo studente ${reg.cognome} ${reg.nome}!`);
-          }
-          await updateDoc(rRef, { status: 'Entrato' });
-          playAudioTone(true);
-          await sendCertificateEmailAuto(reg, 'entrata');
-          
-          document.getElementById('checkinLoading').classList.add('hidden');
-          document.getElementById('checkinSuccess').classList.remove('hidden');
-          document.getElementById('checkinStudentName').innerText = `${reg.cognome} ${reg.nome}`;
-          document.getElementById('checkinStudyPath').innerHTML = `<strong>Ind.</strong> ${reg.studyPath}`;
-        } else throw new Error("Questo codice non corrisponde a nessuna prenotazione.");
-      } catch (err) {
-        playAudioTone(false);
-        document.getElementById('checkinLoading').classList.add('hidden');
-        document.getElementById('checkinError').classList.remove('hidden');
-        document.getElementById('checkinErrorMessage').innerText = err.message;
-      }
-    }
-    window.closeAutoCheckin = () => { document.getElementById('autoCheckinModal').classList.add('hidden'); window.history.replaceState({},'',new URL(window.location).pathname); }
-
-    window.calculateTotalFormSeats = () => {
-      const t = (parseInt(document.getElementById('numAlunni').value)||1) + (parseInt(document.getElementById('numAccompagnatori').value)||0);
-      document.getElementById('lblTotalFormSeats').innerText = t; return t;
-    }
-
-    function renderHomeDates() {
-      const c = document.getElementById('datesGrid');
-      if (state.dates.length === 0) return c.innerHTML = `<div class="col-span-3 text-center p-8 text-slate-500 glass-card font-semibold bg-white">Nessuna data configurata.</div>`;
-      const unq = [...new Set(state.dates.map(d=>d.date))];
-      c.innerHTML = unq.map(ds => {
-        const sess = state.dates.filter(d=>d.date===ds);
-        let tot=0, occ=0; sess.forEach(s=>{ tot+=s.maxSeats; occ+=getOccupiedSeats(s.id); });
-        const av = tot-occ; const isFull = av<=0;
-        return `
-          <div onclick="${isFull?'':`selectDate('${ds}')`}" class="glass-card p-6 rounded-2xl border-2 transition relative bg-white group ${isFull?'opacity-60 cursor-not-allowed':'border-transparent hover:border-sky-500 cursor-pointer shadow-sm'}" style="border-color: transparent">
-            <div class="text-xs font-bold text-sky-600">Open Day</div>
-            <div class="text-xl font-bold text-indigo-950 mt-1 capitalize">${new Date(ds).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</div>
-            <div class="mt-5"><span class="text-xs font-semibold px-3 py-1 rounded-full ${isFull?'bg-red-50 text-red-600':'bg-emerald-50 text-emerald-600'}">${isFull?'Esaurito':av+' posti liberi'}</span></div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    window.selectDate = ds => {
-      state.selectedDate = ds; renderHomeDates();
-      document.getElementById('successCard').classList.add('hidden'); document.getElementById('bookingCard').classList.remove('hidden');
-      document.getElementById('selectedDateTitle').innerText = "Iscrizione del " + new Date(ds).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
-      const sel = document.getElementById('studyPathSelect');
-      const sess = state.dates.filter(d=>d.date===ds);
-      sel.innerHTML = '<option value="" disabled selected>-- Scegli Indirizzo e Orario --</option>' + sess.map(s => {
-        const av = s.maxSeats - getOccupiedSeats(s.id);
-        return `<option value="${s.id}" ${av<=0?'disabled':''}>${s.timeSlot} | ${s.studyPath} (${s.aula}) [${av<=0?'PIENO':av+' liberi'}]</option>`;
-      }).join('');
-      calculateTotalFormSeats(); document.getElementById('bookingCard').scrollIntoView({behavior:'smooth'});
-    }
-    window.closeBookingForm = () => { state.selectedDate = null; document.getElementById('bookingCard').classList.add('hidden'); renderHomeDates(); }
-    window.resetBookingFlow = () => { closeBookingForm(); document.getElementById('successCard').classList.add('hidden'); document.getElementById('bookingForm').reset(); }
-
-    window.handleBooking = async e => {
-      e.preventDefault(); const btn = document.getElementById('submitBookingBtn'); if (btn.disabled) return;
-      if (!document.getElementById('privacyConsent').checked) return showToast("Accetta la privacy scolastica.", "error");
-      const sid = document.getElementById('studyPathSelect').value; if (!sid) return showToast("Seleziona indirizzo.", "error");
-      const sess = state.dates.find(d=>d.id===sid);
-      
-      const n = document.getElementById('studentName').value.trim(); const c = document.getElementById('studentSurname').value.trim();
-      const m = document.getElementById('parentEmail').value.trim(); const p = document.getElementById('parentPhone').value.trim();
-      const sup = document.getElementById('supportRequired').checked; const tot = calculateTotalFormSeats();
-
-      if (tot > (sess.maxSeats - getOccupiedSeats(sess.id))) return showToast("Posti insufficienti per le persone richieste.", "error");
-      if (state.registrations.some(r => (r.email.toLowerCase()===m.toLowerCase() || ((r.cognome || '').toLowerCase()===c.toLowerCase() && (r.nome || '').toLowerCase()===n.toLowerCase())) && (r.studyPath||'').split(' (')[0].trim().toUpperCase() === (sess.studyPath||'').split(' (')[0].trim().toUpperCase())) return showToast("Questo indirizzo risulta gia' prenotato.", "error");
-
-      btn.disabled = true; btn.innerText = "Elaborazione in corso...";
-      const code = Math.random().toString(36).substring(2,8).toUpperCase();
-      const payload = { nome:n, cognome:c, email:m, telefono:p, studyPath:`${sess.studyPath} (${sess.aula})`, supportRequired:sup, numAlunni:parseInt(document.getElementById('numAlunni').value||1), accompanyingPersons:parseInt(document.getElementById('numAccompagnatori').value||0), totalPeople:tot, dataEvento:new Date(sess.date).toLocaleDateString('it-IT'), orarioEvento:sess.timeSlot };
-      
-      try {
-        const pdf = await generateReceiptPDF(payload, code, 'entrata');
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { ...payload, code, dateId:sess.id, dateStr:sess.date, timeSlot:sess.timeSlot, timestamp:Date.now(), reminderSent:false, status:'Iscritto', certificate1Sent:false, certificate2Sent:false });
-        try { 
-          await fetch(CONFIRM_SCRIPT_URL, {
-            method:"POST", 
-            mode:"no-cors", 
-            headers:{"Content-Type":"text/plain"}, 
-            body:JSON.stringify({nome:n, cognome:c, email:m, codice_prenotazione:code, pdfBase64:pdf, type:'conferma'})
-          }); 
-        } catch(e){}
-        document.getElementById('bookingCard').classList.add('hidden'); document.getElementById('successCard').classList.remove('hidden'); document.getElementById('successRegCode').innerText=code; showToast("Iscrizione completata, pass d'ammissione generato!", "success");
-      } catch(err) { showToast("Errore di rete.", "error"); btn.disabled=false; btn.innerText="Conferma"; }
-    }
-
-    // --- RECUPERO E CANCELLAZIONE ---
-    window.handleRecovery = async e => {
-      e.preventDefault(); const btn = document.getElementById('submitRecoveryBtn'); if(btn.disabled) return;
-      const term = document.getElementById('recoveryInput').value.trim().toUpperCase();
-      const reg = state.registrations.find(r => r.code===term || (r.cognome || '').toUpperCase()===term);
-      if(!reg) return showToast("Prenotazione non trovata.", "error");
-      btn.disabled=true; btn.innerText="Generazione e-mail...";
-      try {
-        const payload = {...reg, dataEvento:new Date(reg.dateStr).toLocaleDateString('it-IT'), orarioEvento:reg.timeSlot};
-        const pdf = await generateReceiptPDF(payload, reg.code, 'entrata');
-        await fetch(CONFIRM_SCRIPT_URL, {
-          method:"POST", 
-          mode:"no-cors", 
-          headers:{"Content-Type":"text/plain"}, 
-          body:JSON.stringify({nome:reg.nome, cognome:reg.cognome, email:reg.email, codice_prenotazione:reg.code, pdfBase64:pdf, type:'conferma'})
-        });
-        showToast("Pass d'Ammissione inviato via mail!", "success"); closeModal('recoveryModal');
-      } catch(e) { showToast("Errore di invio.", "error"); } finally { btn.disabled=false; btn.innerText="Invia"; document.getElementById('recoveryInput').value=''; }
-    }
-
-    window.handleCancellation = e => {
-      e.preventDefault(); const term = document.getElementById('cancelTerm').value.trim().toUpperCase();
-      const reg = state.registrations.find(r => r.code===term || (r.cognome || '').toUpperCase()===term);
-      if(!reg) return showToast("Prenotazione non trovata. Verifica codice o cognome inserito.", "error");
-      state.pendingDeleteId = reg.id || reg.code; document.getElementById('confirmCancelStudentName').innerText = `${reg.nome} ${reg.cognome}`;
-      closeModal('cancelModal'); document.getElementById('confirmCancelModal').classList.remove('hidden');
-      document.getElementById('btnConfirmDelete').onclick = async () => {
-        if(!state.pendingDeleteId) return; const id=state.pendingDeleteId; state.pendingDeleteId=null;
-        try {
-          try { 
-            await fetch(CANCEL_SCRIPT_URL, {
-              method:"POST", 
-              mode:"no-cors", 
-              headers:{"Content-Type":"text/plain"}, 
-              body:JSON.stringify({email:reg.email, cognome:reg.cognome, nome:reg.nome, codice_prenotazione:reg.code})
-            }); 
-          } catch(e){}
-          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id));
-          showToast("Prenotazione rimossa con successo.", "success"); closeModal('confirmCancelModal');
-        } catch(e) {}
-      };
-    }
-
-    // --- ACCESSO AMMINISTRATIVO DOCENTI ---
-    window.handleLogin = e => { e.preventDefault(); if(document.getElementById('adminPasswordInput').value==='admin'){ state.isAdminAuthed=true; navigateTo('admin'); } else showToast("Password di accesso errata","error"); }
     
-    window.switchAdminTab = t => {
-      ['iscritti','scanner','settings'].forEach(x => {
-        const tabEl = document.getElementById(`tab${x.charAt(0).toUpperCase()+x.slice(1)}`);
-        const tabBtn = document.getElementById(`tab${x.charAt(0).toUpperCase()+x.slice(1)}Btn`);
-        if (tabEl) tabEl.classList.toggle('hidden', x!==t);
-        if (tabBtn) tabBtn.className = `flex-1 py-4 font-bold text-base border-b-4 ${x===t?'border-indigo-900 text-indigo-950 bg-white border-b-4':'border-transparent text-indigo-900'}`;
-      });
-      if(t==='scanner') { initWebcamDevices(); updateUsbDevicesList(); setTimeout(()=>document.getElementById('manualBarcodeField')?.focus(),300); } else stopWebcamScanner();
+    function drawQRCode(docObj, code, x, y, size = 42) {
+      try {
+        const tempCanvas = document.createElement('canvas');
+        new QRious({ element: tempCanvas, value: code, size: 150 });
+        docObj.addImage(tempCanvas.toDataURL('image/jpeg'), 'JPEG', x, y, size, size);
+      } catch (e) { console.error("Errore QR Code:", e); }
     }
 
-    function renderAdminStatistics() {
-      const container = document.getElementById('adminStatisticsContainer');
-      if (!container) return;
+    // --- COMPILAZIONE PDF AD ALTA DEFINIZIONE VETTORIALE ---
+    async function generateReceiptPDF(data, code, type = 'entrata') {
+      const { jsPDF } = window.jspdf;
+      const docObj = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const isCertificate = (type === 'uscita');
+      
+      if (isCertificate) {
+        // Attestato conclusivo
+        docObj.setFillColor(250, 246, 235); docObj.rect(0, 0, 210, 297, 'F');
+        docObj.setDrawColor(30, 27, 75); docObj.setLineWidth(4); docObj.rect(8, 8, 194, 281, 'D');
+        docObj.setDrawColor(202, 138, 4); docObj.setLineWidth(1); docObj.rect(12, 12, 186, 273, 'D');
 
-      const totalBookings = state.registrations.length;
-      const totalPeople = state.registrations.reduce((s, r) => s + (parseInt(r.totalPeople) || 1), 0);
-      const totalAlunni = state.registrations.reduce((s, r) => s + (parseInt(r.numAlunni) || 1), 0);
-      const totalAccompagnatori = state.registrations.reduce((s, r) => s + (parseInt(r.accompanyingPersons) || 0), 0);
+        docObj.setTextColor(30, 27, 75); docObj.setFont('times', 'bold'); docObj.setFontSize(26);
+        docObj.text('ITSCG "Primo Levi"', 105, 38, { align: 'center' });
+        docObj.setFont('times', 'italic'); docObj.setFontSize(11); docObj.setTextColor(202, 138, 4);
+        docObj.text('Seregno (MB)', 105, 45, { align: 'center' });
 
-      const countIscritto = state.registrations.filter(r => !r.status || r.status === 'Iscritto').length;
-      const countEntrato = state.registrations.filter(r => r.status === 'Entrato').length;
-      const countAmmesso = state.registrations.filter(r => r.status === 'Ammesso').length;
+        docObj.setFont('helvetica', 'bold'); docObj.setFontSize(15); docObj.setTextColor(30, 27, 75);
+        docObj.text('CERTIFICATO CONCLUSIVO D\'ORIENTAMENTO', 105, 68, { align: 'center' });
 
-      const pathCounts = { 'LSA': 0, 'RIM': 0, 'LOG': 0, 'CAT': 0, 'SM': 0 };
-      state.registrations.forEach(r => {
-        const path = (r.studyPath || '').toUpperCase();
-        const seats = parseInt(r.totalPeople) || 1;
-        if (path.includes('LSA')) pathCounts['LSA'] += seats;
-        else if (path.includes('RIM')) pathCounts['RIM'] += seats;
-        else if (path.includes('LOG')) pathCounts['LOG'] += seats;
-        else if (path.includes('CAT')) pathCounts['CAT'] += seats;
-        else if (path.includes('SM')) pathCounts['SM'] += seats;
-      });
+        docObj.setFont('times', 'italic'); docObj.setFontSize(13); docObj.setTextColor(71, 85, 105);
+        docObj.text('L\'Istituto esprime il proprio ringraziamento allo studente', 105, 88, { align: 'center' });
 
-      const maxCount = Math.max(...Object.values(pathCounts), 1);
+        docObj.setFont('times', 'bold'); docObj.setFontSize(26); docObj.setTextColor(30, 27, 75);
+        docObj.text(`${data.cognome.toUpperCase()} ${data.nome.toUpperCase()}`, 105, 108, { align: 'center' });
 
-      container.innerHTML = `
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-indigo-950 text-white p-4 rounded-2xl border-2 border-indigo-900 shadow-md">
-            <span class="block text-xs uppercase tracking-wide opacity-80 font-bold">Totale Prenotazioni</span>
-            <span class="text-2xl font-black">${totalBookings}</span>
-          </div>
-          <div class="bg-indigo-900 text-white p-4 rounded-2xl border-2 border-indigo-800 shadow-md">
-            <span class="block text-xs uppercase tracking-wide opacity-80 font-bold">Presenze Previste</span>
-            <span class="text-2xl font-black">${totalPeople} <span class="text-xs font-normal">(${totalAlunni} al. + ${totalAccompagnatori} acc.)</span></span>
-          </div>
-          <div class="bg-blue-900 text-white p-4 rounded-2xl border-2 border-blue-800 shadow-md">
-            <span class="block text-xs uppercase tracking-wide opacity-80 font-bold">Ingressi Effettuati</span>
-            <span class="text-2xl font-black">${countEntrato + countAmmesso} <span class="text-xs font-normal">(${countEntrato} in corso)</span></span>
-          </div>
-          <div class="bg-emerald-800 text-white p-4 rounded-2xl border-2 border-emerald-900 shadow-md">
-            <span class="block text-xs uppercase tracking-wide opacity-80 font-bold">Visite Concluse</span>
-            <span class="text-2xl font-black">${countAmmesso}</span>
-          </div>
-        </div>
+        docObj.setDrawColor(202, 138, 4); docObj.line(45, 114, 165, 114);
+
+        docObj.setFont('times', 'italic'); docObj.setFontSize(12.5); docObj.setTextColor(71, 85, 105);
+        docObj.text('per aver partecipato alle sessioni informative ed approfondimenti laboratoriali', 105, 132, { align: 'center' });
+        docObj.text('per l\'anno scolastico 2026/2027 d\'istituto relativi al percorso d\'eccellenza:', 105, 140, { align: 'center' });
+
+        docObj.setFont('helvetica', 'bold'); docObj.setFontSize(13); docObj.setTextColor(30, 27, 75);
+        docObj.text(String(data.studyPath || '').toUpperCase(), 105, 154, { align: 'center' });
+
+        docObj.setFillColor(254, 240, 138); docObj.setDrawColor(202, 138, 4); docObj.setLineWidth(1);
+        docObj.circle(105, 195, 20, 'FD');
+        docObj.setTextColor(69, 26, 3); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(8.5);
+        docObj.text('ECCELLENZA', 105, 194, {align: "center"});
+        docObj.setFontSize(6.5); docObj.text('ITSCG LEVI', 105, 199, {align: "center"});
+
+        docObj.setDrawColor(148, 163, 184); docObj.setLineWidth(0.4);
+        docObj.line(125, 245, 185, 245);
+
+        docObj.setFontSize(10); docObj.setTextColor(100, 116, 139); docObj.setFont("helvetica", "normal");
+        docObj.text("Seregno, " + new Date().toLocaleDateString('it-IT'), 25, 245);
+        docObj.text("ID: " + code, 25, 252);
         
-        <div class="glass-card p-5 rounded-2xl border-2 border-indigo-950 mt-4 bg-white">
-          <h4 class="font-black text-indigo-950 text-sm mb-3 font-outfit">Distribuzione Posti per Indirizzo (Alunni + Accompagnatori):</h4>
-          <div class="space-y-3">
-            ${Object.entries(pathCounts).map(([path, val]) => {
-              const pct = Math.round((val / maxCount) * 100) || 0;
-              let barColor = 'bg-indigo-600';
-              if (path === 'LSA') barColor = 'bg-indigo-600';
-              else if (path === 'RIM') barColor = 'bg-teal-600';
-              else if (path === 'LOG') barColor = 'bg-orange-600';
-              else if (path === 'CAT') barColor = 'bg-emerald-600';
-              else if (path === 'SM') barColor = 'bg-rose-600';
-              return `
-                <div>
-                  <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
-                    <span>${path}</span>
-                    <span>${val} posti occupati</span>
-                  </div>
-                  <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
-                    <div class="${barColor} h-full" style="width: ${pct}%"></div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
+        docObj.setFont("helvetica", "bold"); docObj.setTextColor(30, 27, 75);
+        docObj.text("Prof.ssa Mariagrazia Calabrese", 155, 252, {align: "center"});
+        docObj.setFontSize(8); docObj.setTextColor(148, 163, 184); docObj.setFont("helvetica", "normal");
+        docObj.text("Referente d'Orientamento d'Istituto", 155, 257, {align: "center"});
+      } else {
+        // Pass ammissione ingresso
+        docObj.setFillColor(30, 27, 75); docObj.rect(0, 0, 210, 52, 'F');
+        docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(22);
+        docObj.text('ITSCG "PRIMO LEVI" - SEREGNO', 15, 22);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setFontSize(10); docObj.setTextColor(186, 230, 253);
+        docObj.text('Istituto Tecnico Commerciale e per Geometri con annesso Liceo Scientifico', 15, 29);
+        docObj.text('Via Briantina, 68 - Seregno (MB) | orientamento@leviseregno.edu.it', 15, 35);
+
+        docObj.setFillColor(14, 165, 233); docObj.rect(15, 62, 180, 14, 'F');
+        docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(11);
+        docObj.text(`RICEVUTA DI PRENOTAZIONE UFFICIALE: ${code}`, 20, 71);
+
+        docObj.setDrawColor(226, 232, 240); docObj.setFillColor(248, 250, 252); docObj.rect(15, 85, 180, 74, 'FD');
+        docObj.setTextColor(30, 27, 75); docObj.setFontSize(11); docObj.text('DETTAGLI REGISTRAZIONE STUDENTE:', 20, 95);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setFontSize(10); docObj.setTextColor(71, 85, 105);
+        docObj.text('Studente:', 20, 106);
+        docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(`${data.cognome.toUpperCase()} ${data.nome.toUpperCase()}`, 60, 106);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setTextColor(71, 85, 105);
+        docObj.text('Indirizzo Formativo:', 20, 114);
+        docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(data.studyPath, 60, 114);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setTextColor(71, 85, 105);
+        docObj.text('Incontro e Data:', 20, 122);
+        docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(data.dateStr, 60, 122);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setTextColor(71, 85, 105);
+        docObj.text('Provenienza Medie:', 20, 130);
+        docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(data.provenienza || 'Terza media locale', 60, 130);
+
+        docObj.setFont('helvetica', 'normal'); docObj.setTextColor(71, 85, 105);
+        docObj.text('Partecipanti:', 20, 138);
+        docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(`${data.totalPeople} (Alunno + accompagnatori)`, 60, 138);
+
+        drawBarcode(docObj, code, 25, 170);
+        drawQRCode(docObj, code, 140, 170, 42);
+
+        docObj.setFillColor(254, 251, 235); docObj.setDrawColor(254, 243, 199); docObj.rect(15, 222, 180, 28, 'FD');
+        docObj.setTextColor(180, 83, 9); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(9.5);
+        docObj.text('INDICAZIONI ACCESSO:', 20, 228);
+        docObj.setFont('helvetica', 'normal'); docObj.setFontSize(8.5); docObj.setTextColor(120, 53, 4);
+        docObj.text('1. Mostra questo PDF all\'accoglienza (verrà scansionato per l\'ingresso d\'aula).', 20, 234);
+        docObj.text('2. All\'uscita riceverai automaticamente l\'attestato d\'orientamento.', 20, 240);
+      }
+
+      const pdfDataUri = docObj.output('datauristring');
+      return pdfDataUri.split(',')[1];
     }
 
-    window.renderRegistrations = () => {
-      const tb = document.getElementById('registrationsTableBody'); if(!tb) return;
-      
-      const q = (document.getElementById('searchBar')?.value || '').toLowerCase().trim(); 
-      const f = document.getElementById('filterDateSelect')?.value || 'all';
-      
-      const filtered = state.registrations.filter(r => {
-        if (!r) return false;
-        const nomeStr = (r.nome || '').toString().toLowerCase();
-        const cognomeStr = (r.cognome || '').toString().toLowerCase();
-        const codeStr = (r.code || '').toString().toLowerCase();
-        const fullSearchString = `${cognomeStr} ${nomeStr} ${codeStr}`;
-        
-        const matchesQuery = fullSearchString.includes(q);
-        const matchesFilter = (f === 'all' || r.dateId === f);
-        return matchesQuery && matchesFilter;
-      });
+    // --- PRENOTAZIONI FRONTEND ---
+    window.startBookingProcess = sid => {
+      const d = state.dates.find(x => x.id === sid);
+      if(!d) return;
+      document.getElementById('formEventId').value = d.id;
+      document.getElementById('lblBookingPath').innerText = d.studyPath;
+      document.getElementById('lblBookingDate').innerText = `${d.date} • Ore ${d.timeSlot}`;
+      document.getElementById('lblBookingAula').innerText = `Laboratorio d'incontro: ${d.aula}`;
+      document.getElementById('bookingSection').classList.remove('hidden');
+      document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
+    };
 
-      renderAdminStatistics();
+    window.cancelBookingProcess = () => {
+      document.getElementById('bookingSection').classList.add('hidden');
+    };
 
-      if (filtered.length === 0) {
-        tb.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-800 font-black bg-yellow-50 border-2 border-dashed border-yellow-300">Nessun iscritto trovato corrispondente ai filtri.</td></tr>`;
+    window.recalcTotalSeats = () => {
+      const a = parseInt(document.getElementById('formNumAlunni').value || 1);
+      const acc = parseInt(document.getElementById('formNumAccompagnatori').value || 0);
+      document.getElementById('lblTotalFormSeats').innerText = a + acc;
+    };
+
+    window.handleBookingSubmit = async (e) => {
+      e.preventDefault();
+      const sid = document.getElementById('formEventId').value;
+      const targetSession = state.dates.find(x => x.id === sid);
+      if(!targetSession) return;
+
+      const cognome = document.getElementById('formCognome').value.trim();
+      const nome = document.getElementById('formNome').value.trim();
+      const provenienza = document.getElementById('formProvenienza').value.trim();
+      const email = document.getElementById('formEmail').value.trim();
+      
+      const numAlunni = parseInt(document.getElementById('formNumAlunni').value || 1);
+      const numAccompagnatori = parseInt(document.getElementById('formNumAccompagnatori').value || 0);
+      const totalPeople = numAlunni + numAccompagnatori;
+
+      const occupied = getOccupiedSeats(sid);
+      if (occupied + totalPeople > targetSession.maxSeats) {
+        showToast("Posti d'aula esauriti per questa sessione d'incontro.", "error");
         return;
       }
-      
-      tb.innerHTML = filtered.map(r => {
-        if (!r) return '';
-        
-        const rId = r.id || r.code;
-        const rNome = r.nome || '';
-        const rCognome = r.cognome || '';
-        const rCode = r.code || '';
-        const rEmail = r.email || '';
-        const rTelefono = r.telefono || '';
-        const rStudyPath = r.studyPath || '';
-        const rDateStr = r.dateStr || '';
-        const rTimeSlot = r.timeSlot || '';
-        const rTotalPeople = r.totalPeople || 1;
-        const rNumAlunni = r.numAlunni || 1;
-        const rAccompanying = r.accompanyingPersons || 0;
-        const rStatus = r.status || 'Iscritto';
 
-        let statusBadge = '';
-        if (rStatus === 'Entrato') {
-          statusBadge = '<span class="bg-blue-100 text-blue-900 border-2 border-blue-900 px-3 py-1.5 rounded-xl text-xs font-black shadow-sm flex items-center gap-1 justify-center"><i data-lucide="door-open" class="w-4 h-4"></i>ENTRATO</span>';
-        } else if (rStatus === 'Ammesso') {
-          statusBadge = '<span class="bg-emerald-700 text-white border-2 border-emerald-900 px-3 py-1.5 rounded-xl text-xs font-black shadow-sm flex items-center gap-1 justify-center"><i data-lucide="award" class="w-4 h-4"></i>AMMESSO</span>';
-        } else {
-          statusBadge = '<span class="bg-slate-100 text-slate-800 border-2 border-slate-500 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 justify-center"><i data-lucide="user-check" class="w-4 h-4"></i>ISCRITTO</span>';
-        }
+      const submitBtn = document.getElementById('btnSubmitBooking');
+      const loader = document.getElementById('bookingLoader');
+      const lBar = document.getElementById('bookingLoaderBar');
+      const lText = document.getElementById('bookingLoaderText');
+      const lPercent = document.getElementById('bookingLoaderPercent');
 
-        const c1Html = `<button onclick="sendCertificateManual('${rId}', 'entrata')" class="w-full ${r.certificate1Sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-indigo-900 hover:bg-indigo-950'} text-white font-extrabold border border-slate-300 px-2 py-1.5 rounded-lg text-[10px] uppercase block flex flex-col items-center justify-center gap-0.5 shadow-sm">
-          <span>${r.certificate1Sent ? 'Rinvia Ammissione' : 'Invia Ammissione'}</span>
-          ${r.certificate1Sent ? '<span class="text-[9px] opacity-90 font-normal">Inviato ✓</span>' : ''}
-        </button>`;
+      submitBtn.disabled = true;
+      loader.classList.remove('hidden');
 
-        const c2Html = (rStatus === 'Ammesso' || rStatus === 'Entrato')
-          ? `<button onclick="sendCertificateManual('${rId}', 'uscita')" class="w-full ${r.certificate2Sent ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'} text-white font-extrabold border border-slate-300 px-2 py-1.5 rounded-lg text-[10px] uppercase block flex flex-col items-center justify-center gap-0.5 shadow-sm">
-              <span>${r.certificate2Sent ? 'Rinvia Certificato' : 'Invia Certificato'}</span>
-              ${r.certificate2Sent ? '<span class="text-[9px] opacity-90 font-normal">Inviato ✓</span>' : ''}
-            </button>`
-          : '<span class="text-slate-400 text-xs italic block text-center">-</span>';
+      function setLoaderState(percent, text) {
+        lBar.style.width = `${percent}%`;
+        lText.innerText = text;
+        lPercent.innerText = `${percent}%`;
+      }
 
-        let flowButton = '';
-        if (rStatus === 'Iscritto') {
-          flowButton = `<button onclick="advanceRegistrationStatus('${rId}', 'Entrato')" class="text-xs bg-blue-900 hover:bg-blue-950 text-white border border-blue-950 px-2 py-1.5 rounded-lg font-black w-full text-center flex items-center justify-center gap-1"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Registra Ingresso</button>`;
-        } else if (rStatus === 'Entrato') {
-          flowButton = `<button onclick="advanceRegistrationStatus('${rId}', 'Ammesso')" class="text-xs bg-emerald-700 hover:bg-emerald-800 text-white border border-emerald-900 px-2 py-1.5 rounded-lg font-black w-full text-center flex items-center justify-center gap-1"><i data-lucide="check-check" class="w-4 h-4"></i>Completa Visita</button>`;
-        } else {
-          flowButton = '<span class="text-xs text-emerald-800 font-black block text-center">Flusso Concluso ✓</span>';
-        }
-
-        return `
-          <tr class="border-b border-slate-300 bg-white hover:bg-slate-100 transition duration-150">
-            <td class="p-4 border-r border-slate-300">${statusBadge}</td>
-            <td class="p-4 border-r border-slate-300 text-indigo-950 leading-relaxed">
-              <span class="text-sky-700 font-mono text-base block font-black">${rCode}</span>
-              <span class="text-sm block font-extrabold">${rCognome.toUpperCase()} ${rNome}</span>
-              <div class="text-[11px] text-slate-600 font-semibold space-y-0.5 mt-1">
-                <p class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i> Alunni: <strong>${rNumAlunni}</strong> - Accompagnatori: <strong>${rAccompanying}</strong> (Totale: <strong>${rTotalPeople}</strong>)</p>
-                <p class="flex items-center gap-1"><i data-lucide="mail" class="w-3.5 h-3.5"></i> ${rEmail}</p>
-                <p class="flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5"></i> ${rTelefono || '-'}</p>
-              </div>
-            </td>
-            <td class="p-4 border-r border-slate-300 text-slate-700 text-xs font-bold leading-normal">
-              ${rStudyPath}<br>
-              <span class="font-bold text-indigo-950 block text-[10px] mt-1"><i data-lucide="clock" class="w-3 h-3 inline"></i> ${rDateStr} ore &nbsp;${rTimeSlot}</span>
-            </td>
-            <td class="p-4 border-r border-slate-300 text-center font-black">${c1Html}</td>
-            <td class="p-4 border-r border-slate-300 text-center font-black">${c2Html}</td>
-            <td class="p-4">
-              <div class="flex flex-col gap-1.5 justify-center">
-                ${flowButton}
-                <button onclick="adminDeleteRegistration('${rId}')" class="text-xs text-red-700 hover:text-red-950 bg-red-50 hover:bg-red-100 border border-red-900 p-1 rounded-lg font-bold flex items-center justify-center gap-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Rimuovi</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join(''); 
-      try { lucide.createIcons(); } catch(e) {}
-    }
-
-    window.advanceRegistrationStatus = async (id, nextStatus) => {
-      const reg = state.registrations.find(r => (r.id === id || r.code === id)); if(!reg) return;
       try {
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id || reg.code), { status: nextStatus });
-        showToast(`Stato aggiornato a ${nextStatus.toUpperCase()}`, "success");
-        if (nextStatus === 'Entrato') {
-          await sendCertificateEmailAuto(reg, 'entrata');
-        } else if (nextStatus === 'Ammesso') {
-          await sendCertificateEmailAuto(reg, 'uscita');
-        }
-      } catch(e) {
-        showToast("Impossibile aggiornare lo stato nel database.", "error");
+        setLoaderState(15, "Generazione del codice unico...");
+        const code = `LEVI-${Math.floor(1000 + Math.random()*9000)}`;
+
+        const regData = {
+          code, cognome, nome, provenienza, email, totalPeople, numAlunni, numAccompagnatori,
+          dateId: sid, studyPath: targetSession.studyPath, dateStr: `${targetSession.date} • ${targetSession.timeSlot}`,
+          timestamp: Date.now(), status: 'Iscritto'
+        };
+
+        setLoaderState(45, "Generazione del pass PDF...");
+        const pdf = await generateReceiptPDF(regData, code, 'entrata');
+
+        setLoaderState(75, "Connessione con Google Apps Script d'istituto...");
+        try {
+          await fetch(CONFIRM_SCRIPT_URL, {
+            method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ email, nome, cognome, codice_prenotazione: code, pdfBase64: pdf, type: 'entrata' })
+          });
+        } catch(gasErr) {}
+
+        setLoaderState(95, "Registrazione definitiva nel database...");
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
+
+        state.currentBooking = regData;
+
+        // Render ticket
+        document.getElementById('ticketCode').innerText = code;
+        document.getElementById('ticketStudent').innerText = `${cognome.toUpperCase()} ${nome.toUpperCase()}`;
+        document.getElementById('ticketPath').innerText = targetSession.studyPath;
+        document.getElementById('ticketDate').innerText = `${targetSession.date} • ${targetSession.timeSlot}`;
+        document.getElementById('ticketPeople').innerText = `${totalPeople} Persona/e (Alunni: ${numAlunni})`;
+
+        new QRious({
+          element: document.getElementById('ticketQrCanvas'),
+          value: code,
+          size: 110
+        });
+
+        setLoaderState(100, "Completato!");
+        setTimeout(() => {
+          loader.classList.add('hidden');
+          submitBtn.disabled = false;
+          document.getElementById('bookingForm').reset();
+          document.getElementById('bookingSection').classList.add('hidden');
+          document.getElementById('confirmationSection').classList.remove('hidden');
+          document.getElementById('confirmationSection').scrollIntoView({ behavior: 'smooth' });
+          showToast("Prenotazione registrata! Pass inviato via e-mail.", "success");
+        }, 800);
+
+      } catch(err) {
+        loader.classList.add('hidden');
+        submitBtn.disabled = false;
+        showToast("Impossibile salvare: " + err.message, "error");
       }
     };
 
-    window.sendCertificateManual = (id, type) => {
-      const reg = state.registrations.find(r => (r.id === id || r.code === id)); if(!reg) return;
-      const tLabel = type === 'entrata' ? "Pass di Ammissione Ufficiale d'Ingresso" : "Certificato Finale e Attestato di Ringraziamento d'Uscita (con Questionario)";
-      
-      showAdminConfirm("Invia Certificato", `Confermi l'invio manuale del ${tLabel} a ${reg.nome} ${reg.cognome}?`, false, async () => {
-        try {
-          const targetUrl = type === 'entrata' ? ATTESTATO_ENTRATA_URL : ATTESTATO_USCITA_URL;
-          await fetch(targetUrl, {
-            method:"POST", 
-            mode:"no-cors", 
-            headers: { "Content-Type": "text/plain" }, 
-            body:JSON.stringify({email:reg.email, nome:reg.nome, cognome:reg.cognome})
-          });
-          
-          const updateData = {};
-          if(type === 'entrata') { updateData.certificate1Sent = true; updateData.certificate1SentAt = Date.now(); }
-          else { updateData.certificate2Sent = true; updateData.certificate2SentAt = Date.now(); }
-          
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id || reg.code), updateData);
-          showToast("Certificato inviato via e-mail con successo!", "success");
-        } catch(e) {
-          showToast("Errore di invio durante la connessione al server.", "error");
-        }
-      });
-    }
-
-    async function sendCertificateEmailAuto(reg, type='entrata') {
-      if(!reg || (type==='entrata'&&reg.certificate1Sent) || (type==='uscita'&&reg.certificate2Sent)) return;
+    window.downloadTicketPDF = async () => {
+      if(!state.currentBooking) return;
       try {
-        const targetUrl = type === 'entrata' ? ATTESTATO_ENTRATA_URL : ATTESTATO_USCITA_URL;
-        await fetch(targetUrl, { 
-          method:"POST", 
-          mode:"no-cors", 
-          headers: { "Content-Type": "text/plain" }, 
-          body:JSON.stringify({email:reg.email, nome:reg.nome, cognome:reg.cognome}) 
-        });
-        const updateData = {};
-        if (type==='entrata') { updateData.certificate1Sent = true; updateData.certificate1SentAt = Date.now(); }
-        else { updateData.certificate2Sent = true; updateData.certificate2SentAt = Date.now(); }
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id || reg.code), updateData);
-      } catch(e) {}
+        const pdfBase64 = await generateReceiptPDF(state.currentBooking, state.currentBooking.code, 'entrata');
+        const blob = b64toBlob(pdfBase64, 'application/pdf');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Pass_Ammissione_Primo_Levi_${state.currentBooking.code}.pdf`;
+        link.click();
+      } catch(e) { showToast("Errore download PDF", "error"); }
+    };
+
+    function b64toBlob(b64Data, contentType='', sliceSize=512) {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) { byteNumbers[i] = slice.charCodeAt(i); }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+      return new Blob(byteArrays, {type: contentType});
     }
 
-    window.adminDeleteRegistration = id => {
-      showAdminConfirm("Rimuovi Registrazione", "Sei sicuro di voler eliminare questa prenotazione? L'operazione non è reversibile.", true, async () => {
+    // --- GESTIONE MODALI DI RECUPERO E CANCELLAZIONE AVANZATA ---
+    window.handleRecovery = async (e) => {
+      e.preventDefault();
+      const codeTerm = document.getElementById('recoveryCode').value.trim();
+      const cognomeTerm = document.getElementById('recoveryCognome').value.trim();
+      const nomeTerm = document.getElementById('recoveryNome').value.trim();
+      const btn = document.getElementById('submitRecoveryBtn');
+      btn.disabled = true;
+
+      let reg = null;
+      if (codeTerm) {
+        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase() || x.email.toLowerCase() === codeTerm.toLowerCase());
+      } else if (cognomeTerm && nomeTerm) {
+        reg = state.registrations.find(x => x.cognome.toLowerCase() === cognomeTerm.toLowerCase() && x.nome.toLowerCase() === nomeTerm.toLowerCase());
+      }
+
+      if(!reg) { 
+        showToast("Nessuna prenotazione trovata con i parametri inseriti.", "error"); 
+        btn.disabled = false; 
+        return; 
+      }
+
+      try {
+        const pdf = await generateReceiptPDF(reg, reg.code, 'entrata');
+        await fetch(CONFIRM_SCRIPT_URL, {
+          method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'entrata' })
+        });
+        showToast("Pass d'ingresso reinviato con successo via e-mail!", "success");
+        closeModal('recoveryModal');
+      } catch(err) { showToast("Errore di rete.", "error"); }
+      btn.disabled = false;
+    };
+
+    window.handleCancellation = async (e) => {
+      e.preventDefault();
+      const codeTerm = document.getElementById('cancelCode').value.trim();
+      const cognomeTerm = document.getElementById('cancelCognome').value.trim();
+      const nomeTerm = document.getElementById('cancelNome').value.trim();
+
+      let reg = null;
+      if (codeTerm) {
+        reg = state.registrations.find(x => x.code.toUpperCase() === codeTerm.toUpperCase() || x.email.toLowerCase() === codeTerm.toLowerCase());
+      } else if (cognomeTerm && nomeTerm) {
+        reg = state.registrations.find(x => x.cognome.toLowerCase() === cognomeTerm.toLowerCase() && x.nome.toLowerCase() === nomeTerm.toLowerCase());
+      }
+
+      if(!reg) { showToast("Nessuna prenotazione trovata.", "error"); return; }
+
+      showAdminConfirm("Annulla Prenotazione", `Vuoi rimuovere l'iscrizione dello studente ${reg.cognome} ${reg.nome}?`, false, async () => {
         try {
-          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', id));
-          showToast("Registrazione eliminata con successo.", "success");
-        } catch(e) {
-          showToast("Errore durante l'eliminazione.", "error");
-        }
+          await fetch(CANCEL_SCRIPT_URL, {
+            method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code })
+          });
+          if(state.user) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
+          state.registrations = state.registrations.filter(r => r.code !== reg.code);
+          renderHomeDates();
+          showToast("Prenotazione rimossa, posti in aula riceduti.", "success");
+          closeModal('confirmCancelModal');
+          closeModal('cancelModal');
+        } catch (err) {}
       });
     };
 
-    // --- DISEGNO ELEMENTI ESTETICI CANVAS SCANNER ---
-    function drawScannerOverlay(ctx, w, h) {
-      // Maschera oscurata semitrasparente
-      const size = Math.min(w, h) * 0.65;
-      const x = (w - size) / 2;
-      const y = (h - size) / 2;
+    // --- COCKPIT DOCENTI ---
+    window.handleAdminLogin = (e) => {
+      e.preventDefault();
+      const p = document.getElementById('adminPasswordInput').value;
+      if (p === 'admin') {
+        state.isAdminAuthed = true;
+        document.getElementById('adminPasswordInput').value = '';
+        navigateTo('admin');
+        showToast("Dashboard docenti sbloccata.", "success");
+      } else {
+        showToast("Chiave d'accesso d'istituto errata.", "error");
+      }
+    };
 
-      ctx.fillStyle = "rgba(15, 23, 42, 0.45)"; // Grigio bluastro scuro
-      ctx.fillRect(0, 0, w, y);
-      ctx.fillRect(0, y + size, w, h - (y + size));
-      ctx.fillRect(0, y, x, size);
-      ctx.fillRect(x + size, y, w - (x + size), size);
+    window.switchAdminTab = tabId => {
+      document.getElementById('tabRegistrations').classList.add('hidden');
+      document.getElementById('tabLiveScanner').classList.add('hidden');
+      document.getElementById('tabSettings').classList.add('hidden');
+      document.getElementById(tabId).classList.remove('hidden');
+    };
 
-      // Angoli del mirino neon
-      ctx.strokeStyle = "#0ea5e9"; // Celeste sky
-      ctx.lineWidth = 5;
+    window.handleCreateDate = async e => {
+      e.preventDefault();
+      if(!state.user) return showToast("Connessione cloud Firebase assente.", "error");
       
-      // Top Left Corner
-      ctx.beginPath(); ctx.moveTo(x + 25, y); ctx.lineTo(x, y); ctx.lineTo(x, y + 25); ctx.stroke();
-      // Top Right Corner
-      ctx.beginPath(); ctx.moveTo(x + size - 25, y); ctx.lineTo(x + size, y); ctx.lineTo(x + size, y + 25); ctx.stroke();
-      // Bottom Left Corner
-      ctx.beginPath(); ctx.moveTo(x, y + size - 25); ctx.lineTo(x, y + size); ctx.lineTo(x + 25, y + size); ctx.stroke();
-      // Bottom Right Corner
-      ctx.beginPath(); ctx.moveTo(x + size - 25, y + size); ctx.lineTo(x + size, y + size); ctx.lineTo(x + size, y + size - 25); ctx.stroke();
+      const date = document.getElementById('newDateValue').value;
+      const timeSlot = document.getElementById('newDateTimeSlot').value.trim();
+      const studyPath = document.getElementById('newStudyPath').value;
+      const aula = document.getElementById('newAula').value.trim();
+      const maxSeats = parseInt(document.getElementById('newDateMaxSeats').value);
 
-      // Linea Laser Rossa Pulsante
-      const speedFactor = Date.now() * 0.0035;
-      const laserY = y + (Math.sin(speedFactor) * 0.5 + 0.5) * size;
-      
-      ctx.strokeStyle = "#ef4444"; // Rosso vivo
-      ctx.lineWidth = 3;
-      ctx.shadowColor = "#f87171";
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      ctx.moveTo(x + 4, laserY);
-      ctx.lineTo(x + size - 4, laserY);
-      ctx.stroke();
-      
-      // Ripristino ombre
-      ctx.shadowBlur = 0;
-    }
-
-    function drawQRFeedback(ctx, location) {
-      ctx.strokeStyle = "#10b981"; // Smeraldo brillante
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(location.topLeftCorner.x, location.topLeftCorner.y);
-      ctx.lineTo(location.topRightCorner.x, location.topRightCorner.y);
-      ctx.lineTo(location.bottomRightCorner.x, location.bottomRightCorner.y);
-      ctx.lineTo(location.bottomLeftCorner.x, location.bottomLeftCorner.y);
-      ctx.closePath();
-      ctx.stroke();
-    }
-
-    // --- LOGICA SCANNER CAMERA CANVAS + jsQR ---
-    async function initWebcamDevices() {
+      const id = 'session-' + Date.now();
       try {
-        await navigator.mediaDevices.getUserMedia({ video: true });
-        const devs = await navigator.mediaDevices.enumerateDevices();
-        const videoDevs = devs.filter(d => d.kind === 'videoinput');
-        const select = document.getElementById('cameraSourceSelect');
-        if (select) {
-          select.innerHTML = videoDevs.map((c, i)=>`<option value="${c.deviceId}">${c.label||`Camera ${i+1}`}</option>`).join('');
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id), { id, date, timeSlot, studyPath, aula, maxSeats });
+        document.getElementById('newDateForm').reset();
+        showToast("Sessione creata ed inserita a registro.", "success");
+      } catch(err) { showToast("Errore database.", "error"); }
+    };
+
+    window.handleDeleteDate = id => {
+      showAdminConfirm("Rimuovi Turno d'Aula", "Rimuovendo questa sessione, eliminerai anche la disponibilità di posti per gli studenti.", false, async () => {
+        try {
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
+          showToast("Sessione rimossa.", "success");
+        } catch(e) { showToast("Errore di rete", "error"); }
+      });
+    };
+
+    window.handleClearAllRegistrations = () => {
+      showAdminConfirm("Azione Pericolosa!", "Vuoi eliminare TUTTI gli iscritti al database? Questa azione non è reversibile.", true, async () => {
+        for (const reg of state.registrations) {
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
         }
-      } catch(e){}
+        showToast("Database iscritti svuotato con successo.", "success");
+      });
+    };
+
+    window.saveReminderDays = async () => {
+      const val = parseInt(document.getElementById('reminderDaysInput').value);
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { reminderDaysBefore: val }, { merge: true });
+        showToast("Configurazione promemoria salvata.", "success");
+      } catch(e) { showToast("Errore database.", "error"); }
+    };
+
+    // --- ACCREDITO E CAMBIO STATO DOCENTI ---
+    window.updateStudentStatus = async (code, nextStatus) => {
+      const reg = state.registrations.find(x => x.code === code);
+      if(!reg) return;
+      try {
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { status: nextStatus });
+        showToast(`Stato studente aggiornato in: ${nextStatus.toUpperCase()}`, "success");
+        
+        if (nextStatus === 'Entrato') {
+          playAudioTone(true);
+          try {
+            await fetch(ATTESTATO_ENTRATA_URL, {
+              method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+            });
+          } catch(e) {}
+        }
+      } catch(e) { showToast("Errore database.", "error"); }
+    };
+
+    window.triggerManualEntryPass = async code => {
+      const reg = state.registrations.find(x => x.code === code);
+      if(!reg) return;
+      showToast("Rigenerazione ed invio manuale del Pass d'ingresso...", "info");
+      try {
+        const pdf = await generateReceiptPDF(reg, reg.code, 'entrata');
+        await fetch(CONFIRM_SCRIPT_URL, {
+          method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'entrata' })
+        });
+        showToast("Pass d'ingresso rinviato via e-mail con successo!", "success");
+      } catch(e) { showToast("Errore d'invio.", "error"); }
+    };
+
+    window.triggerManualExitAttestato = async code => {
+      const reg = state.registrations.find(x => x.code === code);
+      if(!reg) return;
+      showToast("Generazione ed invio manuale dell'Attestato in corso...", "info");
+      try {
+        const pdf = await generateReceiptPDF(reg, reg.code, 'uscita');
+        await fetch(ATTESTATO_USCITA_URL, {
+          method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf })
+        });
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { certificate2Sent: true, certificate2SentAt: Date.now() });
+        showToast("Attestato Conclusivo spedito con successo alla famiglia!", "success");
+      } catch(e) { showToast("Errore di invio.", "error"); }
+    };
+
+    window.triggerManualDelete = code => {
+      const reg = state.registrations.find(x => x.code === code);
+      if(!reg) return;
+      showAdminConfirm("Rimuovi Registrazione", `Vuoi cancellare definitivamente lo studente ${reg.cognome} ${reg.nome}? Questa azione invierà un'email d'annullamento.`, true, async () => {
+        try {
+          await fetch(CANCEL_SCRIPT_URL, {
+            method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, code: reg.code })
+          });
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code));
+          showToast("Studente eliminato d'aula.", "success");
+        } catch(e) { showToast("Errore di rete.", "error"); }
+      });
+    };
+
+    // --- ACCREDITO AUTOMATICO BARCODE, QR E TERMINALE PORTATILE ---
+    window.handleManualBarcodeSubmit = e => {
+      e.preventDefault();
+      const code = document.getElementById('manualBarcodeField').value.trim().toUpperCase();
+      document.getElementById('manualBarcodeField').value = '';
+      if(code) processScannedCode(code);
+    };
+
+    async function processScannedCode(scannedCode) {
+      const reg = state.registrations.find(x => x.code.toUpperCase() === scannedCode.toUpperCase());
+      const resSuccess = document.getElementById('scanResultSuccess');
+      const resEmpty = document.getElementById('scanResultEmpty');
+
+      if (!reg) {
+        playAudioTone(false);
+        if(resSuccess) resSuccess.classList.add('hidden');
+        if(resEmpty) {
+          resEmpty.classList.remove('hidden');
+          resEmpty.innerHTML = `<span class="text-red-600 block animate-shake">⚠️ CODICE NON VALIDO: ${scannedCode}</span>`;
+        }
+        showToast("Codice d'accredito non trovato.", "error");
+        return;
+      }
+
+      playAudioTone(true);
+      if(resEmpty) resEmpty.classList.add('hidden');
+      if(resSuccess) resSuccess.classList.remove('hidden');
+      const nameEl = document.getElementById('scanResultName');
+      const pathEl = document.getElementById('scanResultPath');
+      const codeEl = document.getElementById('scanResultCode');
+      
+      if(nameEl) nameEl.innerText = `${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
+      if(pathEl) pathEl.innerText = reg.studyPath;
+      if(codeEl) codeEl.innerText = `CODICE REGISTRAZIONE: ${reg.code}`;
+
+      if (reg.status !== 'Entrato') {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Entrato' });
+          showToast(`Accredito istantaneo registrato per ${reg.cognome}!`, "success");
+          try {
+            await fetch(ATTESTATO_ENTRATA_URL, {
+              method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+            });
+          } catch(e) {}
+        } catch(e) {}
+      } else {
+        showToast(`Lo studente ${reg.cognome} risulta già entrato d'aula.`, "info");
+      }
     }
 
-    window.toggleWebcamScanner = () => state.isWebcamScanning ? stopWebcamScanner() : startWebcamScanner();
-    
-    window.startWebcamDirectMobile = async () => {
-      if(state.isWebcamScanning) await stopWebcamScanner();
-      document.getElementById('scannerPlaceholder').classList.add('hidden');
-      const canvasEl = document.getElementById('scannerCanvas');
-      canvasEl.classList.remove('hidden');
-      state.isWebcamScanning = true;
+    // --- EMULAZIONE TASTIERA DI BACKGROUND (PER PISTOLE BARCODE LASER USB) ---
+    let keyboardBuffer = '';
+    let lastKeyTime = Date.now();
 
+    window.addEventListener('keypress', e => {
+      if (state.currentView !== 'admin' && document.getElementById('scannerActiveView').classList.contains('hidden')) return;
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') return;
+
+      const currentTime = Date.now();
+      if (currentTime - lastKeyTime > 250) { keyboardBuffer = ''; }
+      lastKeyTime = currentTime;
+
+      if (e.key === 'Enter') {
+        if (keyboardBuffer.length >= 6) { processScannedCode(keyboardBuffer.trim().toUpperCase()); }
+        keyboardBuffer = '';
+      } else {
+        keyboardBuffer += e.key;
+      }
+    });
+
+    // --- APPLICAZIONE MODALITA' SCANNER TERMINALE PORTATILE SMARTPHONE ---
+    function setupIsolatedScannerMode() {
+      document.getElementById('wrapperMainSite').classList.add('hidden');
+      document.getElementById('wrapperIsolatedScanner').classList.remove('hidden');
+      stopWebcamScanner();
+    }
+
+    window.handleIsolatedLogin = e => {
+      e.preventDefault();
+      const p = document.getElementById('isolatedPasswordInput').value;
+      if (p === 'admin') {
+        document.getElementById('scannerLockScreen').classList.add('hidden');
+        document.getElementById('scannerActiveView').classList.remove('hidden');
+        startIsolatedWebcamScanner();
+      } else { showToast("Password terminale errata.", "error"); }
+    };
+
+    window.exitIsolatedMode = () => {
+      stopIsolatedWebcamScanner();
+      window.location.href = window.location.origin + window.location.pathname;
+    };
+
+    async function startIsolatedWebcamScanner() {
+      const video = document.getElementById('isolatedScannerVideo');
+      const canvas = document.getElementById('isolatedScannerCanvas');
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        video.classList.remove('hidden');
+        video.play();
         state.activeStream = stream;
-        
-        const videoEl = document.getElementById('scannerVideo');
-        videoEl.srcObject = stream;
-        videoEl.play();
-
-        const canvasCtx = canvasEl.getContext("2d");
-        let lastScanTime = 0;
-
-        function runScannerFrame() {
-          if (!state.isWebcamScanning) return;
-          if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
-            canvasEl.width = videoEl.videoWidth;
-            canvasEl.height = videoEl.videoHeight;
-            canvasCtx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
-
-            const imgData = canvasCtx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-            const qrCode = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
-
-            drawScannerOverlay(canvasCtx, canvasEl.width, canvasEl.height);
-
-            if (qrCode && qrCode.data) {
-              drawQRFeedback(canvasCtx, qrCode.location);
-              const now = Date.now();
-              if (now - lastScanTime > 3000) {
-                lastScanTime = now;
-                processScannedCode(qrCode.data);
-              }
-            }
-          }
-          state.animationFrameId = requestAnimationFrame(runScannerFrame);
-        }
-        state.animationFrameId = requestAnimationFrame(runScannerFrame);
-      } catch(e) {
-        showToast("Accesso camera mobile non consentito.", "error");
-        stopWebcamScanner();
-      }
+        state.isWebcamScanning = true;
+        requestAnimationFrame(tickIsolatedScanner);
+      } catch(e) { showToast("Impossibile sbloccare la camera posteriore.", "error"); }
     }
 
-    async function startWebcamScanner() {
-      if(state.isWebcamScanning) await stopWebcamScanner();
-      const devId = document.getElementById('cameraSourceSelect')?.value;
-      document.getElementById('scannerPlaceholder').classList.add('hidden');
-      const canvasEl = document.getElementById('scannerCanvas');
-      canvasEl.classList.remove('hidden');
-      state.isWebcamScanning = true;
-
-      try {
-        const constraints = devId ? { video: { deviceId: { exact: devId } } } : { video: { facingMode: "environment" } };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        state.activeStream = stream;
-        
-        const videoEl = document.getElementById('scannerVideo');
-        videoEl.srcObject = stream;
-        videoEl.play();
-
-        const canvasCtx = canvasEl.getContext("2d");
-        let lastScanTime = 0;
-
-        function runScannerFrame() {
-          if (!state.isWebcamScanning) return;
-          if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
-            canvasEl.width = videoEl.videoWidth;
-            canvasEl.height = videoEl.videoHeight;
-            canvasCtx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
-
-            const imgData = canvasCtx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-            const qrCode = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
-
-            drawScannerOverlay(canvasCtx, canvasEl.width, canvasEl.height);
-
-            if (qrCode && qrCode.data) {
-              drawQRFeedback(canvasCtx, qrCode.location);
-              const now = Date.now();
-              if (now - lastScanTime > 3000) {
-                lastScanTime = now;
-                processScannedCode(qrCode.data);
-              }
-            }
-          }
-          state.animationFrameId = requestAnimationFrame(runScannerFrame);
-        }
-        state.animationFrameId = requestAnimationFrame(runScannerFrame);
-      } catch(e) {
-        showToast("Accesso fotocamera fallito.", "error");
-        stopWebcamScanner();
-      }
-    }
-
-    async function stopWebcamScanner() {
+    function stopIsolatedWebcamScanner() {
       state.isWebcamScanning = false;
-      if (state.animationFrameId) {
-        cancelAnimationFrame(state.animationFrameId);
-        state.animationFrameId = null;
-      }
       if (state.activeStream) {
         state.activeStream.getTracks().forEach(track => track.stop());
         state.activeStream = null;
       }
-      const videoEl = document.getElementById('scannerVideo');
-      if (videoEl) videoEl.srcObject = null;
-
-      const canvasEl = document.getElementById('scannerCanvas');
-      if (canvasEl) canvasEl.classList.add('hidden');
-      const placeholder = document.getElementById('scannerPlaceholder');
-      if (placeholder) placeholder.classList.remove('hidden');
     }
 
-    window.handleManualBarcodeSubmit = e => { e.preventDefault(); const i = document.getElementById('manualBarcodeField'); processScannedCode(i.value); i.value=''; i.focus(); }
-
-    // --- INTERCETTAZIONE PISTOLA USB DATALOGIC ---
-    let barcodeBuffer = "";
-    let lastKeyTime = Date.now();
-
-    document.addEventListener("keydown", function(e) {
-      const isScannerTabOpen = state.currentView === 'admin' && !document.getElementById('tabScanner').classList.contains('hidden');
-      if (isScannerTabOpen) {
-        const now = Date.now();
-        if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') return;
-
-        const interval = now - lastKeyTime;
-        lastKeyTime = now;
-
-        if (e.key === 'Enter') {
-          if (barcodeBuffer.length >= 4) {
-            e.preventDefault();
-            processScannedCode(barcodeBuffer);
-            barcodeBuffer = "";
-          }
-        } else if (e.key.length === 1) {
-          const activeEl = document.activeElement;
-          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
-            if (activeEl.id !== 'manualBarcodeField') {
-              return;
-            }
-          }
-
-          if (interval > 90 && barcodeBuffer.length > 0) {
-            barcodeBuffer = "";
-          }
-
-          barcodeBuffer += e.key;
-        }
-      }
-    });
-
-    async function processScannedCode(rawText) {
-      let code = rawText.trim().toUpperCase();
-      if (code.includes('?CHECKIN=')) code = code.split('?CHECKIN=')[1].split('&')[0];
-      const reg = state.registrations.find(r => r.code === code);
-      const resC = document.getElementById('scanResultCard'), resS = document.getElementById('scanResultSuccess'), resE = document.getElementById('scanResultEmpty');
-
-      if (reg) {
-        if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
-          playAudioTone(false); showToast("QR CODE GIÀ SCANNERIZZATO!", "error");
-          if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
-          document.getElementById('scanFeedbackBadge').innerText = "ATTENZIONE: QR CODE GIÀ UTILIZZATO";
-          document.getElementById('scanFeedbackBadge').className = "inline-block bg-amber-600 text-white font-black px-3 py-1 rounded-full text-xs mb-2";
-          document.getElementById('scanResultName').innerText = `${reg.cognome} ${reg.nome} (INGRESSO GIÀ EFFETTUATO)`;
-          resC.className = "glass-card p-6 rounded-3xl border-4 border-amber-600 bg-amber-50 text-indigo-950 text-left font-bold animate-shake";
+    function tickIsolatedScanner() {
+      if(!state.isWebcamScanning) return;
+      const video = document.getElementById('isolatedScannerVideo');
+      const canvas = document.getElementById('isolatedScannerCanvas');
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
+        if (code) {
+          handleIsolatedCodeResult(code.data);
+          setTimeout(() => { if(state.isWebcamScanning) requestAnimationFrame(tickIsolatedScanner); }, 2500);
           return;
         }
+      }
+      requestAnimationFrame(tickIsolatedScanner);
+    }
 
-        playAudioTone(true); showToast("Accesso Autorizzato", "success");
-        try { 
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {status:'Entrato'}); 
-          await sendCertificateEmailAuto(reg, 'entrata'); 
-        } catch(e){}
-        if(resE) resE.classList.add('hidden'); if(resS) resS.classList.remove('hidden');
-        resC.className = "glass-card p-6 rounded-3xl border-4 border-emerald-600 bg-emerald-50 text-indigo-950 text-left font-bold animate-pulse";
-        document.getElementById('scanFeedbackBadge').innerText = "ACCESSO AUTORIZZATO - PASS ATTIVATO";
-        document.getElementById('scanFeedbackBadge').className = "inline-block bg-emerald-700 text-white font-black px-3 py-1 rounded-full text-xs mb-2";
-        document.getElementById('scanResultName').innerText = `${reg.cognome.toUpperCase()} ${reg.nome}`;
-        document.getElementById('scanResultPath').innerText = `${reg.studyPath} (Posti accreditati: ${reg.totalPeople})`;
-        document.getElementById('scanResultCode').innerText = "Codice: " + code;
+    async function handleIsolatedCodeResult(codeStr) {
+      const reg = state.registrations.find(x => x.code.toUpperCase() === codeStr.toUpperCase());
+      const f = document.getElementById('isolatedScanFeedback');
+      f.classList.remove('hidden', 'bg-emerald-600', 'bg-red-600');
+      
+      if (!reg) {
+        playAudioTone(false);
+        f.classList.add('bg-red-600');
+        f.innerText = `NON VALIDO: ${codeStr}`;
       } else {
-        playAudioTone(false); showToast("Codice Invalido", "error");
-      }
-    }
-
-    // --- TERMINALE CLOUD ISOLATO SMARTPHONE ---
-    function setupIsolatedScannerMode() {
-      document.getElementById('wrapperMainSite').classList.add('hidden'); document.getElementById('wrapperIsolatedScanner').classList.remove('hidden');
-      document.getElementById('scannerLockScreen').classList.remove('hidden');
-    }
-    window.exitIsolatedMode = () => window.location.href = window.location.origin + window.location.pathname;
-    window.handleIsolatedLogin = e => {
-      e.preventDefault(); if(document.getElementById('isolatedPasswordInput').value==='admin') { document.getElementById('scannerLockScreen').classList.add('hidden'); document.getElementById('scannerActiveView').classList.remove('hidden'); startIsolatedWebcam(); }
-    }
-    window.handleIsolatedManualSubmit = e => { e.preventDefault(); const i = document.getElementById('isolatedManualCode'); processIsolatedCode(i.value); i.value=''; }
-    
-    async function startIsolatedWebcam() {
-      const canvasEl = document.getElementById('isolatedScannerCanvas');
-      canvasEl.classList.remove('hidden');
-      
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        const videoEl = document.getElementById('isolatedScannerVideo');
-        videoEl.srcObject = stream;
-        videoEl.play();
-
-        const canvasCtx = canvasEl.getContext("2d");
-        let lastScanTime = 0;
-
-        function runIsolatedFrame() {
-          if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
-            canvasEl.width = videoEl.videoWidth;
-            canvasEl.height = videoEl.videoHeight;
-            canvasCtx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
-
-            const imgData = canvasCtx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-            const qrCode = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
-
-            drawScannerOverlay(canvasCtx, canvasEl.width, canvasEl.height);
-
-            if (qrCode && qrCode.data) {
-              drawQRFeedback(canvasCtx, qrCode.location);
-              const now = Date.now();
-              if (now - lastScanTime > 3000) {
-                lastScanTime = now;
-                processIsolatedCode(qrCode.data);
-              }
-            }
-          }
-          state.animationFrameId = requestAnimationFrame(runIsolatedFrame);
+        playAudioTone(true);
+        f.classList.add('bg-emerald-600');
+        f.innerText = `ENTRATO: ${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
+        if (reg.status !== 'Entrato') {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Entrato' });
+          try {
+            await fetch(ATTESTATO_ENTRATA_URL, {
+              method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+              body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome })
+            });
+          } catch(e) {}
         }
-        state.animationFrameId = requestAnimationFrame(runIsolatedFrame);
-      } catch(e) {
-        showToast("Impossibile sbloccare fotocamera mobile.", "error");
       }
+      setTimeout(() => f.classList.add('hidden'), 2500);
     }
 
-    async function processIsolatedCode(rawText) {
-      let code = rawText.trim().toUpperCase(); if (code.includes('?CHECKIN=')) code = code.split('?CHECKIN=')[1].split('&')[0];
-      const reg = state.registrations.find(r => r.code === code);
-      const fb = document.getElementById('isolatedScanFeedback'); fb.classList.remove('hidden');
-
-      if (reg) {
-        if(reg.status === 'Entrato' || reg.status === 'Ammesso') {
-           playAudioTone(false); fb.className = "p-4 rounded-xl font-bold bg-amber-100 text-amber-800 border-2 border-amber-500"; fb.innerText = ` GIÀ IN SCUOLA: ${reg.nome}`; return;
-        }
-        playAudioTone(true); fb.className = "p-4 rounded-xl font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-500 animate-bounce"; fb.innerText = `AMMESSO: ${reg.nome}`;
-        try { 
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.id), {status:'Entrato'}); 
-          await sendCertificateEmailAuto(reg, 'entrata'); 
-        } catch(e){}
-      } else { playAudioTone(false); fb.className = "p-4 rounded-xl font-bold bg-red-100 text-red-800 border-2 border-red-500"; fb.innerText = `CODICE ASSENTE!`; }
-      setTimeout(()=>fb.classList.add('hidden'), 3500);
-    }
-
-    // --- ANIMAZIONE FLUIDA DELLE BOLLE ---
-    function initBubbles() {
-      const container = document.getElementById('bubbleContainer');
-      if (!container) return;
-      for (let i = 0; i < 45; i++) { createBubble(container); }
-    }
-
-    function createBubble(container) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('bubble');
-      const size = Math.random() * 75 + 35;
-      const startX = Math.random() * 100; const startY = Math.random() * 100;
-      const moveX = (Math.random() - 0.5) * 60; const moveY = (Math.random() - 0.5) * 60;
-      const duration = Math.random() * 22 + 12;
-
-      bubble.style.width = `${size}px`; bubble.style.height = `${size}px`;
-      bubble.style.left = `${startX}vw`; bubble.style.top = `${startY}vh`;
-      bubble.style.setProperty('--moveX', `${moveX}vw`); bubble.style.setProperty('--moveY', `${moveY}vh`);
-      bubble.style.animation = `driftAllAround ${duration}s infinite ease-in-out`;
-      
-      const logoInside = document.createElement('img');
-      logoInside.src = 'levi.png'; logoInside.alt = 'Levi Logo';
-      logoInside.onerror = function() {
-        this.onerror = null;
-        this.outerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-indigo-900 w-1/2 h-1/2 opacity-25"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
-      };
-      
-      bubble.appendChild(logoInside); container.appendChild(bubble);
-    }
-
-    // --- CONFIGURAZIONE SESSIONI E CSV EXCEL ---
-    window.handleCreateDate = async e => {
+    window.handleIsolatedManualSubmit = e => {
       e.preventDefault();
-      const val = document.getElementById('newDateValue').value;
-      const slot = document.getElementById('newDateTimeSlot').value.trim();
-      const path = document.getElementById('newStudyPath').value;
-      const aula = document.getElementById('newAula').value.trim();
-      const maxS = parseInt(document.getElementById('newDateMaxSeats').value)||25;
+      const code = document.getElementById('isolatedManualCode').value.trim().toUpperCase();
+      document.getElementById('isolatedManualCode').value = '';
+      if(code) handleIsolatedCodeResult(code);
+    };
+
+    // --- COCKPIT WEBCAM ---
+    window.toggleWebcamScanner = async () => {
+      const video = document.getElementById('scannerVideo');
+      const placeholder = document.getElementById('scannerPlaceholder');
+      if (state.isWebcamScanning) { stopWebcamScanner(); return; }
+
+      if(placeholder) placeholder.classList.add('hidden');
+      if(video) video.classList.remove('hidden');
 
       try {
-        const id = 'session-' + Math.random().toString(36).substring(2,10);
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id), { date: val, timeSlot: slot, studyPath: path, aula: aula, maxSeats: maxS });
-        showToast("Turno d'aula creato con successo!", "success");
-        document.getElementById('newDateForm').reset();
-      } catch(err) { showToast("Impossibile salvare la sessione nel cloud.", "error"); }
+        const sourceId = document.getElementById('cameraSourceSelect').value;
+        const constraints = { video: sourceId ? { deviceId: { exact: sourceId } } : { facingMode: "user" } };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        video.play();
+        state.activeStream = stream;
+        state.isWebcamScanning = true;
+        requestAnimationFrame(tickWebcamScanner);
+        showToast("Scanner fotocamera attivato.", "success");
+      } catch(e) { showToast("Sorgente webcam non disponibile.", "error"); stopWebcamScanner(); }
+    };
+
+    function stopWebcamScanner() {
+      state.isWebcamScanning = false;
+      const video = document.getElementById('scannerVideo');
+      const placeholder = document.getElementById('scannerPlaceholder');
+      if (state.activeStream) {
+        state.activeStream.getTracks().forEach(track => track.stop());
+        state.activeStream = null;
+      }
+      if(video) video.classList.add('hidden');
+      if(placeholder) placeholder.classList.remove('hidden');
     }
 
-    window.adminDeleteDate = async id => {
-      showAdminConfirm("Rimuovi Sessione", "Sei sicuro di voler rimuovere questo turno d'aula?", false, async () => {
-        try {
-          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
-          showToast("Sessione rimossa.", "success");
-        } catch(e) {}
+    function tickWebcamScanner() {
+      if(!state.isWebcamScanning) return;
+      const video = document.getElementById('scannerVideo');
+      const canvas = document.getElementById('scannerCanvas');
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
+        if (code) {
+          processScannedCode(code.data);
+          setTimeout(() => { if(state.isWebcamScanning) requestAnimationFrame(tickWebcamScanner); }, 2500);
+          return;
+        }
+      }
+      requestAnimationFrame(tickWebcamScanner);
+    }
+
+    async function enumerateCameraSources() {
+      const select = document.getElementById('cameraSourceSelect');
+      if(!select) return;
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: true });
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(d => d.kind === 'videoinput');
+        select.innerHTML = videoDevices.map((d, i) => `<option value="${d.deviceId}">${d.label || 'Webcam '+(i+1)}</option>`).join('');
+      } catch(e) { select.innerHTML = `<option value="">Nessuna camera rilevata</option>`; }
+    }
+
+    // --- POPOLAMENTO HOME DATE CON RAGGRUPPAMENTO ---
+    function renderHomeDates() {
+      const container = document.getElementById('groupedDatesGrid');
+      if(!container) return;
+      if(state.dates.length === 0) {
+        container.innerHTML = `<div class="col-span-2 p-8 text-center text-slate-400 font-bold glass-card rounded-2xl border border-dashed bg-white">Nessun turno programmato nel database.</div>`;
+        return;
+      }
+
+      // Raggruppamento per data unica
+      const groups = {};
+      state.dates.forEach(d => {
+        if(!groups[d.date]) groups[d.date] = [];
+        groups[d.date].push(d);
       });
+
+      container.innerHTML = Object.entries(groups).map(([dateVal, sessions]) => {
+        let slotsHtml = sessions.map(s => {
+          const booked = getOccupiedSeats(s.id);
+          const available = Math.max(0, s.maxSeats - booked);
+          const isFull = available <= 0;
+          return `
+            <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+              <div class="pr-2 truncate">
+                <span class="font-extrabold text-indigo-950 block text-[11px] truncate">${s.studyPath}</span>
+                <span class="text-[10px] text-slate-500 font-semibold block mt-0.5">Ore ${s.timeSlot} • Aula: ${s.aula}</span>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${isFull ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'}">
+                  ${isFull ? 'PIENO' : `${available} liberi`}
+                </span>
+                <button ${isFull ? 'disabled' : `onclick="startBookingProcess('${s.id}')"`} class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-[10px] font-black rounded uppercase tracking-wide transition shadow-sm">
+                  Iscriviti
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="glass-card p-5 rounded-3xl border border-white space-y-3.5 shadow-sm transition hover:shadow-md flex flex-col justify-between">
+            <div class="space-y-1">
+              <span class="text-[9px] font-black tracking-widest text-sky-600 uppercase block">Giorno Open Day d'Istituto</span>
+              <h4 class="text-xl font-extrabold text-indigo-950 font-outfit capitalize leading-none">${new Date(dateVal).toLocaleDateString('it-IT', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'})}</h4>
+            </div>
+            <div class="space-y-2">
+              ${slotsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+      try { lucide.createIcons(); } catch(e) {}
+    }
+
+    function renderRegistrations() {
+      const tbody = document.getElementById('registrationsTableBody');
+      if(!tbody) return;
+      
+      const filterVal = document.getElementById('filterDateSelect')?.value || 'all';
+      const list = filterVal === 'all' ? state.registrations : state.registrations.filter(r => r.dateId === filterVal);
+
+      if(list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic font-semibold">Nessuno studente iscritto a registro.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(r => {
+        let badge = '<span class="bg-slate-100 text-slate-600 border border-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">Iscritto</span>';
+        if (r.status === 'Entrato') badge = '<span class="bg-blue-100 text-blue-900 border border-blue-900 px-2 py-0.5 rounded text-[10px] font-black">Entrato</span>';
+        else if (r.status === 'Ammesso') badge = '<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-black">Ammesso</span>';
+        else if (r.status === 'Assente') badge = '<span class="bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-0.5 rounded text-[10px] font-bold">Assente</span>';
+        else if (r.status === 'Non Ammesso') badge = '<span class="bg-red-100 text-red-800 border border-red-300 px-2 py-0.5 rounded text-[10px] font-bold">Non Ammesso</span>';
+
+        return `
+          <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs font-semibold">
+            <td class="p-3 font-mono font-black text-indigo-950">${r.code}</td>
+            <td class="p-3">
+              <strong class="text-slate-800 block text-sm">${r.cognome.toUpperCase()} ${r.nome.toUpperCase()}</strong>
+              <span class="text-[10px] text-slate-400 font-medium">Scuola: ${r.provenienza || 'Terza media'}</span>
+            </td>
+            <td class="p-3">
+              <span class="block">${r.email}</span>
+              <span class="text-[10px] text-slate-400 font-medium">Posti riservati: ${r.totalPeople}</span>
+            </td>
+            <td class="p-3">
+              <strong class="text-slate-700 block">${r.studyPath.substring(0, 30)}...</strong>
+              <span class="text-[10px] text-slate-400 font-semibold block">${r.dateStr}</span>
+            </td>
+            <td class="p-3 text-center">
+              <div class="flex flex-col gap-1 items-center">
+                ${badge}
+                <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-1 text-[10px] rounded border bg-white outline-none font-bold text-slate-700 mt-1.5">
+                  <option value="" disabled selected>Cambia...</option>
+                  <option value="Iscritto">Iscritto</option>
+                  <option value="Entrato">Entrato</option>
+                  <option value="Assente">Assente</option>
+                  <option value="Non Ammesso">Non Ammesso</option>
+                  <option value="Ammesso">Ammesso</option>
+                </select>
+              </div>
+            </td>
+            <td class="p-3 text-center">
+              <div class="flex flex-col gap-1 w-24 mx-auto">
+                <button onclick="triggerManualEntryPass('${r.code}')" class="px-2 py-1 bg-indigo-900 text-white rounded text-[9px] font-black uppercase">Pass</button>
+                <button onclick="triggerManualExitAttestato('${r.code}')" class="px-2 py-1 bg-amber-600 text-white rounded text-[9px] font-black uppercase">Pergamena</button>
+              </div>
+            </td>
+            <td class="p-3 text-right">
+              <button onclick="triggerManualDelete('${r.code}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      try { lucide.createIcons(); } catch(e) {}
     }
 
     function renderAdminDatesList() {
-      const c = document.getElementById('adminDatesList'); if(!c) return;
-      if(state.dates.length === 0) { c.innerHTML = '<p class="text-slate-500 text-xs italic">Nessun turno inserito.</p>'; return; }
-      c.innerHTML = state.dates.map(d => `
-        <div class="p-3 bg-white border border-slate-200 rounded-xl text-xs flex justify-between items-center shadow-sm">
+      const container = document.getElementById('adminDatesList');
+      if(!container) return;
+      if(state.dates.length === 0) { container.innerHTML = `<p class="text-slate-400 italic text-xs">Nessuna sessione creata.</p>`; return; }
+      
+      container.innerHTML = state.dates.map(d => `
+        <div class="p-3 bg-white border rounded-xl flex justify-between items-center text-xs shadow-sm font-bold font-sans">
           <div>
-            <strong class="text-indigo-950">${d.date} | Ore ${d.timeSlot}</strong>
-            <p class="text-slate-600 font-semibold">${d.studyPath} (${d.aula}) - Max posti: ${d.maxSeats}</p>
+            <strong class="text-indigo-950">${d.date} • ${d.timeSlot}</strong>
+            <span class="block text-[10px] text-slate-500 font-semibold">${d.studyPath} (${getOccupiedSeats(d.id)}/${d.maxSeats} occupati)</span>
           </div>
-          <button onclick="adminDeleteDate('${d.id}')" class="text-red-600 hover:text-red-800 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <button onclick="handleDeleteDate('${d.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       `).join('');
       try { lucide.createIcons(); } catch(e) {}
     }
 
-    window.saveReminderDays = async () => {
-      const val = parseInt(document.getElementById('reminderDaysInput').value) || 7;
-      try {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'general'), { reminderDaysBefore: val, bannerText: state.settings.bannerText }, { merge: true });
-        showToast("Impostazioni salvate con successo!", "success");
-      } catch(e) {}
+    function initBubbles() {
+      const c = document.getElementById('bubbleContainer');
+      if(!c) return;
+      c.innerHTML = '';
+      const icons = ['award', 'book-open', 'globe', 'compass', 'cpu', 'landmark'];
+      for (let i = 0; i < 15; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const s = Math.random() * 45 + 35;
+        b.style.width = `${s}px`; b.style.height = `${s}px`;
+        b.style.left = `${Math.random() * 92}vw`; b.style.top = `${Math.random() * 92}vh`;
+        b.style.setProperty('--moveX', `${Math.random() * 120 - 60}px`);
+        b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
+        b.style.animation = `driftAllAround ${Math.random()*15 + 15}s infinite ease-in-out`;
+        b.style.animationDelay = `${Math.random() * -5}s`;
+        if (i % 2 === 0) {
+          const icon = document.createElement('i');
+          icon.setAttribute('data-lucide', icons[Math.floor(Math.random()*icons.length)]);
+          icon.className = 'text-indigo-600 w-4 h-4 opacity-15';
+          b.appendChild(icon);
+        }
+        c.appendChild(b);
+      }
     }
 
-    window.exportToCSV = () => {
-      if (state.registrations.length === 0) return showToast("Nessun dato da esportare", "error");
-      
-      let csv = "\uFEFF"; 
-      csv += "Codice;Cognome;Nome;Email;Telefono;Indirizzo;Giorno;Orario;Alunni;Accompagnatori;Posti Totali;Inclusione;Stato Check-In\r\n";
-      
-      state.registrations.forEach(r => {
-        csv += `"${r.code || ''}";"${r.cognome || ''}";"${r.nome || ''}";"${r.email || ''}";"${r.telefono || ''}";"${r.studyPath || ''}";"${r.dateStr || ''}";"${r.timeSlot || ''}";"${r.numAlunni || 1}";"${r.accompanyingPersons || 0}";"${r.totalPeople || 1}";"${r.supportRequired ? 'SI' : 'NO'}";"${r.status || 'Iscritto'}"\r\n`;
-      });
-      
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", "OpenDay_PrimoLevi_Seregno.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    window.handleClearAllRegistrations = () => {
-      showAdminConfirm("Svuota Database", "ATTENZIONE! Questa operazione rimuoverà DEFINITIVAMENTE tutti gli iscritti dal sistema. Scrivi ELIMINA per confermare.", true, async () => {
-        try {
-          const snapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
-          const promises = [];
-          snapshot.forEach(doc => { promises.push(deleteDoc(doc.ref)); });
-          await Promise.all(promises);
-          showToast("Database iscritti svuotato correttamente.", "success");
-        } catch(e) { showToast("Errore durante l'operazione.", "error"); }
-      });
-    }
-
-    window.onload = startApp;
+    window.onload = () => {
+      startApp();
+      enumerateCameraSources();
+    };
   </script>
 </body>
 </html>
