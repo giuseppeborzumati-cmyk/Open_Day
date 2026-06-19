@@ -665,10 +665,6 @@
     <div class="max-w-5xl mx-auto px-4 text-center sm:text-left">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div>
-          <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">ITSCG "Primo Levi"</h4>
-          <p class="leading-relaxed">
-            Istituto Tecnico Statale Commerciale e per Geometri con annesso Liceo Scientifico Opzione Scienze Applicate. Seregno (MB).
-          </p>
         </div>
         <div>
           <h4 class="text-white font-bold mb-2 font-outfit text-xs uppercase tracking-wider">Contatti Sede</h4>
@@ -1760,7 +1756,6 @@
       const c = document.getElementById('bubbleContainer');
       if(!c) return;
       c.innerHTML = '';
-      const icons = ['award', 'book-open', 'globe', 'compass', 'cpu', 'landmark'];
       for (let i = 0; i < 15; i++) {
         const b = document.createElement('div');
         b.className = 'bubble';
@@ -1771,12 +1766,22 @@
         b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
         b.style.animation = `driftAllAround ${Math.random()*15 + 15}s infinite ease-in-out`;
         b.style.animationDelay = `${Math.random() * -5}s`;
-        if (i % 2 === 0) {
-          const icon = document.createElement('i');
-          icon.setAttribute('data-lucide', icons[Math.floor(Math.random()*icons.length)]);
-          icon.className = 'text-indigo-600 w-4 h-4 opacity-15';
-          b.appendChild(icon);
-        }
+        
+        // Creazione dell'immagine del logo identica a quella iniziale dell'header
+        const img = document.createElement('img');
+        img.src = 'levi.png';
+        img.alt = 'Logo';
+        img.className = 'w-1/2 h-1/2 object-contain opacity-25 pointer-events-none';
+        img.onerror = function() {
+          this.onerror = null;
+          // Fallback testuale "PL" (Primo Levi) se l'immagine locale o remota non viene caricata
+          const fallback = document.createElement('div');
+          fallback.className = 'text-indigo-950 font-black text-[10px] opacity-25 tracking-tighter';
+          fallback.innerText = 'PL';
+          this.replaceWith(fallback);
+        };
+        
+        b.appendChild(img);
         c.appendChild(b);
       }
     }
