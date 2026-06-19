@@ -78,7 +78,7 @@
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
 
-  <!-- Sfondo animato fluido delle bolle istituzionali -->
+<!-- Sfondo animato fluido delle bolle istituzionali -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
   <!-- INTERFACCIA: SITO PUBBLICO GENERALE -->
@@ -86,13 +86,16 @@
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm">
-          <img src="levi.png" alt="Logo" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
+          <!-- Logo principale levi.png con fallback grafico avanzato in caso di errore di caricamento -->
+          <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
         </div>
         <div>
           <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
           <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider">Seregno (MB)</p>
-        </div>
+        </div> 
       </div>
+    </nav>
+  </div>
       
       <div class="flex flex-wrap items-center justify-center gap-2">
         <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
