@@ -2372,7 +2372,7 @@
       try { lucide.createIcons(); } catch(e) {}
     }
 
-    // --- STREAMING_CHUNK: Creazione e inizializzazione delle bolle con logo Levi.png rotante... ---
+    // --- STREAMING_CHUNK: Creazione e inizializzazione delle bolle con logo levi.png rotante... ---
     function initBubbles() {
       const c = document.getElementById('bubbleContainer');
       if(!c) return;
@@ -2389,9 +2389,9 @@
         b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
         b.style.setProperty('--speed', `${Math.random() * 12 + 12}s`);
         
-        // Inserimento dell'immagine Levi.png con gestione dell'errore (fallback a dicitura classica LEVI)
+        // Inserimento dell'immagine levi.png con gestione dell'errore (fallback a dicitura classica LEVI)
         const img = document.createElement('img');
-        img.src = 'Levi.png';
+        img.src = 'levi.png';
         img.className = 'bubble-logo';
         img.onerror = function() {
           this.style.display = 'none';
