@@ -39,6 +39,12 @@
       75% { transform: translate(calc(var(--moveX) * 1.2), calc(var(--moveY) * -0.6)) scale(1.15) rotate(270deg); }
     }
 
+    /* Animazione di rotazione continua del logo all'interno delle bolle */
+    @keyframes spinLogo {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     .bubble-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; z-index: 0; }
     .bubble {
       position: absolute;
@@ -48,6 +54,15 @@
       backdrop-filter: blur(1px); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply;
       border: 1px solid rgba(255,255,255,0.6);
       animation: driftAllAround var(--speed) infinite ease-in-out;
+    }
+    .bubble .bubble-logo {
+      width: 50%;
+      height: 50%;
+      object-fit: contain;
+      animation: spinLogo 15s linear infinite;
+      opacity: 0.55;
+      user-select: none;
+      pointer-events: none;
     }
     .bubble .bubble-monogram { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; color: #0284c7; opacity: 0.35; user-select: none; }
 
@@ -79,7 +94,7 @@
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
 
-  <!-- Sfondo animato fluido delle bolle istituzionali -->
+  <!-- Sfondo animato fluido delle bolle istituzionali con il logo Levi.png che ruota all'interno -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
 
@@ -87,9 +102,9 @@
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
-        <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm">
+        <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden">
           <!-- Logo principale con fallback grafico avanzato in caso di errore di caricamento -->
-          <img src="https://lh3.googleusercontent.com/d/138Lw-QeezyPdzgRtSpTYUnKgydsA3be1" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
+          <img src="Levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
         </div>
         <div>
           <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
@@ -100,6 +115,9 @@
       <div class="flex flex-wrap items-center justify-center gap-2">
         <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition">
           <i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota Posto</span>
+        </button>
+        <button onclick="scrollToSection('studyPathsSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold transition">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Piani di Studio</span>
         </button>
         <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
           <i data-lucide="search" class="w-4 h-4"></i><span>Recupera Pass</span>
@@ -338,43 +356,134 @@
           </div>
         </div>
 
-        <!-- Sezione degli indirizzi di studio -->
-        <div class="space-y-6 pt-8">
-          <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 font-outfit"><i data-lucide="graduation-cap" class="text-indigo-600"></i> I Nostri Indirizzi di Studio</h3>
+        <!-- SEZIONE DEI NUOVI INDIRIZZI DI STUDIO (CON DETTAGLI E MATERIE) -->
+        <div id="studyPathsSection" class="space-y-6 pt-8 scroll-mt-24">
+          <div class="text-center md:text-left space-y-1">
+            <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 justify-center md:justify-start font-outfit">
+              <i data-lucide="book-open" class="text-indigo-600"></i> Guida Completa ai Nostri Indirizzi
+            </h3>
+            <p class="text-xs text-slate-500 font-bold">Un'offerta formativa d'eccellenza che unisce teoria, laboratori avanzati e connessione con l'economia reale.</p>
+          </div>
+
+          <!-- Testo Unico Integrato - Quadro Informativo Generale -->
+          <div class="p-6 bg-gradient-to-br from-indigo-50 via-sky-50 to-white rounded-3xl border border-indigo-100 shadow-inner space-y-4">
+            <h4 class="text-indigo-950 font-black text-sm flex items-center gap-2">
+              <i data-lucide="award" class="text-indigo-600"></i> IL PROFILO CULTURALE DEL PRIMO LEVI
+            </h4>
+            <p class="text-xs leading-relaxed text-slate-700">
+              L’Istituto Tecnico Statale con Liceo Scientifico delle Scienze Applicate <strong>"Primo Levi" di Seregno</strong> rappresenta un polo di eccellenza nel panorama scolastico della Brianza. Tutti i nostri percorsi sono progettati per fornire competenze solide, dinamiche e direttamente spendibili nel mondo accademico e professionale. Attraverso lo studio mirato delle lingue straniere (fino a tre lingue nel settore economico), l’uso intensivo dell'informatica applicata, le scienze sperimentali di laboratorio e l'analisi tecnica di flussi logistici, lo studente acquisisce una visione sistemica. Le materie di indirizzo caratterizzanti guidano la transizione tecnologica e i nuovi assetti del marketing globale, della gestione aziendale e dello sviluppo scientifico.
+            </p>
+          </div>
+
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- LSA -->
-            <div class="glass-card p-6 rounded-3xl border-t-4 border-indigo-600 flex flex-col justify-between shadow-sm">
-              <div>
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">LSA</h4>
-                <p class="text-xs font-bold text-indigo-600 uppercase mb-2">Liceo Scientifico - Scienze Applicate</p>
-                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  <p><strong>Materie:</strong> Matematica, Fisica, Scienze (Chimica, Biologia, Terra), Informatica specialistica.</p>
-                  <p><strong>Sbocchi:</strong> Facoltà Scientifiche, Ingegneria, Medicina, Informatica e centri di ricerca.</p>
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-indigo-600 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">LSA</h4>
+                  <span class="text-[9px] font-black bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">LICEO</span>
+                </div>
+                <p class="text-xs font-bold text-indigo-600 uppercase">Liceo Scientifico delle Scienze Applicate</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce il latino con l'Informatica specialistica e potenzia le ore di laboratorio di Scienze Sperimentali.</p>
+                  <p class="bg-indigo-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-indigo-100/30">
+                    <strong>Materie caratterizzanti:</strong> Informatica (Algoritmi, C++, Java e Web Dev), Matematica, Fisica Sperimentale, Chimica Generale e Organica, Biologia e Scienze della Terra.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Facoltà universitarie di Ingegneria, Informatica, Medicina, Fisica, Matematica e impieghi in centri tecnologici e laboratori di ricerca.</p>
                 </div>
               </div>
             </div>
+
             <!-- RIM -->
-            <div class="glass-card p-6 rounded-3xl border-t-4 border-emerald-500 flex flex-col justify-between shadow-sm">
-              <div>
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">RIM</h4>
-                <p class="text-xs font-bold text-emerald-600 uppercase mb-2">Relazioni Internazionali per il Marketing</p>
-                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  <p><strong>Materie:</strong> Tre Lingue, Economia Aziendale e Geopolitica, Diritto, Tecnologie Comunicazione.</p>
-                  <p><strong>Sbocchi:</strong> Economia, Lingue, Scienze Politiche, aziende import-export, marketing.</p>
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-emerald-500 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">RIM</h4>
+                  <span class="text-[9px] font-black bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">TECNICO</span>
+                </div>
+                <p class="text-xs font-bold text-emerald-600 uppercase">Relazioni Internazionali per il Marketing</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Sviluppa competenze nel campo della gestione aziendale, della comunicazione internazionale, della geopolitica e del commercio estero attraverso l'uso intensivo delle lingue straniere.</p>
+                  <p class="bg-emerald-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-emerald-100/30">
+                    <strong>Materie caratterizzanti:</strong> Tre Lingue Straniere (Inglese, Francese, Spagnolo o Tedesco), Economia Aziendale e Geopolitica, Diritto Pubblico e Internazionale, Tecnologie di Comunicazione.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Lauree in Economia, Lingue e Mediazione Culturale, Giurisprudenza, Scienze Politiche; carriera in imprese import-export, uffici marketing, dogane e multinazionali.</p>
                 </div>
               </div>
             </div>
+
             <!-- LOG -->
-            <div class="glass-card p-6 rounded-3xl border-t-4 border-orange-500 flex flex-col justify-between shadow-sm">
-              <div>
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg mb-1">LOG</h4>
-                <p class="text-xs font-bold text-orange-600 uppercase mb-2">Logistica e Trasporti</p>
-                <div class="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  <p><strong>Materie:</strong> Navigazione, Logistica, Diritto Trasporti, Supply Chain, Meccanica.</p>
-                  <p><strong>Sbocchi:</strong> Ingegneria Gestionale, Economia, flotta/hub, spedizionieri internazionali.</p>
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-orange-500 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">LOG</h4>
+                  <span class="text-[9px] font-black bg-orange-50 text-orange-700 px-2 py-0.5 rounded border border-orange-200">TECNICO</span>
+                </div>
+                <p class="text-xs font-bold text-orange-600 uppercase">Logistica e Trasporti</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Risponde alla richiesta di professionisti capaci di governare il flusso delle merci e delle informazioni a livello intermodale (terra, aria, mare), gestendo flotte, terminal e supply chain.</p>
+                  <p class="bg-orange-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-orange-100/30">
+                    <strong>Materie caratterizzanti:</strong> Logistica (pianificazione, stoccaggio e spedizioni), Scienze della Navigazione, Meccanica e Macchine, Diritto della Navigazione e del Lavoro, Inglese Tecnico.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Lauree in Ingegneria Gestionale, Economia dei Trasporti; ruoli di Supply Chain Manager, Spedizioniere Internazionale, controller e pianificatore di flotta in hub intermodali.</p>
                 </div>
               </div>
             </div>
+
+            <!-- SIA -->
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-cyan-500 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">SIA</h4>
+                  <span class="text-[9px] font-black bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded border border-cyan-200">TECNICO</span>
+                </div>
+                <p class="text-xs font-bold text-cyan-600 uppercase">Sistemi Informativi Aziendali</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Focalizzato sulla digitalizzazione dei processi di business. Unisce la gestione contabile e amministrativa delle imprese alla progettazione e allo sviluppo di software gestionale dedicato.</p>
+                  <p class="bg-cyan-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-cyan-100/30">
+                    <strong>Materie caratterizzanti:</strong> Informatica (Database SQL, PHP, HTML/CSS, Java), Economia Aziendale avanzata, Diritto Commerciale, Matematica Finanziaria, due Lingue Straniere.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Lauree in Economia e Management, Informatica Gestionale; ruoli di Web Developer, Database Administrator, consulente ERP aziendale, contabile e programmatore software.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAT -->
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-teal-500 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">CAT</h4>
+                  <span class="text-[9px] font-black bg-teal-50 text-teal-700 px-2 py-0.5 rounded border border-teal-200">TECNICO</span>
+                </div>
+                <p class="text-xs font-bold text-teal-600 uppercase">Costruzioni, Ambiente e Territorio</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Evoluzione del tradizionale Geometra. Integra la pianificazione urbanistica, la bioedilizia, la sicurezza in cantiere e la salvaguardia dell'ambiente con strumenti informatici CAD/BIM.</p>
+                  <p class="bg-teal-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-teal-100/30">
+                    <strong>Materie caratterizzanti:</strong> Progettazione Costruzioni e Impianti, Topografia e Rilievi, Estimo e Pratiche Catastali, Geopedologia e Sicurezza sul Lavoro.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Lauree in Architettura, Ingegneria Civile o Ambientale; abilitazione alla libera professione di Geometra, perito immobiliare, esperto di acustica e certificatore energetico.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODA -->
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-fuchsia-600 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">MODA</h4>
+                  <span class="text-[9px] font-black bg-fuchsia-50 text-fuchsia-700 px-2 py-0.5 rounded border border-fuchsia-200">TECNICO</span>
+                </div>
+                <p class="text-xs font-bold text-fuchsia-600 uppercase">Sistema Moda</p>
+                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
+                  <p>Una miscela unica di creatività e competenze tecniche. Gestisce l'intero ciclo di vita del prodotto moda: dal design iniziale alla chimica dei tessuti, fino alla logistica e alle strategie di marketing.</p>
+                  <p class="bg-fuchsia-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-fuchsia-100/30">
+                    <strong>Materie caratterizzanti:</strong> Tecnologie dei Materiali e dei Processi Produttivi, Chimica Applicata e Nobilitazione, Ideazione Progettazione e Industrializzazione, Economia e Marketing Moda.
+                  </p>
+                  <p><strong>Sbocchi:</strong> Istituti Superiori di Design (Marangoni, IED), Lauree in Design della Moda, Marketing; carriere come Fashion Designer, Modellista CAD, Textile Specialist e Brand Manager.</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -560,21 +669,6 @@
             </div>
           </div>
           
-          <!-- Sezione Feedback Vocale Premium via Gemini TTS -->
-          <div class="p-5 bg-white rounded-3xl border border-slate-200 shadow-sm space-y-3">
-            <div class="flex items-center justify-between">
-              <h4 class="font-black text-slate-900 font-outfit text-sm">Sintesi Vocale d'Accoglienza</h4>
-              <span class="text-[9px] font-black bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">Gemini Live</span>
-            </div>
-            <p class="text-[11px] text-slate-500 leading-normal">
-              Il sistema leggerà ad alta voce i messaggi di check-in d'ingresso e le notifiche di completamento per un'accoglienza più fluida e d'effetto.
-            </p>
-            <div class="flex items-center gap-2">
-              <button onclick="playGeminiTTS('Feedback vocale abilitato con successo all\'ITSCG Primo Levi.')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-700 border border-slate-200 transition flex items-center gap-1">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5 text-indigo-600"></i><span>Test Audio</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -889,6 +983,7 @@
 
   <!-- LOGICA COMPLETA DEL PORTALE E CONNESSIONI ENDPOINT -->
   <script type="module">
+    // --- STREAMING_CHUNK: Inizializzazione Firebase e configurazione di sistema... ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -932,82 +1027,14 @@
 
     initBubbles();
 
-    // --- STRUMENTO CONVERSIONE PCM16 TO WAV PER RIPRODUZIONE AUDIO FEEDBACK ---
-    function pcmToWav(pcm16, sampleRate) {
-      const buffer = new ArrayBuffer(44 + pcm16.length * 2);
-      const view = new DataView(buffer);
-      const writeString = (v, offset, str) => {
-        for (let i = 0; i < str.length; i++) v.setUint8(offset + i, str.charCodeAt(i));
-      };
-      writeString(view, 0, 'RIFF');
-      view.setUint32(4, 36 + pcm16.length * 2, true);
-      writeString(view, 8, 'WAVE');
-      writeString(view, 12, 'fmt ');
-      view.setUint32(16, 16, true);
-      view.setUint16(20, 1, true);
-      view.setUint16(22, 1, true);
-      view.setUint32(24, sampleRate, true);
-      view.setUint32(28, sampleRate * 2, true);
-      view.setUint16(32, 2, true);
-      view.setUint16(34, 16, true);
-      writeString(view, 36, 'data');
-      view.setUint32(40, pcm16.length * 2, true);
-      let offset = 44;
-      for (let i = 0; i < pcm16.length; i++, offset += 2) {
-        view.setInt16(offset, pcm16[i], true);
-      }
-      return new Blob([view], { type: 'audio/wav' });
-    }
-
-    // --- RIPRODUZIONE AUDIO GEMINI TTS ---
+    // --- STREAMING_CHUNK: Disattivazione Sintesi Vocale e mantenimento toni acustici... ---
+    // Sintesi vocale Gemini e nativa disabilitate completamente per quietare l'aula d'ingresso su richiesta utente
     window.playGeminiTTS = async (text, voiceName = "Zephyr") => {
-      try {
-        const payload = {
-          contents: [{ parts: [{ text: text }] }],
-          generationConfig: {
-            responseModalities: ["AUDIO"],
-            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } } }
-          },
-          model: "gemini-2.5-flash-preview-tts"
-        };
-        const apiKey = ""; 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        const part = result?.candidates?.[0]?.content?.parts?.[0];
-        const audioData = part?.inlineData?.data;
-        const mimeType = part?.inlineData?.mimeType;
-
-        if (audioData && mimeType && mimeType.startsWith("audio/")) {
-          const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-          const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
-          const binaryString = atob(audioData);
-          const len = binaryString.length;
-          const bytes = new Uint8Array(len);
-          for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-          const pcm16 = new Int16Array(bytes.buffer);
-          const wavBlob = pcmToWav(pcm16, sampleRate);
-          const audioUrl = URL.createObjectURL(wavBlob);
-          const audio = new Audio(audioUrl);
-          audio.play();
-        } else {
-          playNativeTTS(text);
-        }
-      } catch (e) {
-        playNativeTTS(text);
-      }
+      console.log("Sintesi vocale disabilitata per quiete istituzionale:", text);
     };
 
     function playNativeTTS(text) {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'it-IT';
-        window.speechSynthesis.speak(utterance);
-      }
+      console.log("Lettura vocale nativa saltata:", text);
     }
 
     // Sincronizzazione dell'area di amministrazione dei docenti
@@ -1451,8 +1478,8 @@
 
         setLoaderState(100, "Completato!");
         
-        // Annuncio di successo via sintesi vocale
-        window.playGeminiTTS(`Congratulazioni ${nome}! Iscrizione registrata con successo. Riceverai il tuo pass via e-mail.`);
+        // Annuncio di successo (feedback sonoro semplice)
+        playAudioTone(true);
 
         setTimeout(() => {
           loader.classList.add('hidden');
@@ -1665,9 +1692,6 @@
           playAudioTone(true);
           updateButtonUI(code, 'btn-att-', 'Invio in corso...');
           
-          // Feedback d'ingresso
-          window.playGeminiTTS(`Benvenuto all'istituto Primo Levi, ${reg.nome} ${reg.cognome}.`);
-
           try {
             await fetch(ATTESTATO_ENTRATA_URL, {
               method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
@@ -1682,9 +1706,6 @@
           playAudioTone(true);
           updateButtonUI(code, 'btn-concl-', 'Invio in corso...');
           
-          // Feedback di conclusione
-          window.playGeminiTTS(`Grazie per la visita, ${reg.nome}. Attestato d'orientamento conclusivo inviato via e mail.`);
-
           try {
             const pdf = await generateReceiptPDF(reg, reg.code, 'uscita');
             await fetch(ATTESTATO_USCITA_URL, {
@@ -1805,7 +1826,6 @@
           resEmpty.classList.remove('hidden');
           resEmpty.innerHTML = `<span class="text-rose-600 block animate-shake">⚠️ CODICE ERRATO O INESISTENTE: ${scannedCode}</span>`;
         }
-        window.playGeminiTTS("Errore: codice non registrato.");
         showToast("Codice d'accredito non trovato.", "error");
         return;
       }
@@ -1825,9 +1845,6 @@
         try {
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Ammesso' });
           showToast(`Check-In avvenuto con successo per ${reg.cognome}!`, "success");
-          
-          // Audio feedback d'ingresso automatico
-          window.playGeminiTTS(`Benvenuto studente ${reg.nome} ${reg.cognome}.`);
 
           try {
             await fetch(ATTESTATO_ENTRATA_URL, {
@@ -1837,7 +1854,6 @@
           } catch(e) {}
         } catch(e) {}
       } else {
-        window.playGeminiTTS(`Studente già registrato.`);
         showToast(`Studente già registrato come Ammesso.`, "info");
       }
     }
@@ -2356,6 +2372,7 @@
       try { lucide.createIcons(); } catch(e) {}
     }
 
+    // --- STREAMING_CHUNK: Creazione e inizializzazione delle bolle con logo Levi.png rotante... ---
     function initBubbles() {
       const c = document.getElementById('bubbleContainer');
       if(!c) return;
@@ -2372,10 +2389,18 @@
         b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
         b.style.setProperty('--speed', `${Math.random() * 12 + 12}s`);
         
-        const txt = document.createElement('div');
-        txt.className = 'bubble-monogram';
-        txt.innerText = 'LEVI';
-        b.appendChild(txt);
+        // Inserimento dell'immagine Levi.png con gestione dell'errore (fallback a dicitura classica LEVI)
+        const img = document.createElement('img');
+        img.src = 'Levi.png';
+        img.className = 'bubble-logo';
+        img.onerror = function() {
+          this.style.display = 'none';
+          const txt = document.createElement('div');
+          txt.className = 'bubble-monogram';
+          txt.innerText = 'LEVI';
+          this.parentElement.appendChild(txt);
+        };
+        b.appendChild(img);
         
         c.appendChild(b);
       }
@@ -2388,4 +2413,4 @@
     };
   </script>
 </body>
-  </html>
+</html>
