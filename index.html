@@ -94,7 +94,7 @@
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
 
-  <!-- Sfondo animato fluido delle bolle istituzionali con il logo Levi.png che ruota all'interno -->
+  <!-- Sfondo animato fluido delle bolle istituzionali con il logo levi.png che ruota all'interno -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
 
@@ -104,7 +104,7 @@
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden">
           <!-- Logo principale con fallback grafico avanzato in caso di errore di caricamento -->
-          <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>';" class="w-12 h-12 object-contain rounded-2xl">
+          <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>\';'" class="w-12 h-12 object-contain rounded-2xl">
         </div>
         <div>
           <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
@@ -223,7 +223,7 @@
             <!-- Avviso doppia prenotazione e differenti account -->
             <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-800 flex items-start gap-2.5 font-bold">
               <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
-              <span>Posso prenotare due eventi che non si sovrappongono nella stessa giornata? Sì, ma la doppia prenotazione deve essere eseguita con due account diversi.</span>
+              <span>Posso prenotare due eventi che non si sovrappongono nella stessa giornata? Sì, ma la doppia prenotazione deve essere eseguita con due account diversi (ossia con una differente e-mail del genitore).</span>
             </div>
 
             <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4 font-semibold text-xs text-slate-600">
@@ -262,6 +262,14 @@
               </div>
 
               <div class="text-right text-[11px] text-slate-500 font-bold">Posti totali da riservare in aula: <span id="lblTotalFormSeats" class="text-indigo-600 text-sm font-black">2</span></div>
+
+              <!-- Casella preferenza per colloquio con referenti inclusione -->
+              <div class="p-3 bg-violet-50 border border-violet-100 rounded-xl flex items-start gap-3">
+                <input type="checkbox" id="formInclusione" class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 mt-0.5 bg-white border-slate-300">
+                <label for="formInclusione" class="text-[10px] text-slate-700 leading-normal select-none cursor-pointer">
+                  <strong>Richiesta Colloquio Inclusione:</strong> Spunta questa casella se desideri richiedere un colloquio individuale con i docenti di sostegno e i referenti dell'Inclusione al termine delle presentazioni.
+                </label>
+              </div>
 
               <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
                 <input required type="checkbox" id="formPrivacy" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5 bg-white border-slate-300">
@@ -497,7 +505,16 @@
                 <span>Posso prenotare due eventi che non si sovrappongono nella stessa giornata?</span>
               </button>
               <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-indigo-100 bg-white/40 leading-relaxed font-semibold">
-                <p>Sì, ma la doppia prenotazione deve essere eseguita con due account diversi (indirizzi e-mail differenti) per evitare che il sistema sovrascriva o blocchi le prenotazioni sul medesimo nominativo.</p>
+                <p>Sì, ma la doppia prenotazione deve essere eseguita con due account diversi. <strong>Attenzione: per "altro account" si intende l'utilizzo di una differente e-mail del genitore</strong>, per evitare che il sistema sovrascriva o blocchi le prenotazioni sul medesimo indirizzo di posta elettronica.</p>
+              </div>
+            </div>
+
+            <div class="border border-violet-200 rounded-2xl bg-violet-50/50 overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-violet-950 flex justify-between items-center outline-none">
+                <span>Come posso richiedere un colloquio con i docenti di sostegno o i referenti dell'Inclusione?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-violet-100 bg-white/40 leading-relaxed font-semibold">
+                <p>Durante la compilazione del modulo di iscrizione all'Open Day, è sufficiente spuntare l'apposita casella <strong>"Richiesta Colloquio Inclusione"</strong>. Al termine della presentazione generale dell'offerta formativa, i docenti referenti dell'Istituto ti guideranno direttamente nello spazio dedicato ai colloqui individuali dell'area Inclusione.</p>
               </div>
             </div>
 
@@ -576,7 +593,7 @@
       <div id="adminTimersContainer" class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl hidden shadow-sm transition"></div>
 
       <!-- STATS GRID -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="adminStatsGrid">
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-4" id="adminStatsGrid">
         <div class="glass-card p-5 rounded-2xl border border-slate-200">
           <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Studenti Iscritti</span>
           <span class="text-2xl font-black text-slate-900" id="statTotalIscritti">0</span>
@@ -592,6 +609,10 @@
         <div class="glass-card p-5 rounded-2xl border border-slate-200">
           <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assenti Totali</span>
           <span class="text-2xl font-black text-amber-600" id="statTotalAssenti">0</span>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border border-violet-200 bg-violet-50/20">
+          <span class="text-[9px] font-bold text-violet-500 uppercase tracking-wider block">Richieste Colloquio</span>
+          <span class="text-2xl font-black text-violet-700" id="statTotalInclusione">0</span>
         </div>
       </div>
 
@@ -697,6 +718,7 @@
                 <th class="p-4">Studente / Provenienza</th>
                 <th class="p-4">E-mail Genitore</th>
                 <th class="p-4">Turno Selezionato</th>
+                <th class="p-4 text-center">Colloquio Inclusione</th>
                 <th class="p-4 text-center">Cambia Stato Alunno</th>
                 <th class="p-4 text-center">Invia Documenti (Stato Invio)</th>
                 <th class="p-4 text-right">Rimuovi</th>
@@ -1213,20 +1235,23 @@
       const entratiEl = document.getElementById('statTotalEntrati');
       const certificatiEl = document.getElementById('statTotalCertificati');
       const assentiEl = document.getElementById('statTotalAssenti');
+      const inclusioneEl = document.getElementById('statTotalInclusione');
 
-      if (!iscrittiEl || !entratiEl || !certificatiEl || !assentiEl) return;
+      if (!iscrittiEl || !entratiEl || !certificatiEl || !assentiEl || !inclusioneEl) return;
 
       if(state.registrations.length === 0) {
         iscrittiEl.innerText = "0";
         entratiEl.innerText = "0";
         certificatiEl.innerText = "0";
         assentiEl.innerText = "0";
+        inclusioneEl.innerText = "0";
         return;
       }
       iscrittiEl.innerText = state.registrations.length;
       entratiEl.innerText = state.registrations.filter(r => r.status === 'Ammesso').length;
       certificatiEl.innerText = state.registrations.filter(r => r.status === 'Concluso').length;
       assentiEl.innerText = state.registrations.filter(r => r.status === 'Assente').length;
+      inclusioneEl.innerText = state.registrations.filter(r => r.inclusione === true).length;
     }
 
     async function checkAndTriggerAutomaticReminders() {
@@ -1411,6 +1436,7 @@
       const nome = document.getElementById('formNome').value.trim();
       const provenienza = document.getElementById('formProvenienza').value.trim();
       const email = document.getElementById('formEmail').value.trim();
+      const inclusione = document.getElementById('formInclusione').checked;
       
       const numAlunni = parseInt(document.getElementById('formNumAlunni').value || 1);
       const numAccompagnatori = parseInt(document.getElementById('formNumAccompagnatori').value || 0);
@@ -1444,7 +1470,7 @@
         const regData = {
           code, cognome, nome, provenienza, email, totalPeople, numAlunni, numAccompagnatori,
           dateId: sid, studyPath: targetSession.studyPath, dateStr: `${targetSession.date} • ${targetSession.timeSlot}`,
-          timestamp: Date.now(), status: 'Iscritto'
+          timestamp: Date.now(), status: 'Iscritto', inclusione: inclusione
         };
 
         setLoaderState(50, "Generazione del pass d'ammissione PDF...");
@@ -1662,10 +1688,10 @@
       }
       
       let csv = "\ufeff"; // BOM per supportare lettere accentate in Excel
-      csv += "Codice;Cognome;Nome;Email;Provenienza;Partecipanti;Turno;Indirizzo;Stato Alunno\n";
+      csv += "Codice;Cognome;Nome;Email;Provenienza;Partecipanti;Turno;Indirizzo;Stato Alunno;Colloquio Inclusione\n";
       
       state.registrations.forEach(r => {
-        csv += `${r.code};${r.cognome.toUpperCase()};${r.nome.toUpperCase()};${r.email};${r.provenienza || 'Terza media'};${r.totalPeople};${r.dateStr};${r.studyPath};${r.status}\n`;
+        csv += `${r.code};${r.cognome.toUpperCase()};${r.nome.toUpperCase()};${r.email};${r.provenienza || 'Terza media'};${r.totalPeople};${r.dateStr};${r.studyPath};${r.status};${r.inclusione ? 'SI' : 'NO'}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1679,6 +1705,15 @@
     };
 
     // --- STREAMING_CHUNK: Logica di aggiornamento degli stati alunno e sincronizzatore ---
+
+    window.toggleInclusioneStatus = async (code, checked) => {
+      try {
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { inclusione: checked });
+        showToast("Stato colloquio Inclusione aggiornato", "success");
+      } catch(e) {
+        showToast("Errore nell'aggiornare la richiesta di colloquio.", "error");
+      }
+    };
 
     window.updateStudentStatus = async (code, nextStatus) => {
       const reg = state.registrations.find(x => x.code === code);
@@ -2253,7 +2288,7 @@
       const list = filterVal === 'all' ? state.registrations : state.registrations.filter(r => r.dateId === filterVal);
 
       if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic font-semibold">Nessun alunno registrato per questo turno.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400 italic font-semibold">Nessun alunno registrato per questo turno.</td></tr>`;
         mobileContainer.innerHTML = `<div class="p-6 text-center text-slate-400 italic font-semibold glass-card rounded-2xl">Nessun alunno registrato.</div>`;
         return;
       }
@@ -2264,6 +2299,8 @@
         else if (r.status === 'Concluso') badge = '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Concluso</span>';
         else if (r.status === 'Assente') badge = '<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Assente</span>';
 
+        const inclusioneBadge = r.inclusione ? '<span class="inline-flex mt-1 items-center gap-1 py-0.5 px-1.5 rounded bg-violet-100 text-violet-700 text-[9px] font-bold border border-violet-200">Colloquio Inclusione Richiesto</span>' : '';
+
         return `
           <tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs font-semibold text-slate-700">
             <td class="p-4">
@@ -2273,6 +2310,7 @@
             <td class="p-4">
               <strong class="text-slate-900 block text-sm">${r.cognome.toUpperCase()} ${r.nome.toUpperCase()}</strong>
               <span class="text-[10px] text-slate-400 font-semibold">Scuola: ${r.provenienza || 'Terza media'}</span>
+              ${inclusioneBadge}
             </td>
             <td class="p-4">
               <span class="block">${r.email}</span>
@@ -2281,6 +2319,9 @@
             <td class="p-4">
               <strong class="text-slate-600 block">${r.studyPath.substring(0, 25)}...</strong>
               <span class="text-[10px] text-slate-400 font-semibold block">${r.dateStr}</span>
+            </td>
+            <td class="p-4 text-center">
+              <input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="toggleInclusioneStatus('${r.code}', this.checked)" class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 bg-white border-slate-300">
             </td>
             <td class="p-4 text-center">
               <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-2 text-xs rounded-xl border border-slate-200 bg-white outline-none font-bold text-slate-700 shadow-sm focus:border-indigo-500">
@@ -2311,6 +2352,8 @@
         else if (r.status === 'Concluso') badge = '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Concluso</span>';
         else if (r.status === 'Assente') badge = '<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase">Assente</span>';
 
+        const inclusioneBadge = r.inclusione ? '<div class="mt-1"><span class="inline-flex items-center gap-1 py-0.5 px-1.5 rounded bg-violet-100 text-violet-700 text-[9px] font-bold border border-violet-200">Colloquio Inclusione Richiesto</span></div>' : '';
+
         return `
           <div class="glass-card p-5 rounded-2xl border border-slate-200 space-y-3 font-semibold text-xs shadow-sm text-slate-700">
             <div class="flex justify-between items-start">
@@ -2325,8 +2368,13 @@
               <p class="text-slate-500 text-[10px]">Scuola: ${r.provenienza || 'Terza media'}</p>
               <p class="text-slate-500 text-[10px]">Genitore: ${r.email} • Posti: ${r.totalPeople}</p>
               <p class="text-indigo-600 font-bold text-[10px]">${r.studyPath}</p>
+              ${inclusioneBadge}
             </div>
             <div class="pt-3 border-t border-slate-100 space-y-2">
+              <div class="flex items-center gap-2 justify-between">
+                <span class="text-[10px] text-slate-400">Colloquio Sostegno:</span>
+                <input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="toggleInclusioneStatus('${r.code}', this.checked)" class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 bg-white border-slate-300">
+              </div>
               <div class="flex items-center gap-2 justify-between">
                 <span class="text-[10px] text-slate-400">Imposta Stato:</span>
                 <select onchange="updateStudentStatus('${r.code}', this.value)" class="p-1.5 text-xs rounded-lg border border-slate-200 bg-white outline-none font-bold text-slate-700 shadow-sm">
@@ -2366,7 +2414,7 @@
             <strong class="text-slate-800">${d.date} • ${d.timeSlot}</strong>
             <span class="block text-[10px] text-slate-400 font-semibold">${d.studyPath.substring(0,35)}... (${getOccupiedSeats(d.id)}/${d.maxSeats} occupati)</span>
           </div>
-          <button onclick="handleDeleteDate('${d.id}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition border border-rose-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <button onclick="handleDeleteDate('${d.id}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-xl transition border border-rose-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       `).join('');
       try { lucide.createIcons(); } catch(e) {}
@@ -2413,4 +2461,4 @@
     };
   </script>
 </body>
-</html>
+  </html>
