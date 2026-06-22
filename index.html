@@ -97,13 +97,12 @@
   <!-- Sfondo animato fluido delle bolle istituzionali con il logo levi.png che ruota all'interno -->
   <div class="bubble-container" id="bubbleContainer"></div>
 
-
   <!-- INTERFACCIA: SITO PUBBLICO GENERALE -->
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden">
-          <!-- Logo principale con fallback grafico avanzato in caso di errore di caricamento -->
+          <!-- Logo principale con fallback grafico in caso di errore di caricamento -->
           <img src="levi.png" alt="Logo Primo Levi" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-md border-2 border-white/80\'>PL</div>\';'" class="w-12 h-12 object-contain rounded-2xl">
         </div>
         <div>
@@ -120,7 +119,7 @@
           <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Piani di Studio</span>
         </button>
         <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition">
-          <i data-lucide="search" class="w-4 h-4"></i><span>Recupera Pass</span>
+          <i data-lucide="search" class="w-4 h-4"></i><span>Recuperare Prenotazione</span>
         </button>
         <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition">
           <i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Iscrizione</span>
@@ -267,7 +266,7 @@
               <div class="p-3 bg-violet-50 border border-violet-100 rounded-xl flex items-start gap-3">
                 <input type="checkbox" id="formInclusione" class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 mt-0.5 bg-white border-slate-300">
                 <label for="formInclusione" class="text-[10px] text-slate-700 leading-normal select-none cursor-pointer">
-                  <strong>Richiesta Colloquio Inclusione:</strong> Spunta questa casella se desideri richiedere un colloquio individuale con i docenti di sostegno e i referenti dell'Inclusione al termine delle presentazioni.
+                  <strong>Richiesta Colloquio Inclusione:</strong> Spunta questa casella se desideri richiedere un colloquio individuale con i docenti di sostegno e i referenti dell'Inclusione al termine delle presentazioni d'indirizzo d'aula.
                 </label>
               </div>
 
@@ -375,29 +374,40 @@
 
           <!-- Testo Unico Integrato - Quadro Informativo Generale -->
           <div class="p-6 bg-gradient-to-br from-indigo-50 via-sky-50 to-white rounded-3xl border border-indigo-100 shadow-inner space-y-4">
-            <h4 class="text-indigo-950 font-black text-sm flex items-center gap-2">
+            <h4 class="text-indigo-950 font-black text-sm flex items-center gap-2 uppercase font-outfit">
               <i data-lucide="award" class="text-indigo-600"></i> IL PROFILO CULTURALE DEL PRIMO LEVI
             </h4>
             <p class="text-xs leading-relaxed text-slate-700">
-              L’Istituto Tecnico Statale con Liceo Scientifico delle Scienze Applicate <strong>"Primo Levi" di Seregno</strong> rappresenta un polo di eccellenza nel panorama scolastico della Brianza. Tutti i nostri percorsi sono progettati per fornire competenze solide, dinamiche e direttamente spendibili nel mondo accademico e professionale. Attraverso lo studio mirato delle lingue straniere (fino a tre lingue nel settore economico), l’uso intensivo dell'informatica applicata, le scienze sperimentali di laboratorio e l'analisi tecnica di flussi logistici, lo studente acquisisce una visione sistemica. Le materie di indirizzo caratterizzanti guidano la transizione tecnologica e i nuovi assetti del marketing globale, della gestione aziendale e dello sviluppo scientifico.
+              L’Istituto Tecnico Statale con Liceo Scientifico delle Scienze Applicate <strong>"Primo Levi" di Seregno</strong> rappresenta un polo di eccellenza nel panorama scolastico della Brianza. Tutti i nostri percorsi sono progettati per fornire competenze solide, dinamiche e direttamente spendibili nel mondo accademico e professionale. Attraverso lo studio delle scienze sperimentali di laboratorio, della programmazione informatica applicata, dello studio mirato delle lingue straniere nel settore economico e dell'analisi tecnica dei flussi logistici, lo studente acquisisce una visione sistemica completa. Le materie di indirizzo caratterizzanti guidano la transizione tecnologica e i nuovi assetti del marketing globale, della progettazione urbana e dello sviluppo scientifico.
             </p>
           </div>
 
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- LSA -->
-            <div class="glass-card p-6 rounded-3xl border-t-4 border-indigo-600 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
+          <!-- Griglia degli Indirizzi (LSA ed LSE uniti in LS) -->
+          <div class="grid md:grid-cols-2 gap-6">
+            
+            <!-- LS (UNIFICATO) -->
+            <div class="glass-card p-6 rounded-3xl border-t-4 border-indigo-600 flex flex-col justify-between shadow-md transition hover:-translate-y-1 md:col-span-2">
               <div class="space-y-3">
                 <div class="flex justify-between items-start">
-                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">LSA</h4>
+                  <h4 class="font-outfit font-extrabold text-slate-950 text-2xl leading-none">LS</h4>
                   <span class="text-[9px] font-black bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">LICEO</span>
                 </div>
-                <p class="text-xs font-bold text-indigo-600 uppercase">Liceo Scientifico delle Scienze Applicate</p>
-                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce il latino con l'Informatica specialistica e potenzia le ore di laboratorio di Scienze Sperimentali.</p>
-                  <p class="bg-indigo-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-indigo-100/30">
-                    <strong>Materie caratterizzanti:</strong> Informatica (Algoritmi, C++, Java e Web Dev), Matematica, Fisica Sperimentale, Chimica Generale e Organica, Biologia e Scienze della Terra.
+                <p class="text-xs font-bold text-indigo-600 uppercase">Liceo Scientifico (Opzione Scienze Applicate & Curvatura Economia)</p>
+                <div class="grid md:grid-cols-2 gap-4 text-[11px] text-slate-600 font-semibold leading-relaxed pt-2">
+                  <div class="space-y-2">
+                    <p class="text-xs font-black text-slate-900 border-b border-slate-100 pb-1 uppercase">Opzione Scienze Applicate</p>
+                    <p>Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce lo studio del latino con l'Informatica specialistica e potenzia le ore di laboratorio di Scienze Sperimentali (Chimica, Biologia e Scienze della Terra).</p>
+                  </div>
+                  <div class="space-y-2">
+                    <p class="text-xs font-black text-slate-900 border-b border-slate-100 pb-1 uppercase">Curvatura Economia</p>
+                    <p>Un percorso unico nel territorio che integra la rigorosa preparazione del liceo scientifico con lo studio strutturato dell'economia e della finanza, preparando gli studenti a decodificare i modelli economici globali contemporanei.</p>
+                  </div>
+                </div>
+                <div class="pt-2">
+                  <p class="bg-indigo-50/50 p-3 rounded-xl text-[10px] text-slate-700 border border-indigo-100/30 font-semibold">
+                    <strong>Materie caratterizzanti unificate:</strong> Informatica (Algoritmi, C++, Java e Sviluppo Web), Economia Politica ed Economia Aziendale, Matematica, Fisica Sperimentale, Chimica Generale e Organica, Biologia.
                   </p>
-                  <p><strong>Sbocchi:</strong> Facoltà universitarie di Ingegneria, Informatica, Medicina, Fisica, Matematica e impieghi in centri tecnologici e laboratori di ricerca.</p>
+                  <p class="text-[11px] text-slate-600 font-semibold mt-2"><strong>Sbocchi:</strong> Qualsiasi facoltà universitaria, con preferenza per Ingegneria, Informatica, Medicina, Fisica, Matematica, Economia e Management, Finanza quantitativa o carriere dirigenziali.</p>
                 </div>
               </div>
             </div>
@@ -411,11 +421,11 @@
                 </div>
                 <p class="text-xs font-bold text-emerald-600 uppercase">Relazioni Internazionali per il Marketing</p>
                 <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Sviluppa competenze nel campo della gestione aziendale, della comunicazione internazionale, della geopolitica e del commercio estero attraverso l'uso intensivo delle lingue straniere.</p>
+                  <p>Sviluppa competenze approfondite nel campo del business aziendale, della geopolitica e del commercio internazionale, attraverso l'apprendimento e l'uso pratico di tre lingue straniere.</p>
                   <p class="bg-emerald-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-emerald-100/30">
                     <strong>Materie caratterizzanti:</strong> Tre Lingue Straniere (Inglese, Francese, Spagnolo o Tedesco), Economia Aziendale e Geopolitica, Diritto Pubblico e Internazionale, Tecnologie di Comunicazione.
                   </p>
-                  <p><strong>Sbocchi:</strong> Lauree in Economia, Lingue e Mediazione Culturale, Giurisprudenza, Scienze Politiche; carriera in imprese import-export, uffici marketing, dogane e multinazionali.</p>
+                  <p><strong>Sbocchi:</strong> Lauree in Economia, Mediazione Linguistica, Scienze Politiche, Giurisprudenza; carriere in aziende di import-export, multinazionali e agenzie doganali.</p>
                 </div>
               </div>
             </div>
@@ -429,29 +439,11 @@
                 </div>
                 <p class="text-xs font-bold text-orange-600 uppercase">Logistica e Trasporti</p>
                 <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Risponde alla richiesta di professionisti capaci di governare il flusso delle merci e delle informazioni a livello intermodale (terra, aria, mare), gestendo flotte, terminal e supply chain.</p>
+                  <p>Risponde alla forte richiesta del territorio di manager capaci di governare il flusso delle merci e delle informazioni a livello intermodale (terra, aria, mare), coordinando flotte e magazzini.</p>
                   <p class="bg-orange-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-orange-100/30">
-                    <strong>Materie caratterizzanti:</strong> Logistica (pianificazione, stoccaggio e spedizioni), Scienze della Navigazione, Meccanica e Macchine, Diritto della Navigazione e del Lavoro, Inglese Tecnico.
+                    <strong>Materie caratterizzanti:</strong> Logistica (Pianificazione e stoccaggio), Scienze della Navigazione, Meccanica e Macchine, Diritto della Navigazione e del Lavoro, Inglese Tecnico.
                   </p>
-                  <p><strong>Sbocchi:</strong> Lauree in Ingegneria Gestionale, Economia dei Trasporti; ruoli di Supply Chain Manager, Spedizioniere Internazionale, controller e pianificatore di flotta in hub intermodali.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- SIA -->
-            <div class="glass-card p-6 rounded-3xl border-t-4 border-cyan-500 flex flex-col justify-between shadow-md transition hover:-translate-y-1">
-              <div class="space-y-3">
-                <div class="flex justify-between items-start">
-                  <h4 class="font-outfit font-extrabold text-slate-950 text-xl leading-none">SIA</h4>
-                  <span class="text-[9px] font-black bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded border border-cyan-200">TECNICO</span>
-                </div>
-                <p class="text-xs font-bold text-cyan-600 uppercase">Sistemi Informativi Aziendali</p>
-                <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Focalizzato sulla digitalizzazione dei processi di business. Unisce la gestione contabile e amministrativa delle imprese alla progettazione e allo sviluppo di software gestionale dedicato.</p>
-                  <p class="bg-cyan-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-cyan-100/30">
-                    <strong>Materie caratterizzanti:</strong> Informatica (Database SQL, PHP, HTML/CSS, Java), Economia Aziendale avanzata, Diritto Commerciale, Matematica Finanziaria, due Lingue Straniere.
-                  </p>
-                  <p><strong>Sbocchi:</strong> Lauree in Economia e Management, Informatica Gestionale; ruoli di Web Developer, Database Administrator, consulente ERP aziendale, contabile e programmatore software.</p>
+                  <p><strong>Sbocchi:</strong> Lauree in Ingegneria Gestionale, Economia dei Trasporti; ruoli di Supply Chain Planner, Spedizioniere Internazionale e Controller di magazzino.</p>
                 </div>
               </div>
             </div>
@@ -465,11 +457,11 @@
                 </div>
                 <p class="text-xs font-bold text-teal-600 uppercase">Costruzioni, Ambiente e Territorio</p>
                 <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Evoluzione del tradizionale Geometra. Integra la pianificazione urbanistica, la bioedilizia, la sicurezza in cantiere e la salvaguardia dell'ambiente con strumenti informatici CAD/BIM.</p>
+                  <p>Evoluzione del tradizionale Geometra. Integra la pianificazione urbanistica, la bioedilizia, l'efficientamento energetico degli edifici e la tutela del territorio con moderni applicativi CAD/BIM.</p>
                   <p class="bg-teal-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-teal-100/30">
-                    <strong>Materie caratterizzanti:</strong> Progettazione Costruzioni e Impianti, Topografia e Rilievi, Estimo e Pratiche Catastali, Geopedologia e Sicurezza sul Lavoro.
+                    <strong>Materie caratterizzanti:</strong> Progettazione Costruzioni e Impianti, Topografia e Rilievi GPS, Estimo, Geopedologia e Sicurezza nei Cantieri edili.
                   </p>
-                  <p><strong>Sbocchi:</strong> Lauree in Architettura, Ingegneria Civile o Ambientale; abilitazione alla libera professione di Geometra, perito immobiliare, esperto di acustica e certificatore energetico.</p>
+                  <p><strong>Sbocchi:</strong> Lauree in Architettura, Ingegneria Civile o Ambientale; abilitazione alla libera professione di Geometra, perito edile e certificatore energetico.</p>
                 </div>
               </div>
             </div>
@@ -483,11 +475,11 @@
                 </div>
                 <p class="text-xs font-bold text-fuchsia-600 uppercase">Sistema Moda</p>
                 <div class="space-y-2 text-[11px] text-slate-600 font-semibold leading-relaxed">
-                  <p>Una miscela unica di creatività e competenze tecniche. Gestisce l'intero ciclo di vita del prodotto moda: dal design iniziale alla chimica dei tessuti, fino alla logistica e alle strategie di marketing.</p>
+                  <p>Unione eccellente di creatività e competenze tecniche industriali. Gestisce l'intero ciclo di vita del prodotto moda: dal design di sfilata, alla chimica dei tessuti e al marketing.</p>
                   <p class="bg-fuchsia-50/50 p-2 rounded-xl text-[10px] text-slate-700 border border-fuchsia-100/30">
                     <strong>Materie caratterizzanti:</strong> Tecnologie dei Materiali e dei Processi Produttivi, Chimica Applicata e Nobilitazione, Ideazione Progettazione e Industrializzazione, Economia e Marketing Moda.
                   </p>
-                  <p><strong>Sbocchi:</strong> Istituti Superiori di Design (Marangoni, IED), Lauree in Design della Moda, Marketing; carriere come Fashion Designer, Modellista CAD, Textile Specialist e Brand Manager.</p>
+                  <p><strong>Sbocchi:</strong> Istituti Superiori di Design (Marangoni, IED), Lauree in Design della Moda, Marketing; carriere come Fashion Designer, Modellista CAD e Brand Specialist.</p>
                 </div>
               </div>
             </div>
@@ -514,7 +506,34 @@
                 <span>Come posso richiedere un colloquio con i docenti di sostegno o i referenti dell'Inclusione?</span>
               </button>
               <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-violet-100 bg-white/40 leading-relaxed font-semibold">
-                <p>Durante la compilazione del modulo di iscrizione all'Open Day, è sufficiente spuntare l'apposita casella <strong>"Richiesta Colloquio Inclusione"</strong>. Al termine della presentazione generale dell'offerta formativa, i docenti referenti dell'Istituto ti guideranno direttamente nello spazio dedicato ai colloqui individuali dell'area Inclusione.</p>
+                <p>Durante la compilazione del modulo di iscrizione all'Open Day, è sufficiente spuntare l'apposita casella <strong>"Richiesta Colloquio Inclusione"</strong>. Al termine della presentazione generale dell'offerta formativa d'aula, i docenti referenti d'istituto dell'area inclusione guideranno le famiglie direttamente negli spazi dedicati per il colloquio individuale.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Cosa dobbiamo fare se arriviamo in ritardo al turno dell'Open Day?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-slate-100 bg-white/40 leading-relaxed font-semibold">
+                <p>Non preoccupatevi. I docenti delegati all'accoglienza rimangono attivi all'ingresso per tutta la durata dell'evento. Vi basterà mostrare il QR code del vostro pass (o comunicare il nome dell'alunno) per effettuare l'accredito tardivo ed essere indirizzati nell'aula corretta.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>È disponibile un parcheggio auto riservato o pubblico nei pressi della scuola?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-slate-100 bg-white/40 leading-relaxed font-semibold">
+                <p>Sì, è presente un ampio parcheggio pubblico gratuito situato proprio di fronte all'ingresso principale dell'istituto in Via Briantina, oltre a vari posti auto adiacenti lungo la stessa via. Consigliamo di arrivare circa 10-15 minuti prima dell'inizio del turno per facilitare le operazioni di parcheggio e di accredito d'ingresso.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
+              <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
+                <span>Quanti accompagnatori possono venire insieme all'alunno?</span>
+              </button>
+              <div class="faq-content hidden p-5 pt-0 text-xs text-slate-700 border-t border-slate-100 bg-white/40 leading-relaxed font-semibold">
+                <p>Per ragioni di capienza delle aule e sicurezza d'istituto, consigliamo un massimo di <strong>2 accompagnatori</strong> (es. entrambi i genitori) per ciascun alunno. Vi preghiamo di inserire il numero esatto nel form di iscrizione per permettere il calcolo corretto e in tempo reale dei posti totali d'aula rimasti liberi.</p>
               </div>
             </div>
 
@@ -524,22 +543,22 @@
               </button>
               <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed space-y-2">
                 <p>Una volta selezionata la sessione d'aula desiderata, compila il modulo di iscrizione. Riceverai immediatamente un'e-mail di conferma contenente il tuo <b>Pass d'Ammissione Ufficiale</b> in formato PDF.</p>
-                <p>All'ingresso della scuola a Seregno, i docenti scansioneranno il QR code del tuo pass per registrare il tuo arrivo. Il tuo stato passerà automaticamente da <span class="font-bold text-indigo-600">Iscritto</span> ad <span class="font-bold text-sky-600">Ammesso</span> e riceverai un'e-mail istantanea di avvenuto check-in.</p>
+                <p>All'ingresso della scuola a Seregno, i docenti all'accoglienza scansioneranno il QR code del tuo pass per registrare il tuo arrivo. Il tuo stato passerà automaticamente da <span class="font-bold text-indigo-600">Iscritto</span> ad <span class="font-bold text-sky-600">Ammesso</span> e riceverai un'e-mail istantanea di avvenuto check-in d'ingresso.</p>
               </div>
             </div>
 
             <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
               <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
-                <span>Ho smarrito il mio Pass d'Ammissione. Come posso recuperarlo?</span>
+                <span>Ho smarrito la mia conferma. Come posso recuperarla?</span>
               </button>
               <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed">
-                <p>Niente panico! Puoi recuperare la tua prenotazione in qualsiasi momento cliccando sul tasto <b>"Recupera Pass"</b> nella barra di navigazione in alto. Inserisci il codice di prenotazione (es. <i>LEVI-1234</i>) oppure, se non lo ricordi, compila semplicemente il <b>Nome e Cognome dell'Alunno</b> per ricevere nuovamente il Pass d'Ammissione originale direttamente sulla tua e-mail.</p>
+                <p>Puoi recuperare la tua prenotazione in qualsiasi momento cliccando sul tasto <b>"Recuperare Prenotazione"</b> nella barra di navigazione in alto. Inserisci il codice di prenotazione (es. <i>LEVI-1234</i>) oppure, se non lo ricordi, compila semplicemente il <b>Nome e Cognome dell'Alunno</b> per ricevere nuovamente il Pass originale sulla tua e-mail.</p>
               </div>
             </div>
 
             <div class="border border-slate-200 rounded-2xl bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm transition-all duration-300">
               <button onclick="toggleFaq(this)" class="faq-trigger w-full p-5 text-left text-sm font-bold text-indigo-950 flex justify-between items-center outline-none">
-                <span>Cos'è la Pergamena d'Onore e l'attestato conclusivo? (Stato Concluso)</span>
+                <span>Cos'è la Pergamena d'Onore e l'attestato conclusivo?</span>
               </button>
               <div class="faq-content hidden p-5 pt-0 text-xs text-slate-600 border-t border-slate-100 bg-slate-50/50 leading-relaxed space-y-2">
                 <p>Al termine dell'evento o a conclusione dell'Open day, i docenti imposteranno il tuo stato su <span class="font-bold text-emerald-600">Concluso</span>.</p>
@@ -603,7 +622,7 @@
           <span class="text-2xl font-black text-blue-600" id="statTotalEntrati">0</span>
         </div>
         <div class="glass-card p-5 rounded-2xl border border-slate-200">
-          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Conclusi (Stage/Certificati)</span>
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Conclusi (Certificati)</span>
           <span class="text-2xl font-black text-emerald-600" id="statTotalCertificati">0</span>
         </div>
         <div class="glass-card p-5 rounded-2xl border border-slate-200">
@@ -616,11 +635,9 @@
         </div>
       </div>
 
-
       <!-- TAB 2: SCANNER DI ACCREDITO WEBCAM E COMPAGNON MOBILE -->
       <div id="tabLiveScanner" class="hidden grid md:grid-cols-2 gap-8">
         <div class="space-y-6">
-          <!-- NUOVO BOX: Collegamento Smartphone Esterno -->
           <div class="p-6 bg-gradient-to-br from-indigo-950 to-slate-900 border border-indigo-800/60 rounded-3xl text-slate-100 flex flex-col items-center gap-4 shadow-lg">
             <h4 class="font-black text-white font-outfit text-sm flex items-center gap-2">
               <i data-lucide="smartphone" class="text-sky-400 shrink-0"></i> 📱 COLLEGA SCANNER MOBILE ESTERNO
@@ -693,7 +710,6 @@
         </div>
       </div>
 
-
       <!-- TAB 1: REGISTRAZIONI STUDENTI -->
       <div id="tabRegistrations" class="space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -715,12 +731,12 @@
             <thead>
               <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
                 <th class="p-4">Codice & Stato</th>
-                <th class="p-4">Studente / Provenienza</th>
-                <th class="p-4">E-mail Genitore</th>
-                <th class="p-4">Turno Selezionato</th>
+                <th class="p-4">Alunno / Scuola</th>
+                <th class="p-4">Genitore & Posti</th>
+                <th class="p-4">Turno d'Incontro</th>
                 <th class="p-4 text-center">Colloquio Inclusione</th>
                 <th class="p-4 text-center">Cambia Stato Alunno</th>
-                <th class="p-4 text-center">Invia Documenti (Stato Invio)</th>
+                <th class="p-4 text-center">Invia Documenti</th>
                 <th class="p-4 text-right">Rimuovi</th>
               </tr>
             </thead>
@@ -753,11 +769,10 @@
               <label class="text-[10px] uppercase text-slate-500 font-black">Indirizzo di Studio *</label>
               <select required id="newStudyPath" class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 font-bold text-xs outline-none">
                 <option value="" disabled selected>-- Scegli Indirizzo --</option>
-                <option value="LSA - Liceo Scientifico Opzione Scienze Applicate">LSA - Liceo Scientifico Opzione Scienze Applicate</option>
+                <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
                 <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
                 <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
                 <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
-                <option value="SIA - Sistemi Informativi Aziendali">SIA - Sistemi Informativi Aziendali</option>
                 <option value="SISTEMA MODA - Produzione e Design">SISTEMA MODA - Produzione e Design</option>
               </select>
             </div>
@@ -783,7 +798,7 @@
                 <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Intervallo Invio Promemoria d'Istituto</label>
                 <div class="flex items-center gap-3">
                   <input type="number" id="reminderDaysInput" class="w-20 p-2 text-center rounded-lg border border-slate-200 bg-slate-50 text-slate-800 font-black text-lg outline-none" value="7">
-                  <span class="text-xs text-slate-500">Giorni di preavviso per reinviare il Pass d'Ammissione</span>
+                  <span class="text-xs text-slate-500">Giorni di preavviso per reinviare il Pass d'Ammissione/Prenotazione</span>
                 </div>
                 <button onclick="saveReminderDays()" class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm">Salva Intervallo</button>
               </div>
@@ -796,8 +811,6 @@
       </div>
     </section>
   </div>
-
-
 
   <!-- NUOVA INTERFACCIA COMPAGNON: MOBILE SCANNER CLIENT (Ottimizzato per Smartphone accoppiati) -->
   <div id="wrapperMobileScanner" class="hidden min-h-screen bg-slate-950 text-white flex flex-col relative z-50 overflow-hidden font-sans">
@@ -859,7 +872,7 @@
             <i data-lucide="x" class="w-10 h-10 text-white"></i>
           </div>
           <span class="text-[10px] uppercase font-black tracking-widest text-rose-400 mb-1 block">Rilevato Errore</span>
-          <h3 id="mobFlashErrorMsg" class="text-lg font-bold font-outfit text-white">CODICE NON REGISTRATO O INVALIDO</h3>
+          <h3 id="mobFlashErrorMsg" class="text-lg font-bold font-outfit text-white">CODICE NON REGISTRATO</h3>
         </div>
       </div>
 
@@ -885,15 +898,14 @@
 
   </div>
 
-
   <!-- MODALS DI SISTEMA -->
   <div id="recoveryModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md p-6 rounded-3xl relative border border-slate-200 space-y-4 text-slate-800">
       <button onclick="closeModal('recoveryModal')" class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-800 rounded-full bg-slate-100 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="text-center">
         <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 border border-indigo-100"><i data-lucide="search" class="w-5 h-5"></i></div>
-        <h3 class="text-lg font-bold text-slate-950 font-outfit">Recupera il tuo Pass di Ammissione</h3>
-        <p class="text-xs text-slate-500 mt-1 font-medium">Trova la prenotazione inserendo il codice unico o i dati dello studente.</p>
+        <h3 class="text-lg font-bold text-slate-950 font-outfit">Recuperare Prenotazione</h3>
+        <p class="text-xs text-slate-500 mt-1 font-medium">Trova la tua prenotazione d'aula inserendo il codice unico o i dati dello studente.</p>
       </div>
       <form onsubmit="handleRecovery(event)" class="space-y-3 font-semibold text-xs">
         <div class="space-y-1.5">
@@ -977,7 +989,7 @@
         <div>
           <h4 class="text-white font-black mb-3 font-outfit text-xs uppercase tracking-wider">ITSCG "Primo Levi"</h4>
           <p class="leading-relaxed">
-            Istituto Tecnico Statale con Liceo Scientifico Opzione Scienze Applicate d'eccellenza scolastica a Seregno.
+            Istituto Tecnico Statale con Liceo Scientifico d'eccellenza scolastica a Seregno.
           </p>
         </div>
         <div>
@@ -1002,15 +1014,12 @@
     </div>
   </footer>
 
-
   <!-- LOGICA COMPLETA DEL PORTALE E CONNESSIONI ENDPOINT -->
   <script type="module">
-    // --- STREAMING_CHUNK: Inizializzazione Firebase e configurazione di sistema... ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- CONFIG CONFIGURAZIONE FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDAQB-W-QTV1thVoCCifbdTFbpaYmAM4eQ",
       authDomain: "progetto-63fb3.firebaseapp.com",
@@ -1049,17 +1058,14 @@
 
     initBubbles();
 
-    // --- STREAMING_CHUNK: Disattivazione Sintesi Vocale e mantenimento toni acustici... ---
-    // Sintesi vocale Gemini e nativa disabilitate completamente per quietare l'aula d'ingresso su richiesta utente
     window.playGeminiTTS = async (text, voiceName = "Zephyr") => {
-      console.log("Sintesi vocale disabilitata per quiete istituzionale:", text);
+      console.log("Sintesi vocale disabilitata:", text);
     };
 
     function playNativeTTS(text) {
-      console.log("Lettura vocale nativa saltata:", text);
+      console.log("Lettura vocale nativa disabilitata:", text);
     }
 
-    // Sincronizzazione dell'area di amministrazione dei docenti
     window.syncAdminView = () => {
       renderAdminStats();
       window.renderRegistrations();
@@ -1100,13 +1106,11 @@
     window.openCancelModal = () => document.getElementById('cancelModal')?.classList.remove('hidden');
     window.closeModal = id => document.getElementById(id)?.classList.add('hidden');
 
-    // Gestione FAQ interattive
     window.toggleFaq = btn => {
       const parent = btn.parentElement;
       const content = parent.querySelector('.faq-content');
       const isExpanded = parent.classList.contains('faq-active');
       
-      // Chiudi tutte le altre FAQ
       document.querySelectorAll('#faqAccordion > div').forEach(item => {
         item.classList.remove('faq-active');
         item.querySelector('.faq-content').classList.add('hidden');
@@ -1278,8 +1282,6 @@
       }
     }
 
-    // --- STREAMING_CHUNK: Creazione PDF ed emissione pass con barcode ---
-
     function drawBarcode(docObj, code, x, y) {
       docObj.setFont("Courier", "bold"); docObj.setFontSize(10); docObj.setTextColor(0,0,0); docObj.text(code, x+25, y+22, {align:"center"}); docObj.setFillColor(0,0,0);
       let cx = x; for (let i=0; i<35; i++) { let w=(i%3===0)?1.4:(i%2===0)?0.8:0.4; let s=(i%4===0)?1.0:0.6; docObj.rect(cx, y, w, 15, 'F'); cx+=w+s; }
@@ -1424,8 +1426,6 @@
       document.getElementById('lblTotalFormSeats').innerText = a + acc;
     };
 
-    // --- STREAMING_CHUNK: Registrazione prenotazioni ed emissione email/PDF ---
-
     window.handleBookingSubmit = async (e) => {
       e.preventDefault();
       const sid = document.getElementById('formEventId').value;
@@ -1473,7 +1473,7 @@
           timestamp: Date.now(), status: 'Iscritto', inclusione: inclusione
         };
 
-        setLoaderState(50, "Generazione del pass d'ammissione PDF...");
+        setLoaderState(50, "Generazione del pass d'ammissione/prenotazione PDF...");
         const pdf = await generateReceiptPDF(regData, code, 'entrata');
 
         setLoaderState(80, "Invio immediato e-mail di conferma...");
@@ -1504,7 +1504,6 @@
 
         setLoaderState(100, "Completato!");
         
-        // Annuncio di successo (feedback sonoro semplice)
         playAudioTone(true);
 
         setTimeout(() => {
@@ -1549,8 +1548,6 @@
       return new Blob(byteArrays, {type: contentType});
     }
 
-    // --- STREAMING_CHUNK: Gestione flussi recupero ed eliminazione iscrizioni ---
-
     window.handleRecovery = async (e) => {
       e.preventDefault();
       const codeTerm = document.getElementById('recoveryCode').value.trim();
@@ -1578,7 +1575,7 @@
           method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, codice_prenotazione: reg.code, pdfBase64: pdf, type: 'recupero' })
         });
-        showToast("Pass d'ammissione rinviato immediatamente via e-mail!", "success");
+        showToast("Dati della prenotazione inviati con successo all'e-mail!", "success");
         closeModal('recoveryModal');
       } catch(err) { showToast("Errore di rete.", "error"); }
       btn.disabled = false;
@@ -1608,7 +1605,7 @@
           await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
           state.registrations = state.registrations.filter(r => r.code !== reg.code);
           renderHomeDates();
-          showToast("Prenotazione annullata. Posti d'aula rilasciati e mail di cancellazione inviata.", "success");
+          showToast("Prenotazione annullata. Posti d'aula rilasciati.", "success");
           closeModal('cancelModal');
         } catch (err) { showToast("Impossibile annullare.", "error"); }
       });
@@ -1622,8 +1619,6 @@
         document.getElementById('adminPasswordInput').value = '';
         navigateTo('admin');
         showToast("Dashboard docenti sbloccata.", "success");
-        
-        // Inizializza il QR Code per il collegamento del Mobile Companion
         initCompanionScannerQR();
       } else {
         showToast("Chiave d'accesso d'istituto errata.", "error");
@@ -1687,7 +1682,7 @@
         return;
       }
       
-      let csv = "\ufeff"; // BOM per supportare lettere accentate in Excel
+      let csv = "\ufeff"; 
       csv += "Codice;Cognome;Nome;Email;Provenienza;Partecipanti;Turno;Indirizzo;Stato Alunno;Colloquio Inclusione\n";
       
       state.registrations.forEach(r => {
@@ -1703,8 +1698,6 @@
       document.body.removeChild(link);
       showToast("File Excel/CSV scaricato correttamente!", "success");
     };
-
-    // --- STREAMING_CHUNK: Logica di aggiornamento degli stati alunno e sincronizzatore ---
 
     window.toggleInclusioneStatus = async (code, checked) => {
       try {
@@ -1722,7 +1715,6 @@
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { status: nextStatus });
         showToast(`Stato aggiornato: ${nextStatus.toUpperCase()}`, "success");
         
-        // Gestione degli indicatori visivi di stato dell'invio
         if (nextStatus === 'Ammesso') {
           playAudioTone(true);
           updateButtonUI(code, 'btn-att-', 'Invio in corso...');
@@ -1768,7 +1760,6 @@
       }
     }
 
-    // Re-invio manuale documenti
     window.triggerManualEntryPass = async code => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
@@ -1848,7 +1839,6 @@
       if(code) processScannedCode(code);
     };
 
-    // --- ELABORAZIONE SCANNER MANUALE/WEBCAM ---
     async function processScannedCode(scannedCode) {
       const reg = state.registrations.find(x => x.code === scannedCode.toUpperCase());
       const resSuccess = document.getElementById('scanResultSuccess');
@@ -1912,7 +1902,6 @@
       }
     });
 
-    // --- ACCREDITO WEBCAM DESKTOP (BACKUP) ---
     window.toggleWebcamScanner = async () => {
       const video = document.getElementById('scannerVideo');
       const placeholder = document.getElementById('scannerPlaceholder');
@@ -2001,16 +1990,11 @@
       } catch(e) { select.innerHTML = `<option value="">Nessuna camera rilevata</option>`; }
     }
 
-
-    // --- STREAMING_CHUNK: Logiche per il collegamento e l'accoppiamento del Mobile Companion Scanner ---
-
-    // Generazione dinamica del QR d'accoppiamento per il Companion Mobile Scanner
     function initCompanionScannerQR() {
       const canvas = document.getElementById('companionScannerQrCanvas');
       const urlText = document.getElementById('companionScannerUrlText');
       if (!canvas) return;
 
-      // Genera l'URL di scansione includendo un parametro di routing speciale "?mode=scanner"
       const currentUrl = window.location.href.split('?')[0];
       const companionUrl = currentUrl + '?mode=scanner';
       
@@ -2023,39 +2007,32 @@
       });
     }
 
-    // Routing automatico se la pagina viene caricata con il parametro di scansione ?mode=scanner
     function checkRoutingMode() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('mode') === 'scanner') {
-        // Disabilita l'interfaccia portale e mostra esclusivamente lo scanner mobile
         document.getElementById('wrapperMainSite').classList.add('hidden');
         document.getElementById('mainFooter').classList.add('hidden');
         document.getElementById('wrapperMobileScanner').classList.remove('hidden');
-        document.body.style.background = '#020617'; // Colore scuro adatto allo scanner
+        document.body.style.background = '#020617'; 
         
-        // Avvia immediatamente la fotocamera mobile
         startMobileScannerEngine();
       }
     }
 
-    // Uscita dalla modalità scanner mobile e ritorno al portale
     window.exitMobileScannerMode = () => {
       stopMobileScannerEngine();
       window.location.href = window.location.href.split('?')[0];
     };
 
-    // --- ENGINE SCANNER COMPAGNON PER DISPOSITIVI MOBILI ---
     async function startMobileScannerEngine() {
       state.isMobActive = true;
       state.mobCamIdx = 0;
       
       try {
-        // Chiedi autorizzazione d'accesso ai sensori ottici
         await navigator.mediaDevices.getUserMedia({ video: true });
         const devices = await navigator.mediaDevices.enumerateDevices();
         state.mobDevices = devices.filter(d => d.kind === 'videoinput');
         
-        // Cerca di impostare la retrocamera (environment) di default se presente
         const backCamIdx = state.mobDevices.findIndex(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('retro') || d.label.toLowerCase().includes('environment'));
         if (backCamIdx !== -1) {
           state.mobCamIdx = backCamIdx;
@@ -2088,7 +2065,6 @@
         document.getElementById('btnMobCameraPower').innerHTML = `<i data-lucide="power" class="w-4 h-4"></i><span>Camera Off</span>`;
         try { lucide.createIcons(); } catch(e) {}
         
-        // Avvia l'analisi dei frame in loop
         requestAnimationFrame(tickMobileScannerLoop);
       } catch(e) {
         showToast("Errore di avvio ottico.", "error");
@@ -2097,14 +2073,12 @@
 
     window.toggleMobCameraPower = () => {
       if (state.mobStream) {
-        // Spegni camera
         state.mobStream.getTracks().forEach(t => t.stop());
         state.mobStream = null;
         document.getElementById('btnMobCameraPower').innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Camera On</span>`;
         try { lucide.createIcons(); } catch(e) {}
         showToast("Fotocamera spenta.", "info");
       } else {
-        // Riaccendi camera
         startMobStream();
       }
     };
@@ -2119,7 +2093,6 @@
       showToast("Cambio fotocamera in corso...", "success");
     };
 
-    // Analizzatore in tempo reale con jsQR per smartphone
     function tickMobileScannerLoop() {
       if (!state.isMobActive || !state.mobStream) return;
 
@@ -2151,53 +2124,41 @@
       }
     };
 
-    // --- STREAMING_CHUNK: Elaborazione dell'accredito istantaneo da mobile e feedback grafico ---
-
-    // Elaborazione rapida del codice scansionato da smartphone
     async function processMobileScannedCode(code) {
-      if (state.isMobProcessing) return; // Evita scansioni multiple consecutive
+      if (state.isMobProcessing) return; 
       state.isMobProcessing = true;
 
-      // Feedback vibrazione tattile se supportato sul browser mobile
       if ('vibrate' in navigator) {
         try { navigator.vibrate(100); } catch(e) {}
       }
 
-      // Ricerca dell'alunno iscritto direttamente in memoria locale / Cloud
       const reg = state.registrations.find(x => x.code === code.toUpperCase());
 
       if (!reg) {
-        // Mostra flash di ERRORE rosso sul cellulare
         playAudioTone(false);
         const flashError = document.getElementById('mobFlashError');
         flashError.className = "absolute inset-0 bg-rose-950/95 flex flex-col items-center justify-center p-6 text-center transition-all duration-300 transform scale-100 opacity-100 pointer-events-auto z-30 animate-shake";
         
         setTimeout(() => {
           flashError.className = "absolute inset-0 bg-rose-950/95 flex flex-col items-center justify-center p-6 text-center transition-all duration-300 transform scale-95 opacity-0 pointer-events-none z-30";
-          // Ripristina l'acquisizione dello scanner ("va avanti avanti")
           setTimeout(() => { state.isMobProcessing = false; }, 800);
         }, 1800);
         return;
       }
 
-      // Codice valido rilevato!
       playAudioTone(true);
       
-      // Compila l'overlay di successo con i dati estratti dal biglietto
       document.getElementById('mobFlashSuccessName').innerText = `${reg.cognome.toUpperCase()} ${reg.nome.toUpperCase()}`;
       document.getElementById('mobFlashSuccessPath').innerText = reg.studyPath;
       document.getElementById('mobFlashSuccessCode').innerText = `CODICE PRENOTAZIONE: ${reg.code}`;
 
-      // Mostra flash di SUCCESSO verde sul cellulare
       const flashSuccess = document.getElementById('mobFlashSuccess');
       flashSuccess.className = "absolute inset-0 bg-emerald-950/95 flex flex-col items-center justify-center p-6 text-center transition-all duration-300 transform scale-100 opacity-100 pointer-events-auto z-30";
 
-      // Esegui la scrittura diretta in Firestore ad alta priorità
       if (reg.status !== 'Ammesso') {
         try {
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { status: 'Ammesso' });
           
-          // Esegui trigger asincrono per l'invio dell'email d'ingresso alla famiglia (Google Script)
           fetch(ATTESTATO_ENTRATA_URL, {
             method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
             body: JSON.stringify({ email: reg.email, nome: reg.nome, cognome: reg.cognome, type: 'accredito', studyPath: reg.studyPath, code: reg.code, dateStr: reg.dateStr })
@@ -2208,13 +2169,13 @@
         }
       }
 
-      // Mantieni il feedback verde a schermo per 1.5 secondi prima di sbloccare lo scanner
       setTimeout(() => {
         flashSuccess.className = "absolute inset-0 bg-emerald-950/95 flex flex-col items-center justify-center p-6 text-center transition-all duration-300 transform scale-95 opacity-0 pointer-events-none z-30";
-        // Rilascia il blocco per procedere istantaneamente con le prossime scansioni!
         setTimeout(() => { state.isMobProcessing = false; }, 800);
       }, 1500);
     }
+
+    stopMobileScannerEngine();
 
     function stopMobileScannerEngine() {
       state.isMobActive = false;
@@ -2223,9 +2184,6 @@
         state.mobStream = null;
       }
     }
-
-
-    // --- STREAMING_CHUNK: Funzioni di renderizzazione tabelle e griglie d'aula ---
 
     function renderHomeDates() {
       const container = document.getElementById('groupedDatesGrid');
@@ -2372,7 +2330,7 @@
             </div>
             <div class="pt-3 border-t border-slate-100 space-y-2">
               <div class="flex items-center gap-2 justify-between">
-                <span class="text-[10px] text-slate-400">Colloquio Sostegno:</span>
+                <span class="text-[10px] text-slate-400">Colloquio Inclusione:</span>
                 <input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="toggleInclusioneStatus('${r.code}', this.checked)" class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 bg-white border-slate-300">
               </div>
               <div class="flex items-center gap-2 justify-between">
@@ -2420,7 +2378,6 @@
       try { lucide.createIcons(); } catch(e) {}
     }
 
-    // --- STREAMING_CHUNK: Creazione e inizializzazione delle bolle con logo levi.png rotante... ---
     function initBubbles() {
       const c = document.getElementById('bubbleContainer');
       if(!c) return;
@@ -2437,7 +2394,6 @@
         b.style.setProperty('--moveY', `${Math.random() * 120 - 60}px`);
         b.style.setProperty('--speed', `${Math.random() * 12 + 12}s`);
         
-        // Inserimento dell'immagine levi.png con gestione dell'errore (fallback a dicitura classica LEVI)
         const img = document.createElement('img');
         img.src = 'levi.png';
         img.className = 'bubble-logo';
@@ -2461,4 +2417,4 @@
     };
   </script>
 </body>
-  </html>
+</html>
