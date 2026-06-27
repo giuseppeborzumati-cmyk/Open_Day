@@ -559,17 +559,17 @@
       <div id="tabSettings" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          <!-- Sotto-box: Configurazione Timer Promemoria e Reset Database -->
+          <!-- Sotto-box: Configurazione Timer promemoria e Reset Database -->
           <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-lg space-y-5">
             <h4 class="font-outfit font-black text-indigo-950 text-lg flex items-center gap-2">
               <i data-lucide="settings" class="text-indigo-600"></i> Impostazioni Generali
             </h4>
             
             <div class="space-y-2 border-b pb-4">
-              <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block">Frequenza Giorni Promemoria</label>
+              <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block">Frequenza Giorni promemoria</label>
               <div class="flex gap-2">
-                <input type="number" id="settingsPromemoriaDays" min="1" max="15" value="7" class="w-20 p-2 border rounded-xl font-bold text-center">
-                <button onclick="savePromemoriaSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Salva Configurazione</button>
+                <input type="number" id="settingspromemoriaDays" min="1" max="15" value="7" class="w-20 p-2 border rounded-xl font-bold text-center">
+                <button onclick="savepromemoriaSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Salva Configurazione</button>
               </div>
               <span class="text-[10px] text-slate-400 font-bold block">Specifica quanti giorni prima del turno d'aula inviare la mail promemoria automatica.</span>
             </div>
@@ -957,8 +957,8 @@
 
       // Carica impostazioni timer
       getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria')).then(docSnap => {
-        if (docSnap.exists() && document.getElementById('settingsPromemoriaDays')) {
-          document.getElementById('settingsPromemoriaDays').value = docSnap.data().days || 7;
+        if (docSnap.exists() && document.getElementById('settingspromemoriaDays')) {
+          document.getElementById('settingspromemoriaDays').value = docSnap.data().days || 7;
         }
       });
     }
@@ -1154,7 +1154,7 @@
       } catch(e) { showToast("Errore d'invio.", "error"); }
     };
 
-    window.triggerManualPromemoria = async code => {
+    window.triggerManualpromemoria = async code => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
       showToast("Invio promemoria in corso...", "info");
@@ -1168,7 +1168,7 @@
           })
         });
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { promemoriaSentDate: sentDate });
-        showToast("Promemoria spedito con successo!", "success");
+        showToast("promemoria spedito con successo!", "success");
       } catch(e) { showToast("Errore d'invio.", "error"); }
     };
 
@@ -1304,8 +1304,8 @@
     };
 
     // SALVA IMPOSTAZIONI GIORNI PROMEMORIA
-    window.savePromemoriaSettings = async () => {
-      const days = parseInt(document.getElementById('settingsPromemoriaDays').value || 7);
+    window.savepromemoriaSettings = async () => {
+      const days = parseInt(document.getElementById('settingspromemoriaDays').value || 7);
       try {
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria'), { days: days });
         showToast("Impostazioni promemoria salvate con successo!", "success");
@@ -1656,8 +1656,8 @@
                   <span>1. Invia Pass</span>
                   <span class="text-[8px] text-slate-400 block ml-1 font-mono">${r.passSentDate || 'Mai'}</span>
                 </button>
-                <button onclick="triggerManualPromemoria('${r.code}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded text-[9px] font-black uppercase border flex justify-between items-center">
-                  <span>2. Invia Promemoria</span>
+                <button onclick="triggerManualpromemoria('${r.code}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded text-[9px] font-black uppercase border flex justify-between items-center">
+                  <span>2. Invia promemoria</span>
                   <span class="text-[8px] text-slate-400 block ml-1 font-mono">${r.promemoriaSentDate || 'Mai'}</span>
                 </button>
                 <button onclick="triggerManualPresenza('${r.code}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded text-[9px] font-black uppercase border flex justify-between items-center">
@@ -1695,7 +1695,7 @@
           </div>
           <div class="pt-3 border-t border-slate-100 flex flex-col gap-1">
             <button onclick="triggerManualEntryPass('${r.code}')" class="w-full p-2 bg-indigo-50 text-indigo-700 rounded text-[9px] font-black uppercase border flex justify-between"><span>1. Invia Pass</span><span class="font-mono text-[8px]">${r.passSentDate || 'Mai'}</span></button>
-            <button onclick="triggerManualPromemoria('${r.code}')" class="w-full p-2 bg-amber-50 text-amber-700 rounded text-[9px] font-black uppercase border flex justify-between"><span>2. Invia Promemoria</span><span class="font-mono text-[8px]">${r.promemoriaSentDate || 'Mai'}</span></button>
+            <button onclick="triggerManualpromemoria('${r.code}')" class="w-full p-2 bg-amber-50 text-amber-700 rounded text-[9px] font-black uppercase border flex justify-between"><span>2. Invia promemoria</span><span class="font-mono text-[8px]">${r.promemoriaSentDate || 'Mai'}</span></button>
             <button onclick="triggerManualPresenza('${r.code}')" class="w-full p-2 bg-emerald-50 text-emerald-700 rounded text-[9px] font-black uppercase border flex justify-between"><span>3. Invia Presenza</span><span class="font-mono text-[8px]">${r.presenzaSentDate || 'Mai'}</span></button>
             <button onclick="triggerManualPergamena('${r.code}')" class="w-full p-2 bg-violet-50 text-violet-700 rounded text-[9px] font-black uppercase border flex justify-between"><span>4. Invia Pergamena</span><span class="font-mono text-[8px]">${r.pergamenaSentDate || 'Mai'}</span></button>
           </div>
