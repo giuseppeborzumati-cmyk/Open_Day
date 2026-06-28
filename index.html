@@ -14,7 +14,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-  <!-- Libreria Grafici Statistiche -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -51,7 +50,6 @@
   <div class="bubble-container" id="bubbleContainer"></div>
 
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
-    <!-- NAvigation -->
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="window.navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden p-1">
@@ -419,7 +417,7 @@
               </div>
               <div class="space-y-1.5">
                 <label class="text-[10px] uppercase font-bold text-slate-500">Percorso di Studio Abbinato *</label>
-                <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold">
+                <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold text-slate-700">
                   <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
                   <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
                   <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
@@ -437,7 +435,7 @@
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs font-semibold">
               <thead>
-                <tr class="bg-slate-100 text-slate-500 border-b uppercase tracking-wider"><th class="p-3">Data</th><th class="p-3">Orario</th><th class="p-3">Indirizzo</th><th class="p-3">Aula</th><th class="p-3 text-center">Posti Occupati</th><th class="p-3 text-right">Rimuovi</th></tr>
+                <tr class="bg-slate-100 text-slate-500 border-b uppercase tracking-wider"><th class="p-3">Data</th><th class="p-3">Orario</th><th class="p-3">Indirizzo</th><th class="p-3">Aula</th><th class="p-3 text-center">Posti Occupati</th><th class="p-3 text-right">Modifica</th></tr>
               </thead>
               <tbody id="adminDatesTableBody"></tbody>
             </table>
@@ -539,6 +537,53 @@
     <p class="text-slate-400 text-xs text-center mt-6 max-w-[280px] font-bold leading-relaxed">Punta il QR Code. La lettura avverrà in automatico. Il sistema blocca doppie letture per 4 secondi.</p>
   </div>
 
+  <!-- MODALS EDIT ISCRIZIONE / TURNO -->
+  <div id="editRegModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl bg-white">
+      <button onclick="window.closeModal('editRegModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <h3 class="text-xl font-black text-indigo-950 font-outfit mb-4">Modifica Iscritto</h3>
+      <form onsubmit="window.saveEditReg(event)" class="space-y-4 font-semibold text-xs text-slate-600">
+        <input type="hidden" id="editRegCode">
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Cognome</label><input required type="text" id="editRegCognome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome</label><input required type="text" id="editRegNome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        </div>
+        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Email</label><input required type="email" id="editRegEmail" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Totali</label><input required type="number" min="1" id="editRegPosti" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-md mt-2 uppercase tracking-widest">Salva Modifiche</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="editDateModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl bg-white">
+      <button onclick="window.closeModal('editDateModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <h3 class="text-xl font-black text-indigo-950 font-outfit mb-4">Modifica Turno</h3>
+      <form onsubmit="window.saveEditDate(event)" class="space-y-4 font-semibold text-xs text-slate-600">
+        <input type="hidden" id="editDateId">
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Data</label><input required type="date" id="editDateValue" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Orario</label><input required type="text" id="editDateTime" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Aula</label><input required type="text" id="editDateAula" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Max</label><input required type="number" min="1" id="editDateSeats" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Indirizzo</label>
+          <select required id="editDatePath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold text-slate-700">
+            <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
+            <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
+            <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
+            <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
+            <option value="MODA - Sistema Moda">MODA - Sistema Moda</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-md mt-2 uppercase tracking-widest">Aggiorna Turno</button>
+      </form>
+    </div>
+  </div>
+
   <!-- MODALS RECUPERO/ANNULLAMENTO -->
   <div id="recoveryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div id="recoveryModalFormView" class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl">
@@ -605,7 +650,7 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-    // Endpoints
+    // Endpoints Google Script Ottimizzati
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx934SuTzxYNzb82Tn9_kwPfTbAQFBQv5kGoqtIBP1GAlPdnICUAG2tFSYAnKhmf1P6Ow/exec"; 
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec"; 
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbxbNQs3Hk6aeDaZHeJXN-W_sN6xPcle3vXg1fwvufiEWEJmGcpOZG90EfQm1IYAbdnT_A/exec"; 
@@ -614,11 +659,14 @@
     let state = { user: null, currentView: 'home', isAdminAuthed: false, dates: [], registrations: [], currentBooking: null, devices: [] };
     let chartIndirizziInstance = null;
     let chartStatoInstance = null;
+    let myIpAddress = "IP Nascosto";
+
+    fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{ myIpAddress = d.ip; }).catch(e=>{});
 
     const getDeviceId = () => {
       let id = localStorage.getItem('levi_scanner_device_id');
       if(!id) { id = 'DISP-' + Math.floor(Math.random()*90000+10000); localStorage.setItem('levi_scanner_device_id', id); }
-      return id;
+      return id + ' (' + myIpAddress + ')';
     };
 
     function showToast(msg, type='success') {
@@ -633,7 +681,9 @@
     window.showToast = showToast;
 
     function navigateTo(t) {
+      state.currentView = t; 
       ['sectionHome','sectionBooking','sectionConfirmation','sectionLogin','sectionAdmin'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+      
       if (t === 'home') document.getElementById('sectionHome').classList.remove('hidden'); 
       else if (t === 'booking') document.getElementById('sectionBooking').classList.remove('hidden');
       else if (t === 'confirmation') document.getElementById('sectionConfirmation').classList.remove('hidden');
@@ -668,12 +718,12 @@
     }
 
     const defaultDates = [
-      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)", luogo: "Via Briantina 68, Seregno" },
-      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)", luogo: "Via Briantina 68, Seregno" },
-      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)", luogo: "Via Briantina 68, Seregno" },
-      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)", luogo: "Via Briantina 68, Seregno" },
-      { id: "date-5", date: "2026-12-14", timeSlot: "09:00 - 11:00", aula: "Laboratori Sede", maxSeats: 100, studyPath: "LOG - Logistica e Trasporti", luogo: "Via Briantina 68, Seregno" },
-      { id: "date-6", date: "2026-12-14", timeSlot: "11:30 - 13:30", aula: "Laboratori Sede", maxSeats: 100, studyPath: "CAT - Costruzioni, Ambiente e Territorio", luogo: "Via Briantina 68, Seregno" }
+      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
+      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
+      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
+      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
+      { id: "date-5", date: "2026-12-14", timeSlot: "09:00 - 11:00", aula: "Laboratori Sede", maxSeats: 100, studyPath: "LOG - Logistica e Trasporti" },
+      { id: "date-6", date: "2026-12-14", timeSlot: "11:30 - 13:30", aula: "Laboratori Sede", maxSeats: 100, studyPath: "CAT - Costruzioni, Ambiente e Territorio" }
     ];
 
     function setupRealtimeListeners() {
@@ -692,7 +742,7 @@
         state.registrations = []; 
         s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); 
         window.renderHomeDates(); 
-        if (state.currentView === 'admin') { window.renderRegistrations(); window.updateStatistics(); }
+        if (state.currentView === 'admin') { window.renderRegistrations(); window.updateStatistics(); window.renderAdminDatesList(); }
       });
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'scanners'), s => {
         state.devices = [];
@@ -768,14 +818,13 @@
       let totalInclusione = 0;
 
       state.registrations.forEach(r => {
-         const p = r.studyPath.split(' - ')[0] || r.studyPath; // Prende solo la sigla per il grafico
+         const p = r.studyPath.split(' - ')[0] || r.studyPath; 
          pathsCount[p] = (pathsCount[p] || 0) + parseInt(r.totalPeople || 1);
          if(statusCount[r.status] !== undefined) statusCount[r.status]++;
          totalPeople += parseInt(r.totalPeople || 1);
          if(r.inclusione) totalInclusione++;
       });
 
-      // Update Top Metrics
       const iscrittiEl = document.getElementById('statTotalIscritti');
       if (iscrittiEl) {
         iscrittiEl.innerText = state.registrations.length;
@@ -785,7 +834,6 @@
         document.getElementById('statTotalInclusione').innerText = totalInclusione;
       }
 
-      // Update Descriptive Texts
       let maxPath = "-"; let maxVal = 0;
       for (const [p, v] of Object.entries(pathsCount)) { if (v > maxVal) { maxVal = v; maxPath = p; } }
       const totalRegistrations = state.registrations.length;
@@ -798,7 +846,6 @@
       const txtPartecipazione = document.getElementById('statsTextPartecipazione');
       if(txtPartecipazione) txtPartecipazione.innerHTML = `Tasso di affluenza reale in sede del <strong>${tassoPresenza}%</strong>. Sono stati erogati ad oggi <strong>${statusCount['Concluso']}</strong> certificati.`;
 
-      // Update Charts
       if(chartIndirizziInstance) chartIndirizziInstance.destroy();
       chartIndirizziInstance = new Chart(ctxIndirizzi, {
         type: 'doughnut',
@@ -838,54 +885,6 @@
       if(percent === 100) setTimeout(()=>c.classList.add('hidden'), 1000);
     }
 
-    window.handleBookingSubmit = async (e) => {
-      e.preventDefault();
-      const targetSession = state.dates.find(x => x.id === document.getElementById('formEventId').value);
-      const submitBtn = document.getElementById('btnSubmitBooking');
-      submitBtn.disabled = true;
-      setProgress(0, "Inizio registrazione...");
-
-      try {
-        const code = `LEVI-${Math.floor(1000 + Math.random()*9000)}`;
-        const regData = {
-          code, cognome: document.getElementById('formCognome').value.trim(), nome: document.getElementById('formNome').value.trim(), 
-          provenienza: document.getElementById('formProvenienza').value.trim(), email: document.getElementById('formEmail').value.trim(), 
-          totalPeople: parseInt(document.getElementById('formNumAlunni').value) + parseInt(document.getElementById('formNumAccompagnatori').value), 
-          dateId: targetSession.id, studyPath: targetSession.studyPath, dateStr: `${new Date(targetSession.date).toLocaleDateString('it-IT')} • ${targetSession.timeSlot}`,
-          status: 'Iscritto', inclusione: document.getElementById('formInclusione').checked, passSentDate: new Date().toLocaleString('it-IT')
-        };
-        state.currentBooking = regData;
-
-        setProgress(40, "Salvataggio Dati...");
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
-
-        setProgress(70, "Invio Notifica E-mail...");
-        fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...regData, type: 'pass' }) });
-        
-        setProgress(100, "Completato!");
-
-        document.getElementById('ticketCode').innerText = code;
-        document.getElementById('ticketStudent').innerText = `${regData.cognome.toUpperCase()} ${regData.nome.toUpperCase()}`;
-        document.getElementById('ticketPath').innerText = regData.studyPath;
-        document.getElementById('ticketDate').innerText = regData.dateStr;
-
-        submitBtn.disabled = false;
-        navigateTo('confirmation');
-      } catch(err) { submitBtn.disabled = false; setProgress(0,""); showToast("Errore di connessione.", "error"); }
-    };
-
-    window.downloadTicketPDF = async () => {
-      if(!state.currentBooking) return;
-      showToast("Download PDF in corso...", "success");
-      try {
-        const b64 = await generateReceiptPDF(state.currentBooking, state.currentBooking.code);
-        const link = document.createElement('a'); 
-        link.href = 'data:application/pdf;base64,' + b64; 
-        link.download = `Pass_Levi_${state.currentBooking.cognome}.pdf`; 
-        link.click();
-      } catch(e) { showToast("Errore di generazione PDF.", "error"); }
-    };
-
     async function generateReceiptPDF(data, code) {
       const { jsPDF } = window.jspdf; 
       const docObj = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -923,6 +922,57 @@
       return docObj.output('datauristring').split(',')[1];
     }
 
+    window.handleBookingSubmit = async (e) => {
+      e.preventDefault();
+      const targetSession = state.dates.find(x => x.id === document.getElementById('formEventId').value);
+      const submitBtn = document.getElementById('btnSubmitBooking');
+      submitBtn.disabled = true;
+      setProgress(0, "Inizio registrazione...");
+
+      try {
+        const code = `LEVI-${Math.floor(1000 + Math.random()*9000)}`;
+        const regData = {
+          code, cognome: document.getElementById('formCognome').value.trim(), nome: document.getElementById('formNome').value.trim(), 
+          provenienza: document.getElementById('formProvenienza').value.trim(), email: document.getElementById('formEmail').value.trim(), 
+          totalPeople: parseInt(document.getElementById('formNumAlunni').value) + parseInt(document.getElementById('formNumAccompagnatori').value), 
+          dateId: targetSession.id, studyPath: targetSession.studyPath, dateStr: `${new Date(targetSession.date).toLocaleDateString('it-IT')} • ${targetSession.timeSlot}`,
+          status: 'Iscritto', inclusione: document.getElementById('formInclusione').checked, passSentDate: new Date().toLocaleString('it-IT')
+        };
+        state.currentBooking = regData;
+
+        setProgress(40, "Generazione Pass PDF...");
+        const pdfBase64 = await generateReceiptPDF(regData, code);
+
+        setProgress(60, "Salvataggio Dati...");
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
+
+        setProgress(80, "Invio Email Ufficiale...");
+        await fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...regData, pdfBase64: pdfBase64, type: 'pass' }) });
+        
+        setProgress(100, "Completato!");
+
+        document.getElementById('ticketCode').innerText = code;
+        document.getElementById('ticketStudent').innerText = `${regData.cognome.toUpperCase()} ${regData.nome.toUpperCase()}`;
+        document.getElementById('ticketPath').innerText = regData.studyPath;
+        document.getElementById('ticketDate').innerText = regData.dateStr;
+
+        submitBtn.disabled = false;
+        navigateTo('confirmation');
+      } catch(err) { submitBtn.disabled = false; setProgress(0,""); showToast("Errore di connessione.", "error"); }
+    };
+
+    window.downloadTicketPDF = async () => {
+      if(!state.currentBooking) return;
+      showToast("Download PDF in corso...", "success");
+      try {
+        const b64 = await generateReceiptPDF(state.currentBooking, state.currentBooking.code);
+        const link = document.createElement('a'); 
+        link.href = 'data:application/pdf;base64,' + b64; 
+        link.download = `Pass_Levi_${state.currentBooking.cognome}.pdf`; 
+        link.click();
+      } catch(e) { showToast("Errore di generazione PDF.", "error"); }
+    };
+
     window.handleRecovery = async (e) => {
       e.preventDefault();
       const codeTerm = document.getElementById('recoveryCode').value.trim();
@@ -933,10 +983,20 @@
       let reg = codeTerm ? state.registrations.find(x => x.code === codeTerm.toUpperCase()) : state.registrations.find(x => x.cognome.toLowerCase() === cogTerm && x.nome.toLowerCase() === nomTerm);
       if(!reg) { return showToast("Prenotazione non trovata.", "error"); }
 
-      document.getElementById('recoveryModalFormView').classList.add('hidden');
-      document.getElementById('recoveryModalSuccessView').classList.remove('hidden');
+      const btn = document.getElementById('btnSubmitRecovery');
+      btn.innerHTML = `<span class="animate-pulse">Invio in corso...</span>`;
+      btn.disabled = true;
 
-      try { fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ ...reg, type: 'recupero' }) }); } catch(err) {}
+      try { 
+        const pdfBase64 = await generateReceiptPDF(reg, reg.code);
+        await fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...reg, pdfBase64: pdfBase64, type: 'recupero' }) }); 
+        document.getElementById('recoveryModalFormView').classList.add('hidden');
+        document.getElementById('recoveryModalSuccessView').classList.remove('hidden');
+      } catch(err) {
+        showToast("Errore durante l'invio.", "error");
+      }
+      btn.innerHTML = `Invia Conferma via Email`;
+      btn.disabled = false;
     };
 
     window.handleCancellation = async (e) => {
@@ -949,18 +1009,78 @@
       let reg = codeTerm ? state.registrations.find(x => x.code === codeTerm.toUpperCase()) : state.registrations.find(x => x.cognome.toLowerCase() === cogTerm && x.nome.toLowerCase() === nomTerm);
       if(!reg) { return showToast("Nessuna prenotazione trovata.", "error"); }
 
-      document.getElementById('cancelModalFormView').classList.add('hidden');
-      document.getElementById('cancelModalSuccessView').classList.remove('hidden');
+      const btn = document.getElementById('btnSubmitCancellation');
+      btn.innerHTML = `<span class="animate-pulse">Annullamento in corso...</span>`;
+      btn.disabled = true;
 
       try {
+        await fetch(CANCEL_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(reg) });
         await window.triggerManualDelete(reg.code, true);
-        fetch(CANCEL_SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
-      } catch(err) {}
+        document.getElementById('cancelModalFormView').classList.add('hidden');
+        document.getElementById('cancelModalSuccessView').classList.remove('hidden');
+      } catch(err) {
+        showToast("Errore durante l'annullamento.", "error");
+      }
+      btn.innerHTML = `Conferma Annullamento`;
+      btn.disabled = false;
     };
 
-    // ADMIN DASHBOARD
     window.handleAdminLogin = (e) => { e.preventDefault(); if (document.getElementById('adminPasswordInput').value === 'admin') { state.isAdminAuthed = true; navigateTo('admin'); window.generateCompanionScannerQR(); } else showToast("Chiave errata", "error"); };
     
+    window.openEditRegModal = (code) => {
+      const reg = state.registrations.find(r => r.code === code);
+      if(!reg) return;
+      document.getElementById('editRegCode').value = reg.code;
+      document.getElementById('editRegCognome').value = reg.cognome;
+      document.getElementById('editRegNome').value = reg.nome;
+      document.getElementById('editRegEmail').value = reg.email;
+      document.getElementById('editRegPosti').value = reg.totalPeople;
+      document.getElementById('editRegModal').classList.remove('hidden');
+    };
+
+    window.saveEditReg = async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('editRegCode').value;
+      try {
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), {
+          cognome: document.getElementById('editRegCognome').value.trim(),
+          nome: document.getElementById('editRegNome').value.trim(),
+          email: document.getElementById('editRegEmail').value.trim(),
+          totalPeople: parseInt(document.getElementById('editRegPosti').value)
+        });
+        showToast("Iscrizione modificata con successo!");
+        window.closeModal('editRegModal');
+      } catch(err) { showToast("Errore durante la modifica.", "error"); }
+    };
+
+    window.openEditDateModal = (id) => {
+      const d = state.dates.find(x => x.id === id);
+      if(!d) return;
+      document.getElementById('editDateId').value = d.id;
+      document.getElementById('editDateValue').value = d.date;
+      document.getElementById('editDateTime').value = d.timeSlot;
+      document.getElementById('editDateAula').value = d.aula;
+      document.getElementById('editDateSeats').value = d.maxSeats;
+      document.getElementById('editDatePath').value = d.studyPath;
+      document.getElementById('editDateModal').classList.remove('hidden');
+    };
+
+    window.saveEditDate = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editDateId').value;
+      try {
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id), {
+          date: document.getElementById('editDateValue').value,
+          timeSlot: document.getElementById('editDateTime').value.trim(),
+          aula: document.getElementById('editDateAula').value.trim(),
+          maxSeats: parseInt(document.getElementById('editDateSeats').value),
+          studyPath: document.getElementById('editDatePath').value
+        });
+        showToast("Turno aggiornato con successo!");
+        window.closeModal('editDateModal');
+      } catch(err) { showToast("Errore durante la modifica.", "error"); }
+    };
+
     window.renderRegistrations = () => {
       const tbody = document.getElementById('registrationsTableBody');
       if(!tbody) return;
@@ -975,10 +1095,10 @@
             try { let d = new Date(dString.split(', ')[0].split('/').reverse().join('-') + 'T' + dString.split(', ')[1]); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`; } catch(e){ return dString;}
         };
         return `
-        <tr class="border-b hover:bg-slate-50 transition">
+        <tr id="riga-${r.code}" class="border-b hover:bg-slate-50 transition">
           <td class="p-4 align-top">
             <div class="font-mono font-bold text-indigo-600 text-sm">${r.code}</div>
-            <div class="text-[10px] text-slate-500 font-bold mt-1 bg-slate-200 inline-block px-2 py-0.5 rounded">${r.status || 'Iscritto'}</div>
+            <div class="text-[10px] text-slate-500 font-bold mt-1 bg-slate-200 inline-block px-2 py-0.5 rounded cella-stato">${r.status || 'Iscritto'}</div>
           </td>
           <td class="p-4 align-top">
             <div class="font-black text-slate-900 uppercase text-sm">${r.cognome} <br> ${r.nome}</div>
@@ -989,7 +1109,7 @@
             <div class="text-[11px] text-slate-600 font-bold mt-1">Posti: ${r.totalPeople}</div>
           </td>
           <td class="p-4 text-xs align-top">
-            <div class="font-bold text-slate-800 text-[10px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
+            <div class="font-bold text-slate-800 text-[10px] truncate max-w-[150px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
             <div class="text-[11px] text-indigo-600 font-black mt-1">${r.dateStr}</div>
           </td>
           <td class="p-4 text-center align-top"><input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="window.updateDocField('${r.code}', 'inclusione', this.checked)" class="w-5 h-5 cursor-pointer accent-violet-600"></td>
@@ -1009,17 +1129,37 @@
               <button onclick="window.triggerEmail('${r.code}','pergamena', this)" class="bg-violet-50 border border-violet-200 hover:bg-violet-100 text-violet-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>4. Uscita</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.pergamenaSentDate)}</span></button>
             </div>
           </td>
-          <td class="p-4 text-right align-top"><button onclick="window.triggerManualDelete('${r.code}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
+          <td class="p-4 text-right align-top">
+            <div class="flex flex-col gap-2">
+              <button onclick="window.openEditRegModal('${r.code}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition cursor-pointer flex items-center justify-center" title="Modifica Iscrizione"><i data-lucide="edit" class="w-4 h-4"></i></button>
+              <button onclick="window.triggerManualDelete('${r.code}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer flex items-center justify-center" title="Elimina Iscrizione"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </td>
         </tr>
       `}).join('');
       lucide.createIcons();
     };
 
-    window.updateDocField = (code, field, value) => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [field]: value });
+    window.updateDocField = async (code, field, value) => {
+      await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [field]: value });
+      
+      if (field === 'status') {
+        const reg = state.registrations.find(x => x.code === code);
+        if (value === 'Ammesso') {
+          showToast("Stato aggiornato ad Ammesso. Invio mail Ingresso in corso...");
+          window.triggerEmail(code, 'presenza');
+        } else if (value === 'Concluso') {
+          showToast("Stato aggiornato a Concluso. Invio mail Pergamena in corso...");
+          window.triggerEmail(code, 'pergamena');
+        }
+      }
+    };
 
     window.triggerManualDelete = async (code, silent = false) => {
       if(!silent && !confirm("Cancellare definitivamente questo iscritto dal database?")) return;
       try {
+        const riga = document.getElementById(`riga-${code}`);
+        if(riga && !silent) { riga.style.transition="opacity 0.3s"; riga.style.opacity="0"; }
         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code));
         if(!silent) showToast("Eliminato.", "success");
       } catch(e) { if(!silent) showToast("Errore durante l'eliminazione", "error"); }
@@ -1028,23 +1168,33 @@
     window.triggerEmail = async (code, type, btnElement) => {
       const reg = state.registrations.find(x => x.code === code);
       if(!reg) return;
-      const originalText = btnElement.innerHTML;
-      btnElement.innerHTML = "In corso... 50%"; btnElement.disabled = true;
+      
+      let originalText = "";
+      if(btnElement) {
+        originalText = btnElement.innerHTML;
+        btnElement.innerHTML = `<span class="animate-pulse">Attendere...</span>`; 
+        btnElement.disabled = true;
+      }
       
       const time = new Date().toLocaleString('it-IT');
       try {
         const fieldMap = { 'pass':'passSentDate', 'promemoria':'promemoriaSentDate', 'presenza':'presenzaSentDate', 'pergamena':'pergamenaSentDate' };
-        if(type==='pass' || type==='promemoria') {
-          fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ ...reg, type }) });
-        } else if (type==='presenza') fetch(ATTESTATO_ENTRATA_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
-          else if (type==='pergamena') fetch(ATTESTATO_USCITA_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
         
-        btnElement.innerHTML = "Salv... 90%";
+        if(type === 'pass' || type === 'promemoria') {
+          const pdfBase64 = await generateReceiptPDF(reg, reg.code);
+          await fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...reg, pdfBase64: pdfBase64, type: type }) });
+        } else if (type === 'presenza') {
+          await fetch(ATTESTATO_ENTRATA_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(reg) });
+        } else if (type === 'pergamena') {
+          await fetch(ATTESTATO_USCITA_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(reg) });
+        }
+        
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [fieldMap[type]]: time });
-        showToast("E-mail inviata in background!", "success");
-      } catch(e) { showToast("Errore d'invio", "error"); }
-      btnElement.innerHTML = originalText;
-      btnElement.disabled = false;
+        showToast("E-mail inviata con successo!", "success");
+      } catch(e) { 
+        showToast("Errore d'invio di rete", "error"); 
+      }
+      if(btnElement) { btnElement.innerHTML = originalText; btnElement.disabled = false; }
     };
 
     window.exportToExcel = () => {
@@ -1053,7 +1203,6 @@
       const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); link.download = "iscritti_primolevi.csv"; link.click();
     };
 
-    // ADMIN: IMPOSTAZIONI E TURNI
     window.handleCreateTurno = async (e) => {
       e.preventDefault();
       const newId = "date-" + Date.now();
@@ -1078,7 +1227,12 @@
           <td class="p-3 text-indigo-700 font-bold text-xs">${d.studyPath}</td>
           <td class="p-3 font-semibold text-slate-600">${d.aula}</td>
           <td class="p-3 text-center font-bold text-slate-800">${booked} / ${d.maxSeats}</td>
-          <td class="p-3 text-right"><button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl transition border border-rose-200 cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          <td class="p-3 text-right">
+            <div class="flex justify-end gap-2">
+              <button onclick="window.openEditDateModal('${d.id}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i></button>
+              <button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </td>
         </tr>
       `}).join('');
       lucide.createIcons();
@@ -1097,22 +1251,23 @@
       showToast("Impostazioni salvate!", "success");
     };
 
-    function checkAndSendPromemoria() {
+    async function checkAndSendPromemoria() {
       if(!window.promemoriaDays) return;
       const today = new Date();
-      state.registrations.forEach(reg => {
+      for (const reg of state.registrations) {
          const targetDate = state.dates.find(d => d.id === reg.dateId)?.date;
-         if(!targetDate || reg.promemoriaSentDate) return; 
+         if(!targetDate || reg.promemoriaSentDate) continue; 
          
          const eventDate = new Date(targetDate);
          const diffTime = Math.abs(eventDate - today);
          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
          
          if(diffDays <= window.promemoriaDays && eventDate >= today) {
-            fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ ...reg, type: 'promemoria' }) });
-            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { promemoriaSentDate: new Date().toLocaleString('it-IT') });
+            const pdfBase64 = await generateReceiptPDF(reg, reg.code);
+            await fetch(CONFIRM_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ ...reg, pdfBase64: pdfBase64, type: 'promemoria' }) });
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { promemoriaSentDate: new Date().toLocaleString('it-IT') });
          }
-      });
+      }
     }
 
     window.triggerResetDatabase = async () => {
@@ -1197,13 +1352,30 @@
               document.getElementById('scannerScannedPath').innerText = reg.studyPath;
               document.getElementById('scannerSuccessOverlay').classList.remove('hidden');
               
-              updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Ammesso', presenzaSentDate: new Date().toLocaleString('it-IT') });
-              fetch(ATTESTATO_ENTRATA_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
+              await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Ammesso', presenzaSentDate: new Date().toLocaleString('it-IT') });
+              await fetch(ATTESTATO_ENTRATA_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(reg) });
               
+              const targetDateObj = state.dates.find(d => d.id === reg.dateId);
+              let delayMs = 7 * 60 * 1000; 
+              if (targetDateObj) {
+                try {
+                  let endTimeStr = targetDateObj.timeSlot;
+                  if (endTimeStr.includes('-')) {
+                    endTimeStr = endTimeStr.split('-')[1].trim();
+                  }
+                  const timeParts = endTimeStr.split(':');
+                  const endDateTime = new Date(targetDateObj.date);
+                  endDateTime.setHours(parseInt(timeParts[0], 10), parseInt(timeParts[1], 10) + 7, 0, 0); 
+                  
+                  delayMs = endDateTime.getTime() - Date.now();
+                  if (delayMs < 0) delayMs = 15000; 
+                } catch(e) { console.error("Errore parse data", e); }
+              }
+
               setTimeout(async () => {
-                 updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Concluso', pergamenaSentDate: new Date().toLocaleString('it-IT') });
-                 fetch(ATTESTATO_USCITA_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
-              }, 7 * 60 * 1000); 
+                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Concluso', pergamenaSentDate: new Date().toLocaleString('it-IT') });
+                 await fetch(ATTESTATO_USCITA_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(reg) });
+              }, delayMs);
 
               setTimeout(() => { document.getElementById('scannerSuccessOverlay').classList.add('hidden'); lastScannedCode = null; }, 4000);
             } else {
