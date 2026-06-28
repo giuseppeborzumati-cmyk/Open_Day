@@ -14,6 +14,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <!-- Libreria Grafici Statistiche -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 50%, #ecfdf5 100%); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
@@ -49,8 +51,9 @@
   <div class="bubble-container" id="bubbleContainer"></div>
 
   <div id="wrapperMainSite" class="flex-grow flex flex-col relative z-10">
+    <!-- NAvigation -->
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shadow-sm">
-      <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
+      <div class="flex items-center gap-4 cursor-pointer" onclick="window.navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden p-1">
           <img src="levi.png" alt="Logo" class="w-full h-full object-contain">
         </div>
@@ -61,12 +64,12 @@
       </div>
       
       <div class="flex flex-wrap items-center justify-center gap-2">
-        <button onclick="scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition"><i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota Posto</span></button>
-        <button onclick="scrollToSection('studyPathsSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold transition"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Piani di Studio</span></button>
-        <button onclick="openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition"><i data-lucide="search" class="w-4 h-4"></i><span>Recupera Prenotazione</span></button>
-        <button onclick="openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Prenotazione</span></button>
+        <button onclick="window.scrollToSection('datesSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-sm font-bold transition"><i data-lucide="calendar" class="w-4 h-4"></i><span>Prenota Posto</span></button>
+        <button onclick="window.scrollToSection('studyPathsSection')" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold transition"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Piani di Studio</span></button>
+        <button onclick="window.openRecoveryModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-sm font-bold transition"><i data-lucide="search" class="w-4 h-4"></i><span>Recupera Prenotazione</span></button>
+        <button onclick="window.openCancelModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-sm font-bold transition"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Annulla Prenotazione</span></button>
         <div class="h-6 w-px bg-slate-300 mx-1 hidden lg:block"></div>
-        <button id="adminButton" onclick="toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm"><i data-lucide="shield-alert" class="w-4 h-4"></i><span>Area Docenti</span></button>
+        <button id="adminButton" onclick="window.toggleAdminPanel()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 text-white text-sm font-bold transition shadow-sm"><i data-lucide="shield-alert" class="w-4 h-4"></i><span>Area Docenti</span></button>
       </div>
     </nav>
 
@@ -106,12 +109,11 @@
             </div>
             <div class="w-full sm:w-auto">
               <label class="text-[10px] font-bold text-indigo-800 uppercase block mb-1">Filtro Intelligente:</label>
-              <select id="userPathFilter" onchange="renderHomeDates()" class="w-full sm:w-64 p-2.5 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 bg-white shadow-sm outline-none focus:ring-2 focus:ring-indigo-500">
+              <select id="userPathFilter" onchange="window.renderHomeDates()" class="w-full sm:w-64 p-2.5 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 bg-white shadow-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="all">Tutti gli indirizzi</option>
               </select>
             </div>
           </div>
-          <!-- Modificato: grid-cols-1 md:grid-cols-2 per affiancare le date -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="groupedDatesGrid"></div>
         </div>
 
@@ -134,13 +136,13 @@
               </div>
               <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h5 class="font-bold text-slate-800 text-sm">Scienze Applicate (LSA)</h5>
-                  <p class="text-xs text-slate-600 mt-1 font-semibold mb-2">Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce lo studio del latino con l'Informatica specialistica e le Scienze Sperimentali (Biologia, Chimica, Scienze della Terra).</p>
+                  <h5 class="font-bold text-slate-800 text-sm">Scienze Applicate</h5>
+                  <p class="text-xs text-slate-600 mt-2 font-semibold mb-2">Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce lo studio del latino con l'Informatica specialistica e le Scienze Sperimentali (Biologia, Chimica, Scienze della Terra, Fisica).</p>
                   <p class="text-[11px] text-indigo-700 font-bold bg-indigo-50 p-2 rounded-lg border border-indigo-100"><b>Materie Specifiche:</b> Informatica (C++, Database, Web Design), Fisica, Chimica, Biologia.</p>
                 </div>
                 <div>
                   <h5 class="font-bold text-slate-800 text-sm">Curvatura Economica</h5>
-                  <p class="text-xs text-slate-600 mt-1 font-semibold mb-2">Un percorso unico nel territorio che integra la solida preparazione del liceo scientifico con lo studio strutturato dell'economia e dei mercati finanziari aziendali.</p>
+                  <p class="text-xs text-slate-600 mt-2 font-semibold mb-2">Un percorso unico nel territorio che integra la solida preparazione del liceo scientifico con lo studio strutturato dell'economia e dei mercati finanziari aziendali.</p>
                   <p class="text-[11px] text-indigo-700 font-bold bg-indigo-50 p-2 rounded-lg border border-indigo-100"><b>Materie Specifiche:</b> Economia Aziendale, Diritto ed Economia Politica, Matematica Finanziaria.</p>
                 </div>
               </div>
@@ -221,7 +223,7 @@
               <span class="inline-block py-0.5 px-2 text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 rounded uppercase tracking-widest mb-1">Ammissione Immediata</span>
               <h3 class="text-2xl font-black text-slate-900 font-outfit">Compila i Dati</h3>
             </div>
-            <button onclick="cancelBookingProcess()" class="p-2 bg-slate-100 hover:bg-rose-100 hover:text-rose-600 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="window.cancelBookingProcess()" class="p-2 bg-slate-100 hover:bg-rose-100 hover:text-rose-600 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-5 h-5"></i></button>
           </div>
 
           <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl space-y-1">
@@ -231,7 +233,7 @@
             <p class="text-amber-700 font-bold text-xs" id="lblBookingAula"></p>
           </div>
 
-          <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-5 font-semibold text-sm text-slate-600">
+          <form id="bookingForm" onsubmit="window.handleBookingSubmit(event)" class="space-y-5 font-semibold text-sm text-slate-600">
             <input type="hidden" id="formEventId">
             <div class="grid grid-cols-2 gap-5">
               <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Cognome Alunno *</label><input required type="text" id="formCognome" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Es. Rossi"></div>
@@ -243,8 +245,8 @@
             </div>
 
             <div class="grid grid-cols-2 gap-5 p-4 border border-slate-200 rounded-2xl bg-slate-50/50">
-              <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">N° Alunni *</label><input required type="number" min="1" max="5" id="formNumAlunni" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="recalcTotalSeats()"></div>
-              <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">N° Accompagnatori *</label><input required type="number" min="0" max="8" id="formNumAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="recalcTotalSeats()"></div>
+              <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">N° Alunni *</label><input required type="number" min="1" max="5" id="formNumAlunni" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="window.recalcTotalSeats()"></div>
+              <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">N° Accompagnatori *</label><input required type="number" min="0" max="8" id="formNumAccompagnatori" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold" value="1" oninput="window.recalcTotalSeats()"></div>
               <div class="col-span-2 text-right text-xs text-slate-500 font-bold border-t border-slate-200 pt-2 mt-1">Posti totali riservati: <span id="lblTotalFormSeats" class="text-indigo-600 text-lg font-black ml-2">2</span></div>
             </div>
 
@@ -264,7 +266,7 @@
             </div>
 
             <div class="pt-4 flex flex-col sm:flex-row gap-3">
-              <button type="button" id="btnCancelBooking" onclick="cancelBookingProcess()" class="w-full sm:w-1/3 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition">Indietro</button>
+              <button type="button" id="btnCancelBooking" onclick="window.cancelBookingProcess()" class="w-full sm:w-1/3 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition">Indietro</button>
               <button type="submit" id="btnSubmitBooking" class="w-full sm:w-2/3 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-sm uppercase tracking-widest shadow-xl transition flex items-center justify-center gap-2">
                 <i data-lucide="check-circle" class="w-5 h-5"></i> Conferma Iscrizione
               </button>
@@ -294,10 +296,10 @@
               </div>
             </div>
             <div class="flex flex-col gap-3">
-              <button onclick="downloadTicketPDF()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-xl uppercase tracking-wider">
+              <button onclick="window.downloadTicketPDF()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-xl uppercase tracking-wider">
                 <i data-lucide="download" class="w-5 h-5"></i><span>Scarica il Pass PDF</span>
               </button>
-              <button onclick="resetAndGoHome()" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition text-sm flex items-center justify-center gap-2 uppercase tracking-wider">
+              <button onclick="window.resetAndGoHome()" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition text-sm flex items-center justify-center gap-2 uppercase tracking-wider">
                 <i data-lucide="home" class="w-4 h-4"></i><span>Torna alla Home</span>
               </button>
             </div>
@@ -313,7 +315,7 @@
         <h3 class="text-2xl font-black text-slate-950 font-outfit">Accesso Docenti</h3>
         <p class="text-xs text-slate-500 mt-2 font-bold">Autenticati per gestire le iscrizioni.</p>
       </div>
-      <form onsubmit="handleAdminLogin(event)" class="space-y-4 pt-2">
+      <form onsubmit="window.handleAdminLogin(event)" class="space-y-4 pt-2">
         <input required type="password" id="adminPasswordInput" class="w-full p-4 rounded-xl border border-slate-200 bg-white text-center font-bold tracking-widest focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Password" value="admin">
         <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-sm uppercase tracking-widest shadow-md transition">Accedi alla Dashboard</button>
       </form>
@@ -324,16 +326,17 @@
       <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-200 pb-4">
         <h2 class="text-2xl font-black text-slate-900 font-outfit flex items-center gap-2"><i data-lucide="layout-dashboard" class="text-indigo-600"></i> Dashboard Docenti</h2>
         <div class="flex flex-wrap gap-2">
-          <button onclick="switchAdminTab('tabRegistrations')" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Registro</button>
-          <button onclick="switchAdminTab('tabLiveScanner')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Scanner Tel.</button>
-          <button onclick="switchAdminTab('tabSettings')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Impostazioni</button>
-          <button onclick="logoutAdmin()" class="px-4 py-2.5 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-xl text-xs shadow-sm ml-4 transition" title="Esci"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+          <button onclick="window.switchAdminTab('tabRegistrations')" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Registro</button>
+          <button onclick="window.switchAdminTab('tabLiveScanner')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Scanner Tel.</button>
+          <button onclick="window.switchAdminTab('tabSettings')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Impostazioni</button>
+          <button onclick="window.switchAdminTab('tabStatistics')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Statistiche</button>
+          <button onclick="window.logoutAdmin()" class="px-4 py-2.5 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-xl text-xs shadow-sm ml-4 transition" title="Esci"><i data-lucide="log-out" class="w-4 h-4"></i></button>
         </div>
       </div>
 
       <div id="tabRegistrations" class="space-y-4">
         <div class="flex justify-between items-center">
-          <button onclick="exportToExcel()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-2 uppercase tracking-wider transition"><i data-lucide="download" class="w-4 h-4"></i> Esporta CSV</button>
+          <button onclick="window.exportToExcel()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-2 uppercase tracking-wider transition"><i data-lucide="download" class="w-4 h-4"></i> Esporta CSV</button>
           <select id="filterDateSelect" onchange="window.renderRegistrations()" class="p-2.5 border border-slate-200 rounded-xl text-xs font-bold shadow-sm outline-none bg-white text-slate-700"></select>
         </div>
         <div class="overflow-x-auto bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm">
@@ -357,13 +360,13 @@
 
       <div id="tabLiveScanner" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="glass-card p-8 rounded-3xl border border-slate-200 shadow-md text-center flex flex-col justify-center items-center">
+          <div class="glass-card p-8 rounded-3xl border border-slate-200 shadow-md text-center flex flex-col justify-center items-center bg-white">
             <h3 class="text-xl font-black text-indigo-950 mb-2 font-outfit">Collega Scanner Portatile</h3>
             <p class="text-xs text-slate-500 font-bold mb-6">Inquadra questo QR Code con la fotocamera del tuo cellulare per trasformarlo in un lettore di pass senza fili.</p>
             <div class="bg-white p-4 inline-block rounded-2xl border border-slate-200 shadow-sm"><canvas id="companionScannerQrCanvas"></canvas></div>
           </div>
           
-          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-md">
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-md bg-white">
             <h4 class="text-lg font-black text-indigo-950 font-outfit mb-4 border-b border-slate-100 pb-2 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-indigo-600"></i> Dispositivi Connessi Live</h4>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
               <table class="w-full text-left text-xs">
@@ -377,21 +380,21 @@
 
       <div id="tabSettings" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5 bg-white">
             <h4 class="font-outfit font-black text-indigo-950 text-lg flex items-center gap-2"><i data-lucide="settings" class="text-indigo-600 w-5 h-5"></i> Impostazioni Generali</h4>
             
             <div class="space-y-2 border-b pb-4">
               <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block">Frequenza Giorni Promemoria</label>
               <div class="flex gap-2">
                 <input type="number" id="settingsPromemoriaDays" min="1" max="15" value="7" class="w-20 p-2.5 border border-slate-200 rounded-xl font-bold text-center outline-none">
-                <button onclick="savePromemoriaSettings()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Salva Configurazione</button>
+                <button onclick="window.savePromemoriaSettings()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Salva Configurazione</button>
               </div>
               <span class="text-[10px] text-slate-400 font-bold block">Specifica quanti giorni prima del turno d'aula inviare la mail promemoria automatica.</span>
             </div>
 
             <div class="space-y-2 pt-2">
-              <h5 class="text-xs font-bold text-rose-800 uppercase">Svuotamento Database</h5>
-              <div class="flex flex-col sm:flex-row gap-3">
+              <h5 class="text-xs font-bold text-rose-800 uppercase">Gestione Database</h5>
+              <div class="flex flex-col sm:flex-row gap-3 mt-3">
                 <button onclick="window.triggerResetDatabase()" class="px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black uppercase transition shadow-md flex justify-center items-center gap-2 w-full">
                   <i data-lucide="trash-2" class="w-4 h-4"></i> SVUOTA ISCRITTI
                 </button>
@@ -403,20 +406,20 @@
             </div>
           </div>
 
-          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 bg-white">
             <h4 class="font-outfit font-black text-indigo-950 text-lg flex items-center gap-2"><i data-lucide="calendar-plus" class="text-indigo-600 w-5 h-5"></i> Pianifica Turno d'Aula</h4>
-            <form onsubmit="handleCreateTurno(event)" class="space-y-4 text-xs font-semibold">
+            <form onsubmit="window.handleCreateTurno(event)" class="space-y-4 text-xs font-semibold">
               <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Data Turno *</label><input required type="date" id="newTurnoDate" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white"></div>
-                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Fascia Oraria *</label><input required type="text" id="newTurnoTime" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white" placeholder="es. 09:00 - 11:00"></div>
+                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Data Turno *</label><input required type="date" id="newTurnoDate" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-slate-50"></div>
+                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Fascia Oraria *</label><input required type="text" id="newTurnoTime" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-slate-50" placeholder="es. 09:00 - 11:00"></div>
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Aula / Sede *</label><input required type="text" id="newTurnoAula" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white" placeholder="Aula Magna"></div>
-                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Capienza Max *</label><input required type="number" min="1" id="newTurnoSeats" class="w-full p-2.5 border border-slate-200 rounded-xl font-bold outline-none bg-white" value="100"></div>
+                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Aula / Sede *</label><input required type="text" id="newTurnoAula" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-slate-50" placeholder="Aula Magna"></div>
+                <div class="space-y-1.5"><label class="text-[10px] uppercase font-bold text-slate-500">Capienza Max *</label><input required type="number" min="1" id="newTurnoSeats" class="w-full p-2.5 border border-slate-200 rounded-xl font-bold outline-none bg-slate-50" value="100"></div>
               </div>
               <div class="space-y-1.5">
                 <label class="text-[10px] uppercase font-bold text-slate-500">Percorso di Studio Abbinato *</label>
-                <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold">
+                <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold">
                   <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
                   <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
                   <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
@@ -434,11 +437,59 @@
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs font-semibold">
               <thead>
-                <tr class="bg-slate-100 text-slate-500 border-b uppercase tracking-wider"><th class="p-3">Data</th><th class="p-3">Orario</th><th class="p-3">Indirizzo</th><th class="p-3">Aula</th><th class="p-3 text-right">Rimuovi</th></tr>
+                <tr class="bg-slate-100 text-slate-500 border-b uppercase tracking-wider"><th class="p-3">Data</th><th class="p-3">Orario</th><th class="p-3">Indirizzo</th><th class="p-3">Aula</th><th class="p-3 text-center">Posti Occupati</th><th class="p-3 text-right">Rimuovi</th></tr>
               </thead>
               <tbody id="adminDatesTableBody"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- NUOVO TAB STATISTICHE -->
+      <div id="tabStatistics" class="hidden space-y-6">
+        <div id="adminStatsGrid" class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="glass-card p-4 rounded-2xl border border-slate-200 bg-white">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Studenti Iscritti</span>
+            <span class="text-xl font-black text-slate-900" id="statTotalIscritti">0</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-200 bg-white">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Accreditati (Entrati)</span>
+            <span class="text-xl font-black text-blue-600" id="statTotalEntrati">0</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-200 bg-white">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Conclusi</span>
+            <span class="text-xl font-black text-emerald-600" id="statTotalCertificati">0</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-200 bg-white">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Assenti</span>
+            <span class="text-xl font-black text-amber-600" id="statTotalAssenti">0</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-violet-200 bg-violet-50/30">
+            <span class="text-[9px] font-bold text-violet-500 uppercase tracking-wider block">Colloqui Inclusione</span>
+            <span class="text-xl font-black text-violet-700" id="statTotalInclusione">0</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+           <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm bg-white flex flex-col">
+             <h4 class="font-outfit font-black text-indigo-950 text-base border-b pb-2 mb-4"><i data-lucide="pie-chart" class="w-4 h-4 inline text-indigo-600 mr-1"></i> Ripartizione per Indirizzo</h4>
+             <div class="relative w-full h-64 flex-grow"><canvas id="chartIndirizzi"></canvas></div>
+             <p id="statsTextIndirizzi" class="text-xs text-slate-600 mt-4 font-semibold text-center bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
+           </div>
+           <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm bg-white flex flex-col">
+             <h4 class="font-outfit font-black text-indigo-950 text-base border-b pb-2 mb-4"><i data-lucide="bar-chart-2" class="w-4 h-4 inline text-indigo-600 mr-1"></i> Andamento Partecipazione</h4>
+             <div class="relative w-full h-64 flex-grow"><canvas id="chartStato"></canvas></div>
+             <p id="statsTextPartecipazione" class="text-xs text-slate-600 mt-4 font-semibold text-center bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
+           </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm bg-white">
+            <h4 class="font-outfit font-black text-indigo-950 text-base border-b pb-2 mb-4">Report Dettagliato</h4>
+            <p class="text-xs text-slate-600 font-semibold leading-relaxed">
+              Il grafico <b>"Ripartizione per Indirizzo"</b> illustra come si distribuiscono le preferenze delle famiglie rispetto ai vari percorsi di studio (il calcolo è effettuato sui posti totali riservati, conteggiando sia lo studente che gli eventuali accompagnatori per calibrare correttamente le aule).
+              <br><br>
+              Il grafico <b>"Andamento Partecipazione"</b> monitora invece il funnel di ingresso dal vivo: mostra il volume degli Iscritti (in attesa), quanti sono stati fisicamente ammessi in sede tramite la scansione del pass (Ammessi), quanti hanno già completato la visita ed ottenuto la pergamena (Conclusi) e le registrazioni marcate come Assenti.
+            </p>
         </div>
       </div>
     </section>
@@ -465,19 +516,19 @@
     </footer>
   </div>
 
-  <!-- MODALITA SCANNER CELLULARE A SCHERMO INTERO (COMPANION) -->
+  <!-- MODALITA SCANNER CELLULARE A SCHERMO INTERO -->
   <div id="wrapperCompanionScanner" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
     <div class="absolute top-4 left-4 flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-xs font-black border border-emerald-500/30">
       <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div> SCANNER ATTIVO
     </div>
-    <button onclick="exitCompanionScanner()" class="absolute top-4 right-4 p-3 bg-white/10 hover:bg-white/30 text-white rounded-full transition"><i data-lucide="x"></i></button>
+    <button onclick="window.exitCompanionScanner()" class="absolute top-4 right-4 p-3 bg-white/10 hover:bg-white/30 text-white rounded-full transition"><i data-lucide="x"></i></button>
     
     <div class="relative w-full max-w-[280px] aspect-[3/4] bg-black rounded-3xl overflow-hidden border-4 border-slate-800 shadow-2xl flex items-center justify-center mt-8">
       <div id="companionScannerLaser" class="laser-line"></div>
       <video id="companionVideo" class="w-full h-full object-cover" playsinline></video>
       <canvas id="companionCanvas" class="hidden"></canvas>
       
-      <!-- SCHEDA VERDE OVERLAY AMMESSO (Si sovrappone quando legge un QR) -->
+      <!-- SCHEDA VERDE OVERLAY AMMESSO -->
       <div id="scannerSuccessOverlay" class="hidden absolute inset-0 bg-emerald-500 flex flex-col items-center justify-center text-white p-6 z-20 transition-opacity">
         <i data-lucide="check-circle" class="w-20 h-20 mb-4 animate-bounce"></i>
         <h3 class="text-4xl font-black tracking-widest mb-2 font-outfit">AMMESSO</h3>
@@ -491,33 +542,33 @@
   <!-- MODALS RECUPERO/ANNULLAMENTO -->
   <div id="recoveryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div id="recoveryModalFormView" class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl">
-      <button onclick="closeModal('recoveryModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <button onclick="window.closeModal('recoveryModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100"><i data-lucide="search" class="w-6 h-6"></i></div>
       <h3 class="text-xl font-black text-center font-outfit mb-6 text-slate-900">Recupera Prenotazione</h3>
-      <form onsubmit="handleRecovery(event)" class="space-y-4 font-semibold text-xs text-slate-600">
+      <form onsubmit="window.handleRecovery(event)" class="space-y-4 font-semibold text-xs text-slate-600">
         <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Codice Prenotazione</label><input type="text" id="recoveryCode" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Es. LEVI-1234"></div>
         <div class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"><div class="flex-grow border-t border-slate-200"></div>OPPURE<div class="flex-grow border-t border-slate-200"></div></div>
         <div class="flex gap-4">
           <div class="w-1/2"><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Cognome</label><input type="text" id="recoveryCognome" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rossi"></div>
           <div class="w-1/2"><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome</label><input type="text" id="recoveryNome" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Mario"></div>
         </div>
-        <button type="submit" id="btnSubmitRecovery" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-lg mt-2 uppercase tracking-widest flex justify-center items-center gap-2">Invia Pass via Email</button>
+        <button type="submit" id="btnSubmitRecovery" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-lg mt-2 uppercase tracking-widest flex justify-center items-center gap-2">Invia Conferma via Email</button>
       </form>
     </div>
     <div id="recoveryModalSuccessView" class="hidden glass-card w-full max-w-md p-8 rounded-3xl text-center shadow-2xl">
       <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8"></i></div>
       <h3 class="text-2xl font-black text-emerald-600 font-outfit mb-3">Inviato con Successo!</h3>
       <p class="text-sm font-semibold text-slate-600 mb-6">Controlla la tua casella e-mail, troverai la prenotazione in allegato.</p>
-      <button onclick="closeModal('recoveryModal')" class="w-full px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black uppercase tracking-wider rounded-xl transition">Chiudi Finestra</button>
+      <button onclick="window.closeModal('recoveryModal')" class="w-full px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black uppercase tracking-wider rounded-xl transition">Chiudi Finestra</button>
     </div>
   </div>
 
   <div id="cancelModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div id="cancelModalFormView" class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl">
-      <button onclick="closeModal('cancelModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <button onclick="window.closeModal('cancelModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-100"><i data-lucide="trash-2" class="w-6 h-6"></i></div>
       <h3 class="text-xl font-black text-center font-outfit mb-6 text-slate-900">Annulla Prenotazione</h3>
-      <form onsubmit="handleCancellation(event)" class="space-y-4 font-semibold text-xs text-slate-600">
+      <form onsubmit="window.handleCancellation(event)" class="space-y-4 font-semibold text-xs text-slate-600">
         <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Codice Prenotazione</label><input type="text" id="cancelCode" class="w-full p-3.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-rose-500" placeholder="Es. LEVI-1234"></div>
         <div class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"><div class="flex-grow border-t border-slate-200"></div>OPPURE<div class="flex-grow border-t border-slate-200"></div></div>
         <div class="flex gap-4">
@@ -531,7 +582,7 @@
       <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8"></i></div>
       <h3 class="text-2xl font-black text-emerald-600 font-outfit mb-3">Annullato con Successo!</h3>
       <p class="text-sm font-semibold text-slate-600 mb-6">La prenotazione è stata rimossa. Abbiamo liberato i posti in aula per altre famiglie.</p>
-      <button onclick="closeModal('cancelModal')" class="w-full px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black uppercase tracking-wider rounded-xl transition">Chiudi Finestra</button>
+      <button onclick="window.closeModal('cancelModal')" class="w-full px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black uppercase tracking-wider rounded-xl transition">Chiudi Finestra</button>
     </div>
   </div>
 
@@ -561,6 +612,8 @@
     const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz7HGansC00c1b-Awu3w-4iQ8y59zZhm5KmiOHzD8ERkB6gCu-QWOt7EklisQyr6XIglA/exec";
 
     let state = { user: null, currentView: 'home', isAdminAuthed: false, dates: [], registrations: [], currentBooking: null, devices: [] };
+    let chartIndirizziInstance = null;
+    let chartStatoInstance = null;
 
     const getDeviceId = () => {
       let id = localStorage.getItem('levi_scanner_device_id');
@@ -568,39 +621,50 @@
       return id;
     };
 
-    window.navigateTo = t => {
-      ['sectionHome','sectionBooking','sectionConfirmation','sectionLogin','sectionAdmin'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
-      if (t === 'home') document.getElementById('sectionHome').classList.remove('hidden'); 
-      else if (t === 'booking') document.getElementById('sectionBooking').classList.remove('hidden');
-      else if (t === 'confirmation') document.getElementById('sectionConfirmation').classList.remove('hidden');
-      else if (t === 'admin') {
-        if (state.isAdminAuthed) { document.getElementById('sectionAdmin').classList.remove('hidden'); window.renderRegistrations(); renderAdminDatesList(); checkAndSendPromemoria(); }
-        else document.getElementById('sectionLogin').classList.remove('hidden'); 
-      }
-      window.scrollTo(0,0);
-      try { lucide.createIcons(); } catch(e) {}
-    };
-
-    window.logoutAdmin = () => { state.isAdminAuthed = false; navigateTo('home'); showToast("Uscita effettuata.", "info"); };
-    window.scrollToSection = id => { navigateTo('home'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150); };
-    window.toggleAdminPanel = () => state.currentView === 'admin' ? navigateTo('home') : navigateTo('admin');
-    window.openRecoveryModal = () => { document.getElementById('recoveryModalFormView').classList.remove('hidden'); document.getElementById('recoveryModalSuccessView').classList.add('hidden'); document.getElementById('recoveryModal').classList.remove('hidden'); };
-    window.openCancelModal = () => { document.getElementById('cancelModalFormView').classList.remove('hidden'); document.getElementById('cancelModalSuccessView').classList.add('hidden'); document.getElementById('cancelModal').classList.remove('hidden'); };
-    window.closeModal = id => document.getElementById(id).classList.add('hidden');
-
-    window.showToast = (msg, type='success') => {
+    function showToast(msg, type='success') {
       const c = document.getElementById('toastContainer');
+      if(!c) return;
       const t = document.createElement('div');
       t.className = `p-4 rounded-xl shadow-lg border text-xs font-black glass-card mb-2 transition-all ${type==='success'?'text-emerald-700 border-emerald-200':(type==='info'?'text-sky-700 border-sky-200':'text-rose-700 border-rose-200')}`;
       t.innerHTML = msg;
       c.appendChild(t);
       setTimeout(() => t.remove(), 4000);
-    };
+    }
+    window.showToast = showToast;
+
+    function navigateTo(t) {
+      ['sectionHome','sectionBooking','sectionConfirmation','sectionLogin','sectionAdmin'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+      if (t === 'home') document.getElementById('sectionHome').classList.remove('hidden'); 
+      else if (t === 'booking') document.getElementById('sectionBooking').classList.remove('hidden');
+      else if (t === 'confirmation') document.getElementById('sectionConfirmation').classList.remove('hidden');
+      else if (t === 'admin') {
+        if (state.isAdminAuthed) { 
+          document.getElementById('sectionAdmin').classList.remove('hidden'); 
+          window.updateStatistics();
+          window.renderRegistrations(); 
+          window.renderAdminDatesList(); 
+          checkAndSendPromemoria(); 
+        }
+        else document.getElementById('sectionLogin').classList.remove('hidden'); 
+      }
+      window.scrollTo(0,0);
+      try { lucide.createIcons(); } catch(e) {}
+    }
+    window.navigateTo = navigateTo;
+
+    window.logoutAdmin = () => { state.isAdminAuthed = false; navigateTo('home'); showToast("Uscita effettuata.", "info"); };
+    window.scrollToSection = id => { navigateTo('home'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150); };
+    window.toggleAdminPanel = () => state.currentView === 'admin' ? navigateTo('home') : navigateTo('admin');
+    window.switchAdminTab = id => { ['tabRegistrations','tabLiveScanner','tabSettings','tabStatistics'].forEach(t => document.getElementById(t).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
+    
+    window.openRecoveryModal = () => { document.getElementById('recoveryModalFormView').classList.remove('hidden'); document.getElementById('recoveryModalSuccessView').classList.add('hidden'); document.getElementById('recoveryModal').classList.remove('hidden'); };
+    window.openCancelModal = () => { document.getElementById('cancelModalFormView').classList.remove('hidden'); document.getElementById('cancelModalSuccessView').classList.add('hidden'); document.getElementById('cancelModal').classList.remove('hidden'); };
+    window.closeModal = id => document.getElementById(id).classList.add('hidden');
 
     async function startApp() {
       try { await signInAnonymously(auth); } catch(e) {}
       onAuthStateChanged(auth, u => { state.user = u; if(u) setupRealtimeListeners(); });
-      if (window.location.search.includes('scanner=true')) openCompanionScannerMode();
+      if (window.location.search.includes('scanner=true')) window.openCompanionScannerMode();
     }
 
     const defaultDates = [
@@ -620,20 +684,20 @@
         } else {
           s.forEach(d => state.dates.push({id: d.id, ...d.data()})); 
         }
-        renderHomeDates(); 
-        if (state.currentView === 'admin') renderAdminDatesList();
+        window.renderHomeDates(); 
+        if (state.currentView === 'admin') window.renderAdminDatesList();
         populateFilters();
       });
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), s => {
         state.registrations = []; 
         s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); 
-        renderHomeDates(); 
-        if (state.currentView === 'admin') window.renderRegistrations(); 
+        window.renderHomeDates(); 
+        if (state.currentView === 'admin') { window.renderRegistrations(); window.updateStatistics(); }
       });
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'scanners'), s => {
         state.devices = [];
         s.forEach(d => state.devices.push({id: d.id, ...d.data()}));
-        if(state.currentView === 'admin') renderConnectedDevices();
+        if(state.currentView === 'admin') window.renderConnectedDevices();
       });
       getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria')).then(docSnap => {
         if (docSnap.exists() && document.getElementById('settingsPromemoriaDays')) {
@@ -676,7 +740,7 @@
           return `
             <div class="p-4 bg-white/80 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs font-semibold shadow-sm transition hover:border-indigo-300">
               <div class="w-full sm:w-2/3">
-                <span class="font-black text-slate-900 block text-[11px] sm:text-xs leading-tight mb-1 truncate" title="${s.studyPath}">${s.studyPath}</span>
+                <span class="font-black text-slate-900 block text-[12px] sm:text-[13px] leading-tight mb-1 whitespace-normal">${s.studyPath}</span>
                 <span class="inline-block text-[10px] text-indigo-700 font-bold bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-lg">Ore ${s.timeSlot} • Sede: ${s.aula}</span>
               </div>
               <button ${isFull ? 'disabled' : `onclick="window.startBookingProcess('${s.id}')"`} class="w-full sm:w-auto px-4 py-2.5 ${isFull?'bg-rose-100 text-rose-700':'bg-indigo-600 hover:bg-indigo-500 text-white'} rounded-lg uppercase font-black text-[10px] shadow-sm transition tracking-wider flex items-center justify-center gap-1">
@@ -691,6 +755,63 @@
           </div>`;
       }).join('');
       try { lucide.createIcons(); } catch(e){}
+    };
+
+    window.updateStatistics = () => {
+      const ctxIndirizzi = document.getElementById('chartIndirizzi');
+      const ctxStato = document.getElementById('chartStato');
+      if (!ctxIndirizzi || !ctxStato) return;
+
+      const pathsCount = {};
+      const statusCount = { 'Iscritto': 0, 'Ammesso': 0, 'Concluso': 0, 'Assente': 0 };
+      let totalPeople = 0;
+      let totalInclusione = 0;
+
+      state.registrations.forEach(r => {
+         const p = r.studyPath.split(' - ')[0] || r.studyPath; // Prende solo la sigla per il grafico
+         pathsCount[p] = (pathsCount[p] || 0) + parseInt(r.totalPeople || 1);
+         if(statusCount[r.status] !== undefined) statusCount[r.status]++;
+         totalPeople += parseInt(r.totalPeople || 1);
+         if(r.inclusione) totalInclusione++;
+      });
+
+      // Update Top Metrics
+      const iscrittiEl = document.getElementById('statTotalIscritti');
+      if (iscrittiEl) {
+        iscrittiEl.innerText = state.registrations.length;
+        document.getElementById('statTotalEntrati').innerText = statusCount['Ammesso'];
+        document.getElementById('statTotalCertificati').innerText = statusCount['Concluso'];
+        document.getElementById('statTotalAssenti').innerText = statusCount['Assente'];
+        document.getElementById('statTotalInclusione').innerText = totalInclusione;
+      }
+
+      // Update Descriptive Texts
+      let maxPath = "-"; let maxVal = 0;
+      for (const [p, v] of Object.entries(pathsCount)) { if (v > maxVal) { maxVal = v; maxPath = p; } }
+      const totalRegistrations = state.registrations.length;
+      const presenti = statusCount['Ammesso'] + statusCount['Concluso'];
+      const tassoPresenza = totalRegistrations > 0 ? Math.round((presenti / totalRegistrations) * 100) : 0;
+
+      const txtIndirizzi = document.getElementById('statsTextIndirizzi');
+      if(txtIndirizzi) txtIndirizzi.innerHTML = `L'indirizzo più richiesto attualmente è <strong>${maxPath}</strong> con <strong>${maxVal}</strong> posti totali bloccati.`;
+      
+      const txtPartecipazione = document.getElementById('statsTextPartecipazione');
+      if(txtPartecipazione) txtPartecipazione.innerHTML = `Tasso di affluenza reale in sede del <strong>${tassoPresenza}%</strong>. Sono stati erogati ad oggi <strong>${statusCount['Concluso']}</strong> certificati.`;
+
+      // Update Charts
+      if(chartIndirizziInstance) chartIndirizziInstance.destroy();
+      chartIndirizziInstance = new Chart(ctxIndirizzi, {
+        type: 'doughnut',
+        data: { labels: Object.keys(pathsCount), datasets: [{ data: Object.values(pathsCount), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#14b8a6', '#d946ef', '#3b82f6'] }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } }
+      });
+
+      if(chartStatoInstance) chartStatoInstance.destroy();
+      chartStatoInstance = new Chart(ctxStato, {
+        type: 'bar',
+        data: { labels: Object.keys(statusCount), datasets: [{ label: 'Studenti', data: Object.values(statusCount), backgroundColor: ['#6366f1', '#3b82f6', '#10b981', '#f43f5e'], borderRadius: 6 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+      });
     };
 
     window.startBookingProcess = sid => {
@@ -802,7 +923,6 @@
       return docObj.output('datauristring').split(',')[1];
     }
 
-    // GESTIONE RECUPERO ED ANNULLAMENTO IMMEDITATO
     window.handleRecovery = async (e) => {
       e.preventDefault();
       const codeTerm = document.getElementById('recoveryCode').value.trim();
@@ -833,14 +953,13 @@
       document.getElementById('cancelModalSuccessView').classList.remove('hidden');
 
       try {
-        window.deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code));
+        await window.triggerManualDelete(reg.code, true);
         fetch(CANCEL_SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(reg) });
       } catch(err) {}
     };
 
     // ADMIN DASHBOARD
-    window.handleAdminLogin = (e) => { e.preventDefault(); if (document.getElementById('adminPasswordInput').value === 'admin') { state.isAdminAuthed = true; navigateTo('admin'); generateCompanionScannerQR(); } else showToast("Chiave errata", "error"); };
-    window.switchAdminTab = id => { ['tabRegistrations','tabLiveScanner','tabSettings'].forEach(t => document.getElementById(t).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
+    window.handleAdminLogin = (e) => { e.preventDefault(); if (document.getElementById('adminPasswordInput').value === 'admin') { state.isAdminAuthed = true; navigateTo('admin'); window.generateCompanionScannerQR(); } else showToast("Chiave errata", "error"); };
     
     window.renderRegistrations = () => {
       const tbody = document.getElementById('registrationsTableBody');
@@ -870,7 +989,7 @@
             <div class="text-[11px] text-slate-600 font-bold mt-1">Posti: ${r.totalPeople}</div>
           </td>
           <td class="p-4 text-xs align-top">
-            <div class="font-bold text-slate-800 text-[10px] truncate max-w-[150px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
+            <div class="font-bold text-slate-800 text-[10px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
             <div class="text-[11px] text-indigo-600 font-black mt-1">${r.dateStr}</div>
           </td>
           <td class="p-4 text-center align-top"><input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="window.updateDocField('${r.code}', 'inclusione', this.checked)" class="w-5 h-5 cursor-pointer accent-violet-600"></td>
@@ -898,12 +1017,12 @@
 
     window.updateDocField = (code, field, value) => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [field]: value });
 
-    window.triggerManualDelete = async (code) => {
-      if(!confirm("Cancellare definitivamente questo iscritto dal database?")) return;
+    window.triggerManualDelete = async (code, silent = false) => {
+      if(!silent && !confirm("Cancellare definitivamente questo iscritto dal database?")) return;
       try {
         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code));
-        showToast("Eliminato.", "success");
-      } catch(e) { showToast("Errore durante l'eliminazione", "error"); }
+        if(!silent) showToast("Eliminato.", "success");
+      } catch(e) { if(!silent) showToast("Errore durante l'eliminazione", "error"); }
     };
 
     window.triggerEmail = async (code, type, btnElement) => {
@@ -950,15 +1069,18 @@
       const tbody = document.getElementById('adminDatesTableBody');
       if(!tbody) return;
       const sortedDates = [...state.dates].sort((a, b) => new Date(a.date) - new Date(b.date) || a.timeSlot.localeCompare(b.timeSlot));
-      tbody.innerHTML = sortedDates.map(d => `
+      tbody.innerHTML = sortedDates.map(d => {
+        const booked = state.registrations.filter(r => r.dateId === d.id).reduce((sum, r) => sum + parseInt(r.totalPeople||1), 0);
+        return `
         <tr class="border-b hover:bg-slate-50 transition">
           <td class="p-3 font-bold text-slate-800">${new Date(d.date).toLocaleDateString('it-IT')}</td>
           <td class="p-3 font-mono font-bold">${d.timeSlot}</td>
-          <td class="p-3 text-indigo-700 font-bold text-[10px]">${d.studyPath}</td>
+          <td class="p-3 text-indigo-700 font-bold text-xs">${d.studyPath}</td>
           <td class="p-3 font-semibold text-slate-600">${d.aula}</td>
-          <td class="p-3 text-right"><button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2 text-rose-500 hover:bg-rose-100 rounded-lg transition border border-rose-200"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          <td class="p-3 text-center font-bold text-slate-800">${booked} / ${d.maxSeats}</td>
+          <td class="p-3 text-right"><button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl transition border border-rose-200 cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
         </tr>
-      `).join('');
+      `}).join('');
       lucide.createIcons();
     };
 
@@ -970,7 +1092,6 @@
       } catch(e) { showToast("Errore durante l'eliminazione", "error"); }
     };
 
-    // GESTIONE PROMEMORIA E RESET
     window.savePromemoriaSettings = async () => {
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria'), { days: parseInt(document.getElementById('settingsPromemoriaDays').value || 7) });
       showToast("Impostazioni salvate!", "success");
@@ -1016,8 +1137,7 @@
       } catch(e) { showToast("Errore", "error"); }
     };
 
-    // TRACKING DISPOSITIVI E SCANNER COMPANION
-    function renderConnectedDevices() {
+    window.renderConnectedDevices = () => {
       const tbody = document.getElementById('connectedDevicesTableBody');
       if(!tbody) return;
       if(state.devices.length === 0) {
@@ -1034,10 +1154,10 @@
           </tr>
         `).join('');
       }
-    }
+    };
 
     let compStream = null, compActive = false, lastScannedCode = null;
-    function generateCompanionScannerQR() { new QRious({ element: document.getElementById('companionScannerQrCanvas'), value: window.location.origin + window.location.pathname + "?scanner=true", size: 150 }); }
+    window.generateCompanionScannerQR = () => { new QRious({ element: document.getElementById('companionScannerQrCanvas'), value: window.location.origin + window.location.pathname + "?scanner=true", size: 150 }); }
 
     window.openCompanionScannerMode = async () => {
       document.getElementById('wrapperMainSite').classList.add('hidden'); document.getElementById('wrapperCompanionScanner').classList.remove('hidden');
