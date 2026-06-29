@@ -14,6 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <!-- Libreria Grafici Statistiche -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -28,6 +29,8 @@
       75% { transform: translate(calc(var(--moveX) * 1.1), calc(var(--moveY) * -0.5)) scale(1.08) rotate(270deg); }
     }
     @keyframes spinLogo { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse-fast { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    .animate-pulse-fast { animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
     .bubble-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; z-index: 0; }
     .bubble {
@@ -43,6 +46,11 @@
 
     .laser-line { position: absolute; width: 100%; height: 3px; background-color: #10b981; box-shadow: 0 0 15px #34d399, 0 0 30px #10b981; animation: laserMove 2s infinite ease-in-out; z-index: 10; }
     @keyframes laserMove { 0%, 100% { top: 10%; } 50% { top: 90%; } }
+    
+    /* Scrollbar personalizzata per log di sistema */
+    .system-log::-webkit-scrollbar { width: 6px; }
+    .system-log::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
+    .system-log::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 10px; }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col relative font-sans">
@@ -53,7 +61,7 @@
     <nav class="glass-nav sticky top-0 z-40 px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 shadow-sm">
       <div class="flex items-center gap-4 cursor-pointer" onclick="window.navigateTo('home')">
         <div class="relative w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-white/50 shadow-sm overflow-hidden p-1">
-          <img src="levi.png" alt="Logo" class="w-full h-full object-contain">
+          <img src="levi.png" alt="Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black\'>PL</div>';">
         </div>
         <div>
           <h1 class="text-xl font-bold text-indigo-950 leading-tight">ITSCG "Primo Levi"</h1>
@@ -73,6 +81,7 @@
 
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- SEZIONE HOME -->
     <section id="sectionHome" class="space-y-8 flex-grow">
       <main class="container mx-auto px-4 py-6 max-w-5xl relative z-10 space-y-8">
         
@@ -93,9 +102,6 @@
                 <li class="flex items-start gap-2.5"><i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i><span><b>Certificati Rilasciati:</b> Validazione d'Ingresso digitale (all'arrivo) e invio automatico della <b>Pergamena Ufficiale d'Uscita</b> via email al termine dell'evento.</span></li>
               </ul>
             </div>
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[9px] text-slate-400 font-bold">
-              <span>ITSCG "Primo Levi" Seregno</span><span>Codice: MBTD430001</span>
-            </div>
           </div>
         </div>
 
@@ -103,7 +109,7 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-indigo-200 pb-4">
             <div>
               <h3 class="text-2xl font-black text-indigo-950 font-outfit">Seleziona un Giorno Disponibile</h3>
-              <p class="text-xs text-slate-500 font-bold">Iscriviti alla sessione d'indirizzo d'aula. I posti si esauriscono rapidamente.</p>
+              <p class="text-xs text-slate-500 font-bold">Iscriviti alla sessione d'indirizzo d'aula.</p>
             </div>
             <div class="w-full sm:w-auto">
               <label class="text-[10px] font-bold text-indigo-800 uppercase block mb-1">Filtro Intelligente:</label>
@@ -113,105 +119,6 @@
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="groupedDatesGrid"></div>
-        </div>
-
-        <div id="studyPathsSection" class="space-y-6 pt-8 scroll-mt-24">
-          <div class="text-center md:text-left space-y-1 border-b border-slate-300 pb-3">
-            <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 justify-center md:justify-start font-outfit"><i data-lucide="book-open" class="text-indigo-600"></i> Guida Completa ai Nostri Indirizzi</h3>
-            <p class="text-xs text-slate-500 font-bold">Un'offerta formativa d'eccellenza progettata per il successo professionale e accademico.</p>
-          </div>
-          
-          <div class="glass-card p-6 rounded-2xl border border-indigo-100 shadow-sm space-y-3 bg-white/60">
-             <h4 class="font-outfit font-extrabold text-indigo-900 text-lg">IL PROFILO CULTURALE DEL PRIMO LEVI</h4>
-             <p class="text-xs text-slate-600 leading-relaxed font-semibold">L’Istituto Tecnico Statale "Primo Levi" di Seregno rappresenta un polo di eccellenza nel panorama scolastico della Brianza. Tutti i nostri percorsi sono progettati per fornire competenze solide, dinamiche e direttamente spendibili nel mondo accademico e professionale. Attraverso lo studio delle scienze, della programmazione informatica, dello studio mirato delle lingue straniere nel settore economico e dell'analisi tecnica dei flussi logistici, l'Istituto accompagna lo studente verso l'università o l'immediato inserimento in azienda.</p>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="glass-card p-6 rounded-2xl border-l-4 border-indigo-600 shadow-sm md:col-span-2">
-              <div class="flex justify-between items-start border-b border-slate-100 pb-3">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-xl">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</h4>
-                <span class="inline-block bg-indigo-100 text-indigo-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">LICEO</span>
-              </div>
-              <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h5 class="font-bold text-slate-800 text-sm">Scienze Applicate</h5>
-                  <p class="text-xs text-slate-600 mt-2 font-semibold mb-2">Incentrato sul nesso profondo tra cultura scientifico-tecnologica e tradizione umanistica. Sostituisce lo studio del latino con l'Informatica specialistica e le Scienze Sperimentali (Biologia, Chimica, Scienze della Terra, Fisica).</p>
-                  <p class="text-[11px] text-indigo-700 font-bold bg-indigo-50 p-2 rounded-lg border border-indigo-100"><b>Materie Specifiche:</b> Informatica (C++, Database, Web Design), Fisica, Chimica, Biologia.</p>
-                </div>
-                <div>
-                  <h5 class="font-bold text-slate-800 text-sm">Curvatura Economica</h5>
-                  <p class="text-xs text-slate-600 mt-2 font-semibold mb-2">Un percorso unico nel territorio che integra la solida preparazione del liceo scientifico con lo studio strutturato dell'economia e dei mercati finanziari aziendali.</p>
-                  <p class="text-[11px] text-indigo-700 font-bold bg-indigo-50 p-2 rounded-lg border border-indigo-100"><b>Materie Specifiche:</b> Economia Aziendale, Diritto ed Economia Politica, Matematica Finanziaria.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass-card p-6 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg leading-tight">RIM - Relazioni Internazionali per il Marketing</h4>
-                <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">TECNICO</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-2 font-semibold mb-3">Sviluppa competenze approfondite nel campo del business aziendale, della geopolitica e del commercio internazionale, attraverso l'apprendimento e l'uso pratico di tre lingue straniere.</p>
-              <p class="text-[10px] text-emerald-700 font-bold bg-emerald-50 p-2 rounded-md border border-emerald-100 block"><b>Materie:</b> 3 Lingue Straniere, Relazioni Internazionali, Diritto, Economia Aziendale.</p>
-            </div>
-
-            <div class="glass-card p-6 rounded-2xl border-l-4 border-orange-500 shadow-sm">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg leading-tight">LOG - Logistica e Trasporti</h4>
-                <span class="inline-block bg-orange-100 text-orange-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">TECNICO</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-2 font-semibold mb-3">Risponde alla forte richiesta del territorio di manager capaci di governare il flusso delle merci a livello intermodale (terra, aria, mare), coordinando flotte e magazzini complessi.</p>
-              <p class="text-[10px] text-orange-700 font-bold bg-orange-50 p-2 rounded-md border border-orange-100 block"><b>Materie:</b> Logistica, Diritto della Navigazione, Meccanica, Scienze della Navigazione.</p>
-            </div>
-
-            <div class="glass-card p-6 rounded-2xl border-l-4 border-teal-500 shadow-sm">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg leading-tight">CAT - Costruzioni, Ambiente e Territorio</h4>
-                <span class="inline-block bg-teal-100 text-teal-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">TECNICO</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-2 font-semibold mb-3">Evoluzione del tradizionale Geometra. Integra la pianificazione urbanistica, la bioedilizia, l'efficientamento energetico degli edifici e la tutela del territorio con moderni applicativi CAD/BIM.</p>
-              <p class="text-[10px] text-teal-700 font-bold bg-teal-50 p-2 rounded-md border border-teal-100 block"><b>Materie:</b> Progettazione e Costruzioni, Topografia, Estimo, Sicurezza nei Cantieri.</p>
-            </div>
-
-            <div class="glass-card p-6 rounded-2xl border-l-4 border-fuchsia-600 shadow-sm">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-lg leading-tight">MODA - Sistema Moda</h4>
-                <span class="inline-block bg-fuchsia-100 text-fuchsia-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">TECNICO</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-2 font-semibold mb-3">Unione eccellente di creatività e competenze tecniche industriali. Gestisce l'intero ciclo di vita del prodotto moda: dal design di sfilata, alla chimica dei tessuti e al marketing strategico.</p>
-              <p class="text-[10px] text-fuchsia-700 font-bold bg-fuchsia-50 p-2 rounded-md border border-fuchsia-100 block"><b>Materie:</b> Ideazione e Progettazione, Chimica dei Materiali, Tecnologie applicate ai tessuti.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-6 pt-10 border-t border-slate-200">
-          <h3 class="text-3xl font-black text-slate-900 flex items-center gap-2 font-outfit"><i data-lucide="help-circle" class="text-indigo-600"></i> Domande Frequenti</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
-            <div class="glass-card border-l-4 border-indigo-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-indigo-950">Come funziona il sistema di accoglienza con il QR Code?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Al momento della prenotazione riceverai via email un PDF con un QR Code univoco. Ti basterà mostrarlo sul telefono all'ingresso: i docenti lo scannerizzeranno e sarai immediatamente accreditato in aula, azzerando le file.</p>
-            </div>
-            <div class="glass-card border-l-4 border-sky-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-sky-950">Come posso arrivare a scuola con i mezzi pubblici?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Il nostro polo scolastico è servito dai pullman di linea (Fermata "Via Briantina"). Inoltre, la Stazione FS di Seregno dista circa 15/20 minuti a piedi o pochi minuti con i bus urbani in coincidenza con i treni.</p>
-            </div>
-            <div class="glass-card border-l-4 border-violet-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-violet-950">Cosa succede se perdo il mio pass o non lo trovo nella mail?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Nessun problema! Clicca sul pulsante "Recupera Prenotazione" in alto, inserisci il Cognome e Nome dell'alunno, e il sistema ti re-invierà immediatamente il Pass sulla tua casella email.</p>
-            </div>
-            <div class="glass-card border-l-4 border-rose-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-rose-950">Come faccio ad annullare la prenotazione se non posso venire?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Clicca su "Annulla Prenotazione" nel menu in alto. Inserendo i tuoi dati, la tua prenotazione verrà rimossa e il sistema libererà istantaneamente il posto in aula per un'altra famiglia in lista d'attesa.</p>
-            </div>
-            <div class="glass-card border-l-4 border-amber-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-amber-950">Posso prenotare due eventi che non si sovrappongono?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Sì, ma per evitare blocchi del sistema, la doppia prenotazione deve essere eseguita utilizzando due account diversi (inserisci una differente e-mail del genitore per il secondo turno).</p>
-            </div>
-            <div class="glass-card border-l-4 border-emerald-400 rounded-xl bg-white shadow-sm p-5 space-y-2">
-              <h4 class="text-sm font-bold text-emerald-950">Viene rilasciato un attestato di presenza per l'Open Day?</h4>
-              <p class="text-xs text-slate-700 leading-relaxed font-semibold">Certamente. All'ingresso riceverai una convalida digitale. Al termine esatto della visita, il sistema invierà in automatico la tua "Pergamena di Partecipazione" via email da stampare o presentare alla tua scuola media.</p>
-            </div>
-          </div>
         </div>
       </main>
     </section>
@@ -255,11 +162,6 @@
             <div class="p-4 bg-violet-50 border border-violet-200 rounded-xl flex items-start gap-3 shadow-sm">
               <input type="checkbox" id="formInclusione" class="w-5 h-5 rounded text-violet-600 focus:ring-violet-500 mt-0.5 border-slate-300">
               <label for="formInclusione" class="text-[11px] text-slate-700 leading-relaxed cursor-pointer"><strong>Richiesta Colloquio Inclusione:</strong> Spunta questa casella se desideri avere un colloquio privato con i docenti di sostegno e i referenti inclusione al termine dell'evento.</label>
-            </div>
-            
-            <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center gap-3">
-              <input required type="checkbox" id="formPrivacy" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
-              <label for="formPrivacy" class="text-[11px] text-slate-500 cursor-pointer">Consento al trattamento dei dati personali ai sensi del GDPR. *</label>
             </div>
             
             <div id="bookingProgressContainer" class="hidden w-full bg-slate-200 rounded-full h-2.5 mt-2">
@@ -323,20 +225,14 @@
       </form>
     </section>
 
-    <!-- DASHBOARD DOCENTI -->
-    <section id="sectionAdmin" class="hidden container mx-auto px-4 py-8 max-w-7xl space-y-6 flex-grow z-10 relative">
-      <!-- Alert Quota Email Reached -->
-      <div id="adminQuotaAlert" class="hidden bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 rounded shadow-sm mb-4">
-        <div class="flex items-center gap-2 font-bold">
-          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-          <span>Limite Invio Email Google Raggiunto! (100/giorno). Le nuove iscrizioni e gli ingressi verranno salvati in coda per evitare blocchi al sistema.</span>
-        </div>
-      </div>
-
+    <!-- DASHBOARD DOCENTI AVANZATA -->
+    <section id="sectionAdmin" class="hidden container mx-auto px-4 py-8 max-w-[1400px] space-y-6 flex-grow z-10 relative">
+      
       <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-200 pb-4">
         <h2 class="text-2xl font-black text-slate-900 font-outfit flex items-center gap-2"><i data-lucide="layout-dashboard" class="text-indigo-600"></i> Dashboard Docenti</h2>
         <div class="flex flex-wrap gap-2">
           <button onclick="window.switchAdminTab('tabRegistrations')" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Registro</button>
+          <button onclick="window.switchAdminTab('tabSmartEmail')" class="px-4 py-2.5 bg-slate-800 text-white font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i> Motore E-mail</button>
           <button onclick="window.switchAdminTab('tabLiveScanner')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Scanner Tel.</button>
           <button onclick="window.switchAdminTab('tabSettings')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Impostazioni</button>
           <button onclick="window.switchAdminTab('tabStatistics')" class="px-5 py-2.5 bg-slate-200 text-slate-800 font-bold rounded-xl text-xs shadow-sm uppercase tracking-wider">Statistiche</button>
@@ -344,7 +240,91 @@
         </div>
       </div>
 
-      <div id="tabRegistrations" class="space-y-4">
+      <!-- TAB: MOTORE E-MAIL AUTOMATICO (SMART QUEUE) -->
+      <div id="tabSmartEmail" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Stato Sistema -->
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm bg-white col-span-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <h4 class="font-outfit font-black text-indigo-950 text-lg flex items-center gap-2"><i data-lucide="activity" class="text-indigo-600 w-5 h-5"></i> Stato Sistema</h4>
+                <div id="engineStatusIndicator" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border border-emerald-200">
+                  <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-fast"></div> Attivo
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                    <span>Quota E-mail Google (Oggi)</span>
+                    <span id="aiQuotaText" class="text-indigo-700">0 / 100</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div id="aiQuotaBar" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                  <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-center">
+                    <span class="block text-[9px] font-black text-slate-400 uppercase">Da Inviare (In Coda)</span>
+                    <span class="block text-xl font-black text-amber-600" id="aiQueueTotal">0</span>
+                  </div>
+                  <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-center">
+                    <span class="block text-[9px] font-black text-slate-400 uppercase">Timer Aggiornamento</span>
+                    <span class="block text-xl font-black text-emerald-600" id="aiTimerTotal">30s</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100">
+               <p class="text-[10px] text-slate-500 font-bold leading-relaxed">Il motore intelligente elabora automaticamente le code ogni 30 secondi, preservando la quota giornaliera di Gmail. Tieni questa dashboard aperta per l'invio asincrono.</p>
+            </div>
+          </div>
+
+          <!-- Dettaglio Code & Log -->
+          <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm bg-white col-span-1 lg:col-span-2">
+            <h4 class="font-outfit font-black text-indigo-950 text-lg flex items-center gap-2 mb-4 border-b border-slate-100 pb-2"><i data-lucide="layers" class="text-indigo-600 w-5 h-5"></i> Code Prioritarie e Logs</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div class="border border-rose-200 bg-rose-50 p-3 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[10px] font-black text-rose-800 uppercase tracking-wider">Q1 (Booking)</span>
+                  <span class="text-base font-black text-rose-600" id="q1Count">0</span>
+                </div>
+              </div>
+              <div class="border border-amber-200 bg-amber-50 p-3 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[10px] font-black text-amber-800 uppercase tracking-wider">Q2 (Promo)</span>
+                  <span class="text-base font-black text-amber-600" id="q2Count">0</span>
+                </div>
+              </div>
+              <div class="border border-emerald-200 bg-emerald-50 p-3 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[10px] font-black text-emerald-800 uppercase tracking-wider">Q3 (Pergamene)</span>
+                  <span class="text-base font-black text-emerald-600" id="q3Count">0</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="border border-slate-800 bg-[#0f172a] p-4 rounded-2xl flex flex-col h-40">
+               <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-700">
+                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"><i data-lucide="terminal" class="w-3 h-3"></i> System Operations Log</span>
+                 <button onclick="window.SmartEmailEngine.flushNow()" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded font-bold uppercase transition">Forza Esecuzione Ora</button>
+               </div>
+               <div id="engineConsoleLog" class="system-log flex-grow overflow-y-auto text-[10px] font-mono text-emerald-400 space-y-1.5 scroll-smooth">
+                  <div><span class="text-slate-500">[--:--:--]</span> Sistema pronto. In attesa di dati...</div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB REGISTRAZIONI -->
+      <div id="tabRegistrations" class="space-y-4 hidden">
         <div class="flex justify-between items-center">
           <button onclick="window.exportToExcel()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-2 uppercase tracking-wider transition"><i data-lucide="download" class="w-4 h-4"></i> Esporta CSV</button>
           <select id="filterDateSelect" onchange="window.renderRegistrations()" class="p-2.5 border border-slate-200 rounded-xl text-xs font-bold shadow-sm outline-none bg-white text-slate-700"></select>
@@ -368,6 +348,7 @@
         </div>
       </div>
 
+      <!-- TAB LIVE SCANNER -->
       <div id="tabLiveScanner" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="glass-card p-8 rounded-3xl border border-slate-200 shadow-md text-center flex flex-col justify-center items-center bg-white">
@@ -380,7 +361,7 @@
             <h4 class="text-lg font-black text-indigo-950 font-outfit mb-4 border-b border-slate-100 pb-2 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-indigo-600"></i> Dispositivi Connessi Live</h4>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
               <table class="w-full text-left text-xs">
-                <thead><tr class="bg-slate-50 text-slate-500 border-b font-bold"><th class="p-3">ID Dispositivo (IP)</th><th class="p-3">Stato</th><th class="p-3 text-center">Pass Scansionati</th></tr></thead>
+                <thead><tr class="bg-slate-50 text-slate-500 border-b font-bold"><th class="p-3">ID Dispositivo</th><th class="p-3">Stato</th><th class="p-3 text-center">Pass Scansionati</th></tr></thead>
                 <tbody id="connectedDevicesTableBody"><tr><td colspan="3" class="p-4 text-center text-slate-400 font-semibold italic">Nessun dispositivo attualmente connesso.</td></tr></tbody>
               </table>
             </div>
@@ -388,6 +369,7 @@
         </div>
       </div>
 
+      <!-- TAB IMPOSTAZIONI -->
       <div id="tabSettings" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           
@@ -429,7 +411,7 @@
                 <button onclick="window.triggerResetDatabase()" class="px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black uppercase transition shadow-md flex justify-center items-center gap-2 w-full">
                   <i data-lucide="trash-2" class="w-4 h-4"></i> SVUOTA ISCRITTI
                 </button>
-                <button onclick="window.triggerResetDates()" class="px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black uppercase transition shadow-md flex justify-center items-center gap-2 w-full">
+                <button onclick="window.triggerResetDates()" class="px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black uppercase transition shadow-md flex justify-center items-center gap-2 w-full">
                   <i data-lucide="calendar-off" class="w-4 h-4"></i> SVUOTA CALENDARIO
                 </button>
               </div>
@@ -567,11 +549,11 @@
       <form onsubmit="window.saveEditReg(event)" class="space-y-4 font-semibold text-xs text-slate-600">
         <input type="hidden" id="editRegCode">
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Cognome</label><input required type="text" id="editRegCognome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome</label><input required type="text" id="editRegNome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Cognome</label><input required type="text" id="editRegCognome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome</label><input required type="text" id="editRegNome" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
         </div>
-        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Email</label><input required type="email" id="editRegEmail" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
-        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Totali</label><input required type="number" min="1" id="editRegPosti" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-bold"></div>
+        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Email</label><input required type="email" id="editRegEmail" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+        <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Totali</label><input required type="number" min="1" id="editRegPosti" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
         <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-md mt-2 uppercase tracking-widest">Salva Modifiche</button>
       </form>
     </div>
@@ -584,16 +566,16 @@
       <form onsubmit="window.saveEditDate(event)" class="space-y-4 font-semibold text-xs text-slate-600">
         <input type="hidden" id="editDateId">
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Data</label><input required type="date" id="editDateValue" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Orario</label><input required type="text" id="editDateTime" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Data</label><input required type="date" id="editDateValue" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Orario</label><input required type="text" id="editDateTime" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Aula</label><input required type="text" id="editDateAula" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"></div>
-          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Max</label><input required type="number" min="1" id="editDateSeats" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500 font-bold"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Aula</label><input required type="text" id="editDateAula" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
+          <div><label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Posti Max</label><input required type="number" min="1" id="editDateSeats" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none"></div>
         </div>
         <div>
           <label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Indirizzo</label>
-          <select required id="editDatePath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
+          <select required id="editDatePath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold text-slate-700">
             <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
             <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
             <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
@@ -622,16 +604,16 @@
         <button type="submit" id="btnSubmitRecovery" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition shadow-lg mt-2 uppercase tracking-widest flex justify-center items-center gap-2">Invia Conferma via Email</button>
       </form>
     </div>
-    <div id="recoveryModalSuccessView" class="hidden glass-card w-full max-w-md p-8 rounded-3xl text-center shadow-2xl">
+    <div id="recoveryModalSuccessView" class="hidden glass-card w-full max-w-md p-8 rounded-3xl text-center shadow-2xl bg-white">
       <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8"></i></div>
       <h3 class="text-2xl font-black text-emerald-600 font-outfit mb-3">Inviato con Successo!</h3>
-      <p class="text-sm font-semibold text-slate-600 mb-6" id="recoveryModalMessage">Controlla la tua casella e-mail, troverai la prenotazione in allegato.</p>
+      <p class="text-sm font-semibold text-slate-600 mb-6" id="recoveryModalMessage">Il recupero è stato messo in coda. Arriverà a breve.</p>
       <button onclick="window.closeModal('recoveryModal')" class="w-full px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black uppercase tracking-wider rounded-xl transition">Chiudi Finestra</button>
     </div>
   </div>
 
   <div id="cancelModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div id="cancelModalFormView" class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl">
+    <div id="cancelModalFormView" class="glass-card w-full max-w-md p-8 rounded-3xl relative shadow-2xl bg-white">
       <button onclick="window.closeModal('cancelModal')" class="absolute top-5 right-5 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition"><i data-lucide="x" class="w-4 h-4"></i></button>
       <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-100"><i data-lucide="trash-2" class="w-6 h-6"></i></div>
       <h3 class="text-xl font-black text-center font-outfit mb-6 text-slate-900">Annulla Prenotazione</h3>
@@ -645,7 +627,7 @@
         <button type="submit" id="btnSubmitCancellation" class="w-full py-4 bg-rose-600 hover:bg-rose-500 text-white font-black rounded-xl transition shadow-lg mt-2 uppercase tracking-widest">Conferma Annullamento</button>
       </form>
     </div>
-    <div id="cancelModalSuccessView" class="hidden glass-card w-full max-w-md p-8 rounded-3xl text-center shadow-2xl">
+    <div id="cancelModalSuccessView" class="hidden glass-card w-full max-w-md p-8 rounded-3xl text-center shadow-2xl bg-white">
       <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8"></i></div>
       <h3 class="text-2xl font-black text-emerald-600 font-outfit mb-3">Annullato con Successo!</h3>
       <p class="text-sm font-semibold text-slate-600 mb-6">La prenotazione è stata rimossa. Abbiamo liberato i posti in aula per altre famiglie.</p>
@@ -672,22 +654,21 @@
     const db = getFirestore(app);
     const appId = 'openday-primolevi-seregno';
 
-    // Endpoints
+    // --- SOSTITUISCI QUESTI LINK CON I TUOI SCRIPT GOOGLE REALI ---
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx934SuTzxYNzb82Tn9_kwPfTbAQFBQv5kGoqtIBP1GAlPdnICUAG2tFSYAnKhmf1P6Ow/exec"; 
     const CANCEL_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw/exec"; 
     const ATTESTATO_ENTRATA_URL = "https://script.google.com/macros/s/AKfycbxbNQs3Hk6aeDaZHeJXN-W_sN6xPcle3vXg1fwvufiEWEJmGcpOZG90EfQm1IYAbdnT_A/exec"; 
     const ATTESTATO_USCITA_URL = "https://script.google.com/macros/s/AKfycbz7HGansC00c1b-Awu3w-4iQ8y59zZhm5KmiOHzD8ERkB6gCu-QWOt7EklisQyr6XIglA/exec";
 
-    let state = { user: null, currentView: 'home', isAdminAuthed: false, dates: [], registrations: [], currentBooking: null, devices: [], emailQuota: { count: 0, date: '' } };
-    let chartIndirizziInstance = null;
-    let chartStatoInstance = null;
-    let myIpAddress = "IP Nascosto";
+    let state = { 
+      user: null, currentView: 'home', isAdminAuthed: false, 
+      dates: [], registrations: [], currentBooking: null, devices: [], emailQuota: { count: 0, date: '' } 
+    };
 
-    // Funzione Utility per la Maiuscola Iniziale
-    function toTitleCase(str) {
-      if(!str) return "";
-      return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    }
+    // Fissate le istanze dei grafici come variabili globali di window per evitare errori di scope in transpilation/compilation
+    window.chartIndirizziInstance = null;
+    window.chartStatoInstance = null;
+    let myIpAddress = "IP Nascosto";
 
     // Prendi IP per Dashboard
     fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{ myIpAddress = d.ip; }).catch(e=>{});
@@ -698,7 +679,7 @@
       return id + ' (' + myIpAddress + ')';
     };
 
-    // --- FUNZIONI GLOBALI ---
+    // --- FUNZIONI DI UTILITA' GLOBALI ---
     function showToast(msg, type='success') {
       const c = document.getElementById('toastContainer');
       if(!c) return;
@@ -709,8 +690,197 @@
       setTimeout(() => t.remove(), 4000);
     }
     window.showToast = showToast;
+    
+    function toTitleCase(str) { return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); }
 
-    // --- GESTIONE QUOTA EMAIL GIORNALIERA (MAX 100/GG) ---
+    // --- GENERATORE PDF CLIENT-SIDE ---
+    async function generateReceiptPDF(data, code) {
+      const { jsPDF } = window.jspdf; 
+      const docObj = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      
+      docObj.setDrawColor(79, 70, 229); docObj.setLineWidth(2); docObj.rect(10, 10, 190, 277);
+      docObj.setFillColor(30, 27, 75); docObj.rect(12, 12, 186, 35, 'F');
+      docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(24); docObj.text('ITSCG "PRIMO LEVI"', 105, 28, { align: 'center' });
+      docObj.setFont('helvetica', 'normal'); docObj.setFontSize(11); docObj.setTextColor(199, 210, 254); docObj.text('PASS UFFICIALE OPEN DAY 2026/2027', 105, 38, { align: 'center' });
+      
+      docObj.setTextColor(15, 23, 42); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(16); docObj.text('DETTAGLI PRENOTAZIONE', 105, 65, { align: 'center' });
+      
+      docObj.setDrawColor(226, 232, 240); docObj.setFillColor(248, 250, 252); docObj.setLineWidth(0.5); docObj.rect(20, 75, 170, 115, 'FD');
+      
+      let startY = 88; const lineH = 13; docObj.setFontSize(11);
+      const addField = (label, value, y) => { docObj.setFont('helvetica', 'bold'); docObj.setTextColor(100, 116, 139); docObj.text(label, 25, y); docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(String(value), 75, y); };
+      
+      addField('Studente:', `${data.cognome} ${data.nome}`, startY);
+      addField('Codice Ingresso:', code, startY + lineH);
+      addField('Indirizzo Scelto:', docObj.splitTextToSize(data.studyPath, 110), startY + lineH*2);
+      addField('Data e Orario:', data.dateStr, startY + lineH*3);
+      addField('Posti Riservati:', `${data.totalPeople} Persona/e`, startY + lineH*4);
+      addField('Scuola Prov.:', docObj.splitTextToSize(data.provenienza, 110), startY + lineH*5);
+      addField('Inclusione:', data.inclusione ? 'Richiesto Colloquio' : 'Non richiesto', startY + lineH*6);
+      addField('Stato:', 'CONFERMATO / ISCRITTO', startY + lineH*7);
+      
+      try { const c = document.createElement('canvas'); new QRious({ element: c, value: code, size: 250, level: 'H' }); docObj.addImage(c.toDataURL('image/jpeg'), 'JPEG', 145, 140, 38, 38); } catch(e){}
+      
+      docObj.setFontSize(13); docObj.setTextColor(30, 27, 75); docObj.text("ISTRUZIONI PER L'INGRESSO", 105, 210, { align: 'center' });
+      docObj.setFont('helvetica', 'normal'); docObj.setFontSize(11); docObj.setTextColor(71, 85, 105);
+      const instructions = "Presentati all'ingresso dell'istituto 10 minuti prima dell'inizio del tuo turno. Tieni a portata di mano questo pass (puoi mostrarlo direttamente dallo schermo del tuo smartphone senza stamparlo). Il codice QR verrà scansionato dai docenti per convalidare la tua presenza e garantirti l'accesso all'aula di presentazione e ai laboratori.";
+      docObj.text(docObj.splitTextToSize(instructions, 150), 105, 220, { align: 'center', lineHeightFactor: 1.5 });
+      
+      docObj.setFillColor(241, 245, 249); docObj.rect(12, 272, 186, 13, 'F'); docObj.setFontSize(9); docObj.setTextColor(100, 116, 139); docObj.text('ITSCG "Primo Levi" | Via Briantina, 68 - Seregno (MB) | orientamento@leviseregno.edu.it', 105, 280, { align: 'center' });
+      
+      return docObj.output('datauristring').split(',')[1];
+    }
+    window.generateReceiptPDF = generateReceiptPDF;
+
+    // --- MOTORE INTELLIGENTE EMAIL (SMART QUEUE ENGINE) ---
+    const SmartEmailEngine = {
+      maxDaily: 100,
+      reserveQ1: 40, 
+      safeLimit: 90, 
+      batchSize: 2,  
+      intervalMs: 30000, 
+      timerId: null,
+      isProcessing: false,
+      
+      start() {
+        if(this.timerId) clearInterval(this.timerId);
+        this.log("Motore E-mail Avviato. In attesa di elaborare le code...");
+        this.timerId = setInterval(() => this.processQueues(), this.intervalMs);
+        this.updateDashboard();
+      },
+      
+      stop() {
+        if(this.timerId) clearInterval(this.timerId);
+        this.log("Motore E-mail Fermato.", "warning");
+      },
+
+      flushNow() {
+        this.log("Esecuzione forzata manuale...");
+        this.processQueues();
+      },
+
+      log(msg, type="info") {
+        const consoleEl = document.getElementById('engineConsoleLog');
+        if(!consoleEl) return;
+        const time = new Date().toLocaleTimeString('it-IT', { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
+        let color = type === "error" ? "text-rose-400" : (type === "warning" ? "text-amber-400" : "text-emerald-400");
+        consoleEl.innerHTML += `<div class="${color}"><span class="text-slate-500">[${time}]</span> ${msg}</div>`;
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      },
+
+      async processQueues() {
+        if (this.isProcessing) return;
+        this.isProcessing = true;
+
+        const today = new Date().toLocaleDateString('it-IT');
+        let quotaSnap;
+        try { quotaSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'email_quota')); } catch(e){}
+        if (quotaSnap && quotaSnap.exists()) {
+          state.emailQuota = quotaSnap.data();
+          if (state.emailQuota.date !== today) { state.emailQuota = { date: today, count: 0 }; }
+        } else { state.emailQuota = { date: today, count: 0 }; }
+        
+        let q1 = [], q2 = [], q3 = [];
+        
+        state.registrations.forEach(r => {
+          if (r.passSentDate && r.passSentDate.includes('IN_CODA')) q1.push({reg: r, type: 'pass', url: CONFIRM_SCRIPT_URL});
+          if (r.promemoriaSentDate && r.promemoriaSentDate.includes('IN_CODA')) q2.push({reg: r, type: 'promemoria', url: CONFIRM_SCRIPT_URL});
+          if (r.presenzaSentDate && r.presenzaSentDate.includes('IN_CODA')) q3.push({reg: r, type: 'presenza', url: ATTESTATO_ENTRATA_URL});
+          if (r.pergamenaSentDate && r.pergamenaSentDate.includes('IN_CODA')) q3.push({reg: r, type: 'pergamena', url: ATTESTATO_USCITA_URL});
+        });
+
+        this.updateDashboard(q1.length, q2.length, q3.length);
+
+        if (q1.length === 0 && q2.length === 0 && q3.length === 0) {
+          this.isProcessing = false;
+          return; 
+        }
+        
+        let availableQuota = this.maxDaily - state.emailQuota.count;
+        
+        if (availableQuota <= 0) {
+          this.log("LIMITE GIORNALIERO RAGGIUNTO! Tutte le code sono sospese fino a domani.", "error");
+          const indicator = document.getElementById('engineStatusIndicator');
+          if (indicator) {
+            indicator.className = "flex items-center gap-1.5 bg-rose-50 text-rose-700 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border border-rose-200";
+            indicator.innerHTML = '<div class="w-2 h-2 rounded-full bg-rose-500"></div> Bloccato';
+          }
+          this.isProcessing = false;
+          return;
+        }
+
+        let batchToProcess = [];
+        
+        if (q1.length > 0) {
+           batchToProcess = q1.slice(0, this.batchSize);
+           this.log(`Elaborazione Batch Q1: ${batchToProcess.length} elementi.`);
+        } 
+        else if (q2.length > 0 && availableQuota > this.reserveQ1) {
+           batchToProcess = q2.slice(0, this.batchSize);
+           this.log(`Elaborazione Batch Q2: ${batchToProcess.length} elementi.`);
+        } 
+        else if (q3.length > 0 && availableQuota > this.safeLimit) {
+           batchToProcess = q3.slice(0, this.batchSize);
+           this.log(`Elaborazione Batch Q3: ${batchToProcess.length} elementi.`);
+        } 
+        else {
+           if(q2.length > 0 || q3.length > 0) {
+             this.log(`Invio sospeso per preservare la riserva prenotazioni (${availableQuota} rimasti).`, "warning");
+           }
+        }
+
+        for (const item of batchToProcess) {
+           await this.dispatchEmail(item);
+           await new Promise(r => setTimeout(r, 1000));
+        }
+
+        this.isProcessing = false;
+      },
+
+      async dispatchEmail(item) {
+        const fieldMap = { 'pass':'passSentDate', 'promemoria':'promemoriaSentDate', 'presenza':'presenzaSentDate', 'pergamena':'pergamenaSentDate' };
+        try {
+          this.log(`Invio [${item.type.toUpperCase()}] per ${item.reg.code} -> ${item.reg.email}...`);
+          
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', item.reg.code), { [fieldMap[item.type]]: 'ELABORAZIONE' });
+          
+          let payload = {...item.reg, type: item.type};
+
+          if (item.type === 'pass' || item.type === 'promemoria' || item.type === 'recupero') {
+             this.log("Generazione PDF di alta qualità in corso...");
+             const pdfBase64 = await window.generateReceiptPDF(item.reg, item.reg.code);
+             payload.pdfBase64 = pdfBase64;
+          }
+
+          fetch(item.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+            .catch(e => { });
+          
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', item.reg.code), { [fieldMap[item.type]]: new Date().toLocaleString('it-IT') });
+          
+          state.emailQuota.count++;
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'email_quota'), { date: state.emailQuota.date, count: state.emailQuota.count });
+          
+          this.log(`Completato ${item.reg.code}. Quota residua: ${this.maxDaily - state.emailQuota.count}`, "success");
+          this.updateDashboard();
+        } catch(e) {
+          this.log(`Errore per ${item.reg.code}. Rimetto in coda.`, "error");
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', item.reg.code), { [fieldMap[item.type]]: 'IN_CODA_RETRY' });
+        }
+      },
+
+      updateDashboard(q1=0, q2=0, q3=0) {
+        if(document.getElementById('aiQuotaText')) document.getElementById('aiQuotaText').innerText = `${state.emailQuota.count} / 100`;
+        if(document.getElementById('aiQuotaBar')) document.getElementById('aiQuotaBar').style.width = `${state.emailQuota.count}%`;
+        if(document.getElementById('aiQueueTotal')) document.getElementById('aiQueueTotal').innerText = q1+q2+q3;
+        if(document.getElementById('q1Count')) document.getElementById('q1Count').innerText = q1;
+        if(document.getElementById('q2Count')) document.getElementById('q2Count').innerText = q2;
+        if(document.getElementById('q3Count')) document.getElementById('q3Count').innerText = q3;
+        if(document.getElementById('adminEmailQuotaText')) document.getElementById('adminEmailQuotaText').innerText = `${state.emailQuota.count} / 100`;
+      }
+    };
+    window.SmartEmailEngine = SmartEmailEngine;
+
+    // --- GESTIONE QUOTA EMAIL GIORNALIERA ---
     async function checkAndIncrementQuota() {
       const today = new Date().toLocaleDateString('it-IT');
       const quotaRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'email_quota');
@@ -724,7 +894,7 @@
         }
         
         if (data.count >= 95) { 
-          return false; // Quota quasi raggiunta
+          return false; 
         }
         
         data.count++;
@@ -732,16 +902,17 @@
         return true; 
       } catch (err) {
         console.error("Quota error", err);
-        return true; // Se Firebase fallisce il check, provo lo stesso
+        return true; 
       }
     }
+    window.checkAndIncrementQuota = checkAndIncrementQuota;
 
-    // --- FUNZIONE CENTRALE INVIO A GOOGLE SCRIPT ---
-    window.inviaEmailScript = async (url, payload) => {
+    async function inviaEmailScript(url, payload) {
       try {
         await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       } catch (err) { console.error("Errore fetch sincrono:", err); }
-    };
+    }
+    window.inviaEmailScript = inviaEmailScript;
 
     function navigateTo(t) {
       state.currentView = t; 
@@ -757,6 +928,7 @@
           window.renderRegistrations(); 
           window.renderAdminDatesList(); 
           checkAndSendPromemoria(); 
+          window.SmartEmailEngine.start();
         }
         else document.getElementById('sectionLogin').classList.remove('hidden'); 
       }
@@ -765,14 +937,26 @@
     }
     window.navigateTo = navigateTo;
 
-    window.logoutAdmin = () => { state.isAdminAuthed = false; navigateTo('home'); showToast("Uscita effettuata.", "info"); };
-    window.scrollToSection = id => { navigateTo('home'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150); };
-    window.toggleAdminPanel = () => state.currentView === 'admin' ? navigateTo('home') : navigateTo('admin');
-    window.switchAdminTab = id => { ['tabRegistrations','tabLiveScanner','tabSettings','tabStatistics'].forEach(t => document.getElementById(t).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); };
+    function logoutAdmin() { state.isAdminAuthed = false; window.SmartEmailEngine.stop(); window.navigateTo('home'); showToast("Uscita effettuata.", "info"); }
+    window.logoutAdmin = logoutAdmin;
+
+    function scrollToSection(id) { window.navigateTo('home'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150); }
+    window.scrollToSection = scrollToSection;
+
+    function toggleAdminPanel() { state.currentView === 'admin' ? window.navigateTo('home') : window.navigateTo('admin'); }
+    window.toggleAdminPanel = toggleAdminPanel;
+
+    function switchAdminTab(id) { ['tabRegistrations','tabLiveScanner','tabSettings','tabStatistics','tabSmartEmail'].forEach(t => document.getElementById(t)?.classList.add('hidden')); document.getElementById(id)?.classList.remove('hidden'); }
+    window.switchAdminTab = switchAdminTab;
     
-    window.openRecoveryModal = () => { document.getElementById('recoveryModalFormView').classList.remove('hidden'); document.getElementById('recoveryModalSuccessView').classList.add('hidden'); document.getElementById('recoveryModal').classList.remove('hidden'); };
-    window.openCancelModal = () => { document.getElementById('cancelModalFormView').classList.remove('hidden'); document.getElementById('cancelModalSuccessView').classList.add('hidden'); document.getElementById('cancelModal').classList.remove('hidden'); };
-    window.closeModal = id => document.getElementById(id).classList.add('hidden');
+    function openRecoveryModal() { document.getElementById('recoveryModalFormView').classList.remove('hidden'); document.getElementById('recoveryModalSuccessView').classList.add('hidden'); document.getElementById('recoveryModal').classList.remove('hidden'); }
+    window.openRecoveryModal = openRecoveryModal;
+
+    function openCancelModal() { document.getElementById('cancelModalFormView').classList.remove('hidden'); document.getElementById('cancelModalSuccessView').classList.add('hidden'); document.getElementById('cancelModal').classList.remove('hidden'); }
+    window.openCancelModal = openCancelModal;
+
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    window.closeModal = closeModal;
 
     async function startApp() {
       try { await signInAnonymously(auth); } catch(e) {}
@@ -812,21 +996,6 @@
         s.forEach(d => state.devices.push({id: d.id, ...d.data()}));
         if(state.currentView === 'admin') window.renderConnectedDevices();
       });
-      onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'email_quota'), snap => {
-        if(snap.exists()) {
-          state.emailQuota = snap.data();
-          const today = new Date().toLocaleDateString('it-IT');
-          if (state.emailQuota.date === today) {
-            const quotaTxt = document.getElementById('adminEmailQuotaText');
-            if(quotaTxt) quotaTxt.innerText = `${state.emailQuota.count} / 100`;
-            const alertBox = document.getElementById('adminQuotaAlert');
-            if(alertBox) {
-              if (state.emailQuota.count >= 95) alertBox.classList.remove('hidden');
-              else alertBox.classList.add('hidden');
-            }
-          }
-        }
-      });
       getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria')).then(docSnap => {
         if (docSnap.exists() && document.getElementById('settingsPromemoriaDays')) {
           document.getElementById('settingsPromemoriaDays').value = docSnap.data().days || 7;
@@ -849,7 +1018,7 @@
       }
     }
 
-    window.renderHomeDates = () => {
+    function renderHomeDates() {
       const container = document.getElementById('groupedDatesGrid');
       const filterVal = document.getElementById('userPathFilter')?.value || 'all';
       if(!container) return;
@@ -886,9 +1055,10 @@
           </div>`;
       }).join('');
       try { lucide.createIcons(); } catch(e){}
-    };
+    }
+    window.renderHomeDates = renderHomeDates;
 
-    window.updateStatistics = () => {
+    function updateStatistics() {
       const ctxIndirizzi = document.getElementById('chartIndirizzi');
       const ctxStato = document.getElementById('chartStato');
       if (!ctxIndirizzi || !ctxStato) return;
@@ -927,34 +1097,42 @@
       const txtPartecipazione = document.getElementById('statsTextPartecipazione');
       if(txtPartecipazione) txtPartecipazione.innerHTML = `Tasso di affluenza reale in sede del <strong>${tassoPresenza}%</strong>. Sono stati erogati ad oggi <strong>${statusCount['Concluso']}</strong> certificati.`;
 
-      if(chartIndirizziInstance) chartIndirizziInstance.destroy();
-      chartIndirizziInstance = new Chart(ctxIndirizzi, {
+      // Risolto l'errore di scope referenziando window.chartIndirizziInstance in modo esplicito
+      if(window.chartIndirizziInstance) window.chartIndirizziInstance.destroy();
+      window.chartIndirizziInstance = new Chart(ctxIndirizzi, {
         type: 'doughnut',
         data: { labels: Object.keys(pathsCount), datasets: [{ data: Object.values(pathsCount), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#14b8a6', '#d946ef', '#3b82f6'] }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } }
       });
 
-      if(chartStatoInstance) chartStatoInstance.destroy();
-      chartStatoInstance = new Chart(ctxStato, {
+      if(window.chartStatoInstance) window.chartStatoInstance.destroy();
+      window.chartStatoInstance = new Chart(ctxStato, {
         type: 'bar',
         data: { labels: Object.keys(statusCount), datasets: [{ label: 'Studenti', data: Object.values(statusCount), backgroundColor: ['#6366f1', '#3b82f6', '#10b981', '#f43f5e'], borderRadius: 6 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
-    };
+    }
+    window.updateStatistics = updateStatistics;
 
-    window.startBookingProcess = sid => {
+    function startBookingProcess(sid) {
       const target = state.dates.find(x => x.id === sid);
       if (!target) return;
       document.getElementById('formEventId').value = sid;
       document.getElementById('lblBookingPath').innerText = target.studyPath;
       document.getElementById('lblBookingDate').innerText = `${new Date(target.date).toLocaleDateString('it-IT')} • Ore ${target.timeSlot}`;
       document.getElementById('lblBookingAula').innerText = target.aula;
-      navigateTo('booking');
-    };
+      window.navigateTo('booking');
+    }
+    window.startBookingProcess = startBookingProcess;
 
-    window.cancelBookingProcess = () => { document.getElementById('bookingForm').reset(); navigateTo('home'); setTimeout(() => document.getElementById('datesSection')?.scrollIntoView({ behavior: 'smooth' }), 100); };
-    window.recalcTotalSeats = () => { document.getElementById('lblTotalFormSeats').innerText = parseInt(document.getElementById('formNumAlunni').value||1) + parseInt(document.getElementById('formNumAccompagnatori').value||0); };
-    window.resetAndGoHome = () => { document.getElementById('bookingForm').reset(); navigateTo('home'); };
+    function cancelBookingProcess() { document.getElementById('bookingForm').reset(); window.navigateTo('home'); setTimeout(() => document.getElementById('datesSection')?.scrollIntoView({ behavior: 'smooth' }), 100); }
+    window.cancelBookingProcess = cancelBookingProcess;
+
+    function recalcTotalSeats() { document.getElementById('lblTotalFormSeats').innerText = parseInt(document.getElementById('formNumAlunni').value||1) + parseInt(document.getElementById('formNumAccompagnatori').value||0); }
+    window.recalcTotalSeats = recalcTotalSeats;
+
+    function resetAndGoHome() { document.getElementById('bookingForm').reset(); window.navigateTo('home'); }
+    window.resetAndGoHome = resetAndGoHome;
 
     function setProgress(percent, text) {
       const c = document.getElementById('bookingProgressContainer');
@@ -966,7 +1144,7 @@
       if(percent === 100) setTimeout(()=>c.classList.add('hidden'), 1000);
     }
 
-    window.handleBookingSubmit = async (e) => {
+    async function handleBookingSubmit(e) {
       e.preventDefault();
       const targetSession = state.dates.find(x => x.id === document.getElementById('formEventId').value);
       const submitBtn = document.getElementById('btnSubmitBooking');
@@ -975,48 +1153,29 @@
 
       try {
         const code = `LEVI-${Math.floor(1000 + Math.random()*9000)}`;
-        // Title Case on Input
-        const cognome = toTitleCase(document.getElementById('formCognome').value.trim());
-        const nome = toTitleCase(document.getElementById('formNome').value.trim());
-        
         const regData = {
-          code, cognome: cognome, nome: nome, 
-          provenienza: toTitleCase(document.getElementById('formProvenienza').value.trim()), 
-          email: document.getElementById('formEmail').value.trim(), 
+          code, cognome: toTitleCase(document.getElementById('formCognome').value.trim()), nome: toTitleCase(document.getElementById('formNome').value.trim()), 
+          provenienza: toTitleCase(document.getElementById('formProvenienza').value.trim()), email: document.getElementById('formEmail').value.trim(), 
           totalPeople: parseInt(document.getElementById('formNumAlunni').value) + parseInt(document.getElementById('formNumAccompagnatori').value), 
           dateId: targetSession.id, studyPath: targetSession.studyPath, dateStr: `${new Date(targetSession.date).toLocaleDateString('it-IT')} • ${targetSession.timeSlot}`,
-          status: 'Iscritto', inclusione: document.getElementById('formInclusione').checked, passSentDate: ''
+          status: 'Iscritto', inclusione: document.getElementById('formInclusione').checked, passSentDate: 'IN_CODA_Q1'
         };
         state.currentBooking = regData;
 
-        setProgress(40, "Verifica Quota Mail...");
-        const canSendMail = await checkAndIncrementQuota();
-
-        setProgress(60, "Salvataggio Dati...");
-        
-        if (canSendMail) {
-           regData.passSentDate = new Date().toLocaleString('it-IT');
-           window.inviaEmailScript(CONFIRM_SCRIPT_URL, { ...regData, type: 'pass' });
-        } else {
-           regData.passSentDate = "IN CODA"; // Limite raggiunto
-           document.getElementById('confirmationEmailStatus').innerText = "L'iscrizione è confermata! La mail di riepilogo è in coda (arriverà più tardi).";
-        }
-
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
         
-        setProgress(100, "Completato!");
-
         document.getElementById('ticketCode').innerText = code;
         document.getElementById('ticketStudent').innerText = `${regData.cognome} ${regData.nome}`;
-        document.getElementById('ticketPath').innerText = regData.studyPath;
-        document.getElementById('ticketDate').innerText = regData.dateStr;
-
         submitBtn.disabled = false;
-        navigateTo('confirmation');
+        
+        if(window.SmartEmailEngine.isProcessing === false) window.SmartEmailEngine.flushNow();
+        
+        window.navigateTo('confirmation');
       } catch(err) { submitBtn.disabled = false; setProgress(0,""); showToast("Errore di connessione.", "error"); }
-    };
+    }
+    window.handleBookingSubmit = handleBookingSubmit;
 
-    window.downloadTicketPDF = async () => {
+    async function downloadTicketPDF() {
       if(!state.currentBooking) return;
       showToast("Download PDF in corso...", "success");
       try {
@@ -1026,46 +1185,10 @@
         link.download = `Pass_Levi_${state.currentBooking.cognome}.pdf`; 
         link.click();
       } catch(e) { showToast("Errore di generazione PDF.", "error"); }
-    };
-
-    async function generateReceiptPDF(data, code) {
-      const { jsPDF } = window.jspdf; 
-      const docObj = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      
-      docObj.setDrawColor(79, 70, 229); docObj.setLineWidth(2); docObj.rect(10, 10, 190, 277);
-      docObj.setFillColor(30, 27, 75); docObj.rect(12, 12, 186, 35, 'F');
-      docObj.setTextColor(255, 255, 255); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(24); docObj.text('ITSCG "PRIMO LEVI"', 105, 28, { align: 'center' });
-      docObj.setFont('helvetica', 'normal'); docObj.setFontSize(11); docObj.setTextColor(199, 210, 254); docObj.text('PASS UFFICIALE OPEN DAY 2026/2027', 105, 38, { align: 'center' });
-      
-      docObj.setTextColor(15, 23, 42); docObj.setFont('helvetica', 'bold'); docObj.setFontSize(16); docObj.text('DETTAGLI PRENOTAZIONE', 105, 65, { align: 'center' });
-      
-      docObj.setDrawColor(226, 232, 240); docObj.setFillColor(248, 250, 252); docObj.setLineWidth(0.5); docObj.rect(20, 75, 170, 115, 'FD');
-      
-      let startY = 88; const lineH = 13; docObj.setFontSize(11);
-      const addField = (label, value, y) => { docObj.setFont('helvetica', 'bold'); docObj.setTextColor(100, 116, 139); docObj.text(label, 25, y); docObj.setFont('helvetica', 'bold'); docObj.setTextColor(15, 23, 42); docObj.text(String(value), 75, y); };
-      
-      addField('Studente:', `${data.cognome} ${data.nome}`, startY);
-      addField('Codice Ingresso:', code, startY + lineH);
-      addField('Indirizzo Scelto:', docObj.splitTextToSize(data.studyPath, 110), startY + lineH*2);
-      addField('Data e Orario:', data.dateStr, startY + lineH*3);
-      addField('Posti Riservati:', `${data.totalPeople} Persona/e`, startY + lineH*4);
-      addField('Scuola Prov.:', docObj.splitTextToSize(data.provenienza, 110), startY + lineH*5);
-      addField('Inclusione:', data.inclusione ? 'Richiesto Colloquio' : 'Non richiesto', startY + lineH*6);
-      addField('Stato:', 'CONFERMATO / ISCRITTO', startY + lineH*7);
-      
-      try { const c = document.createElement('canvas'); new QRious({ element: c, value: code, size: 250, level: 'H' }); docObj.addImage(c.toDataURL('image/jpeg'), 'JPEG', 145, 140, 38, 38); } catch(e){}
-      
-      docObj.setFontSize(13); docObj.setTextColor(30, 27, 75); docObj.text("ISTRUZIONI PER L'INGRESSO", 105, 210, { align: 'center' });
-      docObj.setFont('helvetica', 'normal'); docObj.setFontSize(11); docObj.setTextColor(71, 85, 105);
-      const instructions = "Presentati all'ingresso dell'istituto 10 minuti prima dell'inizio del tuo turno. Tieni a portata di mano questo pass (puoi mostrarlo direttamente dallo schermo del tuo smartphone senza stamparlo). Il codice QR verrà scansionato dai docenti per convalidare la tua presenza e garantirti l'accesso all'aula di presentazione e ai laboratori.";
-      docObj.text(docObj.splitTextToSize(instructions, 150), 105, 220, { align: 'center', lineHeightFactor: 1.5 });
-      
-      docObj.setFillColor(241, 245, 249); docObj.rect(12, 272, 186, 13, 'F'); docObj.setFontSize(9); docObj.setTextColor(100, 116, 139); docObj.text('ITSCG "Primo Levi" | Via Briantina, 68 - Seregno (MB) | orientamento@leviseregno.edu.it', 105, 280, { align: 'center' });
-      
-      return docObj.output('datauristring').split(',')[1];
     }
+    window.downloadTicketPDF = downloadTicketPDF;
 
-    window.handleRecovery = async (e) => {
+    async function handleRecovery(e) {
       e.preventDefault();
       const codeTerm = document.getElementById('recoveryCode').value.trim();
       const cogTerm = document.getElementById('recoveryCognome').value.trim().toLowerCase();
@@ -1075,20 +1198,24 @@
       let reg = codeTerm ? state.registrations.find(x => x.code === codeTerm.toUpperCase()) : state.registrations.find(x => x.cognome.toLowerCase() === cogTerm && x.nome.toLowerCase() === nomTerm);
       if(!reg) { return showToast("Prenotazione non trovata.", "error"); }
 
-      const canSend = await checkAndIncrementQuota();
-      if(!canSend) {
-         showToast("Limite Email di Google raggiunto. Impossibile inviare recupero.", "warning");
-         return;
+      const btn = document.getElementById('btnSubmitRecovery');
+      btn.innerHTML = `<span class="animate-pulse">Invio in corso...</span>`;
+      btn.disabled = true;
+
+      try { 
+        const pdfBase64 = await generateReceiptPDF(reg, reg.code);
+        await window.inviaEmailScript(CONFIRM_SCRIPT_URL, { ...reg, pdfBase64: pdfBase64, type: 'recupero' }); 
+        document.getElementById('recoveryModalFormView').classList.add('hidden');
+        document.getElementById('recoveryModalSuccessView').classList.remove('hidden');
+      } catch(err) {
+        showToast("Errore durante l'invio.", "error");
       }
+      btn.innerHTML = `Invia Conferma via Email`;
+      btn.disabled = false;
+    }
+    window.handleRecovery = handleRecovery;
 
-      document.getElementById('recoveryModalFormView').classList.add('hidden');
-      document.getElementById('recoveryModalSuccessView').classList.remove('hidden');
-      document.getElementById('recoveryModalMessage').innerText = "Controlla la tua casella e-mail, troverai la prenotazione in allegato.";
-
-      window.inviaEmailScript(CONFIRM_SCRIPT_URL, { ...reg, type: 'recupero' });
-    };
-
-    window.handleCancellation = async (e) => {
+    async function handleCancellation(e) {
       e.preventDefault();
       const codeTerm = document.getElementById('cancelCode').value.trim();
       const cogTerm = document.getElementById('cancelCognome').value.trim().toLowerCase();
@@ -1098,23 +1225,36 @@
       let reg = codeTerm ? state.registrations.find(x => x.code === codeTerm.toUpperCase()) : state.registrations.find(x => x.cognome.toLowerCase() === cogTerm && x.nome.toLowerCase() === nomTerm);
       if(!reg) { return showToast("Nessuna prenotazione trovata.", "error"); }
 
-      document.getElementById('cancelModalFormView').classList.add('hidden');
-      document.getElementById('cancelModalSuccessView').classList.remove('hidden');
+      const btn = document.getElementById('btnSubmitCancellation');
+      btn.innerHTML = `<span class="animate-pulse">Annullamento in corso...</span>`;
+      btn.disabled = true;
 
       try {
+        await window.inviaEmailScript(CANCEL_SCRIPT_URL, reg);
         await window.triggerManualDelete(reg.code, true);
-        const canSend = await checkAndIncrementQuota();
-        if(canSend) {
-          window.inviaEmailScript(CANCEL_SCRIPT_URL, reg);
-        }
-      } catch(err) {}
-    };
+        document.getElementById('cancelModalFormView').classList.add('hidden');
+        document.getElementById('cancelModalSuccessView').classList.remove('hidden');
+      } catch(err) {
+        showToast("Errore durante l'annullamento.", "error");
+      }
+      btn.innerHTML = `Conferma Annullamento`;
+      btn.disabled = false;
+    }
+    window.handleCancellation = handleCancellation;
 
-    // ADMIN DASHBOARD
-    window.handleAdminLogin = (e) => { e.preventDefault(); if (document.getElementById('adminPasswordInput').value === 'admin') { state.isAdminAuthed = true; navigateTo('admin'); window.generateCompanionScannerQR(); } else showToast("Chiave errata", "error"); };
+    function handleAdminLogin(e) { 
+      e.preventDefault(); 
+      if (document.getElementById('adminPasswordInput').value === 'admin') { 
+        state.isAdminAuthed = true; 
+        window.navigateTo('admin'); 
+        window.generateCompanionScannerQR(); 
+      } else {
+        showToast("Chiave errata", "error"); 
+      }
+    }
+    window.handleAdminLogin = handleAdminLogin;
     
-    // MODIFICA ISCRITTO
-    window.openEditRegModal = (code) => {
+    function openEditRegModal(code) {
       const reg = state.registrations.find(r => r.code === code);
       if(!reg) return;
       document.getElementById('editRegCode').value = reg.code;
@@ -1123,9 +1263,10 @@
       document.getElementById('editRegEmail').value = reg.email;
       document.getElementById('editRegPosti').value = reg.totalPeople;
       document.getElementById('editRegModal').classList.remove('hidden');
-    };
+    }
+    window.openEditRegModal = openEditRegModal;
 
-    window.saveEditReg = async (e) => {
+    async function saveEditReg(e) {
       e.preventDefault();
       const code = document.getElementById('editRegCode').value;
       try {
@@ -1138,10 +1279,10 @@
         showToast("Iscrizione modificata con successo!");
         window.closeModal('editRegModal');
       } catch(err) { showToast("Errore durante la modifica.", "error"); }
-    };
+    }
+    window.saveEditReg = saveEditReg;
 
-    // MODIFICA TURNO
-    window.openEditDateModal = (id) => {
+    function openEditDateModal(id) {
       const d = state.dates.find(x => x.id === id);
       if(!d) return;
       document.getElementById('editDateId').value = d.id;
@@ -1151,9 +1292,10 @@
       document.getElementById('editDateSeats').value = d.maxSeats;
       document.getElementById('editDatePath').value = d.studyPath;
       document.getElementById('editDateModal').classList.remove('hidden');
-    };
+    }
+    window.openEditDateModal = openEditDateModal;
 
-    window.saveEditDate = async (e) => {
+    async function saveEditDate(e) {
       e.preventDefault();
       const id = document.getElementById('editDateId').value;
       try {
@@ -1167,9 +1309,10 @@
         showToast("Turno aggiornato con successo!");
         window.closeModal('editDateModal');
       } catch(err) { showToast("Errore durante la modifica.", "error"); }
-    };
+    }
+    window.saveEditDate = saveEditDate;
 
-    window.renderRegistrations = () => {
+    function renderRegistrations() {
       const tbody = document.getElementById('registrationsTableBody');
       if(!tbody) return;
       const f = document.getElementById('filterDateSelect')?.value || 'all';
@@ -1180,28 +1323,25 @@
       tbody.innerHTML = list.map(r => {
         const fmtDate = (dString) => {
             if(!dString || dString === 'Mai') return 'Mai';
-            if(dString === 'IN CODA') return '<span class="text-amber-500 font-black animate-pulse">IN CODA</span>';
+            if(dString.includes('IN_CODA') || dString.includes('ELAB')) return '<span class="text-amber-500 font-black animate-pulse">IN CODA AI</span>';
             try { let d = new Date(dString.split(', ')[0].split('/').reverse().join('-') + 'T' + dString.split(', ')[1]); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`; } catch(e){ return dString;}
         };
         return `
-        <tr id="riga-${r.code}" class="border-b hover:bg-slate-50 transition">
+        <tr id="riga-${r.code}" class="border-b border-slate-100 hover:bg-slate-50 transition text-xs font-semibold text-slate-700">
           <td class="p-4 align-top">
             <div class="font-mono font-bold text-indigo-600 text-sm">${r.code}</div>
-            <div class="text-[10px] text-slate-500 font-bold mt-1 bg-slate-200 inline-block px-2 py-0.5 rounded cella-stato">${r.status || 'Iscritto'}</div>
+            <div class="text-[10px] text-slate-500 font-bold mt-1 bg-slate-200 inline-block px-2 py-0.5 rounded">${r.status || 'Iscritto'}</div>
           </td>
-          <td class="p-4 align-top">
-            <div class="font-black text-slate-900 text-sm">${r.cognome} <br> ${r.nome}</div>
-            <div class="text-[10px] text-slate-500 mt-1">Scuola: ${r.provenienza}</div>
-          </td>
+          <td class="p-4 align-top font-black text-slate-900">${r.cognome.toUpperCase()} <br> ${r.nome.toUpperCase()}</td>
           <td class="p-4 text-xs align-top">
             <div class="font-semibold text-slate-700">${r.email}</div>
-            <div class="text-[11px] text-slate-600 font-bold mt-1">Posti: ${r.totalPeople}</div>
+            <div class="text-[11px] text-slate-600 font-bold mt-1">Posti: ${r.totalPeople} | Scuola: ${r.provenienza}</div>
           </td>
           <td class="p-4 text-xs align-top">
             <div class="font-bold text-slate-800 text-[10px] truncate max-w-[150px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
             <div class="text-[11px] text-indigo-600 font-black mt-1">${r.dateStr}</div>
           </td>
-          <td class="p-4 text-center align-top"><input type="checkbox" ${r.inclusione ? 'checked' : ''} onchange="window.updateDocField('${r.code}', 'inclusione', this.checked)" class="w-5 h-5 cursor-pointer accent-violet-600"></td>
+          <td class="p-4 text-center align-top"><input type="checkbox" disabled ${r.inclusione ? 'checked' : ''} class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 bg-white border-slate-300"></td>
           <td class="p-4 text-center align-top">
             <select onchange="window.updateDocField('${r.code}', 'status', this.value)" class="p-2 border border-slate-300 rounded-lg text-xs bg-white outline-none font-bold text-slate-800 shadow-sm cursor-pointer w-24">
               <option value="Iscritto" ${r.status==='Iscritto'?'selected':''}>Iscritto</option>
@@ -1212,39 +1352,50 @@
           </td>
           <td class="p-4 text-center align-top">
             <div class="flex flex-col gap-1.5 w-[140px] mx-auto text-left">
-              <button onclick="window.triggerEmail('${r.code}','pass', this)" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>1. Pass</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.passSentDate)}</span></button>
-              <button onclick="window.triggerEmail('${r.code}','promemoria', this)" class="bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>2. P.Moria</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.promemoriaSentDate)}</span></button>
-              <button onclick="window.triggerEmail('${r.code}','presenza', this)" class="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>3. Ingr.</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.presenzaSentDate)}</span></button>
-              <button onclick="window.triggerEmail('${r.code}','pergamena', this)" class="bg-violet-50 border border-violet-200 hover:bg-violet-100 text-violet-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>4. Uscita</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.pergamenaSentDate)}</span></button>
+              <button onclick="window.triggerEmailQueue('${r.code}','pass')" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>1. Pass</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.passSentDate)}</span></button>
+              <button onclick="window.triggerEmailQueue('${r.code}','presenza')" class="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>2. Ingr.</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.presenzaSentDate)}</span></button>
+              <button onclick="window.triggerEmailQueue('${r.code}','pergamena')" class="bg-violet-50 border border-violet-200 hover:bg-violet-100 text-violet-800 px-2 py-1.5 rounded-lg text-[9px] font-black flex justify-between items-center transition cursor-pointer"><span>3. Uscita</span><span class="font-mono text-[9px] opacity-80">${fmtDate(r.pergamenaSentDate)}</span></button>
             </div>
           </td>
           <td class="p-4 text-right align-top">
             <div class="flex flex-col gap-2">
-              <button onclick="window.openEditRegModal('${r.code}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition cursor-pointer flex items-center justify-center" title="Modifica Iscrizione"><i data-lucide="edit" class="w-4 h-4"></i></button>
-              <button onclick="window.triggerManualDelete('${r.code}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer flex items-center justify-center" title="Elimina Iscrizione"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              <button onclick="window.openEditRegModal('${r.code}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 rounded-lg transition border border-transparent hover:border-sky-200 flex items-center justify-center cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i></button>
+              <button onclick="window.triggerManualDelete('${r.code}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg transition border border-transparent hover:border-rose-200 flex items-center justify-center cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </td>
         </tr>
       `}).join('');
-      lucide.createIcons();
-    };
+      try{ lucide.createIcons(); } catch(e){}
+    }
+    window.renderRegistrations = renderRegistrations;
 
-    window.updateDocField = async (code, field, value) => {
+    async function updateDocField(code, field, value) {
       await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [field]: value });
-      
       if (field === 'status') {
         const reg = state.registrations.find(x => x.code === code);
         if (value === 'Ammesso') {
-          showToast("Stato aggiornato ad Ammesso. Avvio invio mail Ingresso...");
-          window.triggerEmail(code, 'presenza');
-        } else if (value === 'Concluso') {
-          showToast("Stato aggiornato a Concluso. Avvio invio mail Pergamena...");
-          window.triggerEmail(code, 'pergamena');
+           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { presenzaSentDate: 'IN_CODA_Q3' });
+           showToast("Presenza accodata con successo nel motore Email.", "info");
         }
+        else if (value === 'Concluso') {
+           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { pergamenaSentDate: 'IN_CODA_Q3' });
+           showToast("Pergamena accodata con successo nel motore Email.", "info");
+        }
+        window.SmartEmailEngine.flushNow();
       }
-    };
+    }
+    window.updateDocField = updateDocField;
 
-    window.triggerManualDelete = async (code, silent = false) => {
+    async function triggerEmailQueue(code, type) {
+      const fieldMap = { 'pass':'passSentDate', 'promemoria':'promemoriaSentDate', 'presenza':'presenzaSentDate', 'pergamena':'pergamenaSentDate' };
+      const priority = (type === 'pass') ? 'Q1' : (type === 'promemoria' ? 'Q2' : 'Q3');
+      await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [fieldMap[type]]: `IN_CODA_${priority}` });
+      showToast("Email accodata. Verrà gestita dal Motore AI in background.", "info");
+      window.SmartEmailEngine.flushNow();
+    }
+    window.triggerEmailQueue = triggerEmailQueue;
+
+    async function triggerManualDelete(code, silent = false) {
       if(!silent && !confirm("Cancellare definitivamente questo iscritto dal database?")) return;
       try {
         const riga = document.getElementById(`riga-${code}`);
@@ -1252,78 +1403,17 @@
         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code));
         if(!silent) showToast("Eliminato.", "success");
       } catch(e) { if(!silent) showToast("Errore durante l'eliminazione", "error"); }
-    };
+    }
+    window.triggerManualDelete = triggerManualDelete;
 
-    window.triggerEmail = async (code, type, btnElement) => {
-      const reg = state.registrations.find(x => x.code === code);
-      if(!reg) return;
-      
-      let originalText = "";
-      if(btnElement) {
-        originalText = btnElement.innerHTML;
-        btnElement.innerHTML = `<span class="animate-pulse">Attendere...</span>`; 
-        btnElement.disabled = true;
-      }
-      
-      const canSend = await checkAndIncrementQuota();
-      const fieldMap = { 'pass':'passSentDate', 'promemoria':'promemoriaSentDate', 'presenza':'presenzaSentDate', 'pergamena':'pergamenaSentDate' };
-
-      if (!canSend) {
-         showToast("Limite Email Quotidiane Raggiunto! Email salvata IN CODA.", "warning");
-         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [fieldMap[type]]: "IN CODA" });
-         if(btnElement) { btnElement.innerHTML = originalText; btnElement.disabled = false; }
-         return;
-      }
-
-      const time = new Date().toLocaleString('it-IT');
-      try {
-        if(type === 'pass' || type === 'promemoria') {
-          const pdfBase64 = await generateReceiptPDF(reg, reg.code);
-          window.inviaEmailScript(CONFIRM_SCRIPT_URL, { ...reg, pdfBase64: pdfBase64, type: type });
-        } else if (type === 'presenza') {
-          window.inviaEmailScript(ATTESTATO_ENTRATA_URL, reg);
-        } else if (type === 'pergamena') {
-          window.inviaEmailScript(ATTESTATO_USCITA_URL, reg);
-        }
-        
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [fieldMap[type]]: time });
-        showToast("E-mail inviata con successo!", "success");
-      } catch(e) { 
-        showToast("Errore d'invio di rete", "error"); 
-      }
-      if(btnElement) { btnElement.innerHTML = originalText; btnElement.disabled = false; }
-    };
-
-    window.sendPendingEmails = async () => {
-      const pendingRegs = state.registrations.filter(r => 
-        (r.status === 'Ammesso' && r.presenzaSentDate === 'IN CODA') || 
-        (r.status === 'Concluso' && r.pergamenaSentDate === 'IN CODA') ||
-        (r.passSentDate === 'IN CODA') || (r.promemoriaSentDate === 'IN CODA')
-      );
-      
-      if(pendingRegs.length === 0) {
-        showToast("Nessuna email in coda da inviare.", "info");
-        return;
-      }
-
-      showToast(`Inizio invio di ${pendingRegs.length} email in coda...`, "info");
-      
-      for(const r of pendingRegs) {
-        if(r.passSentDate === 'IN CODA') await triggerEmail(r.code, 'pass');
-        if(r.promemoriaSentDate === 'IN CODA') await triggerEmail(r.code, 'promemoria');
-        if(r.status === 'Ammesso' && r.presenzaSentDate === 'IN CODA') await triggerEmail(r.code, 'presenza');
-        if(r.status === 'Concluso' && r.pergamenaSentDate === 'IN CODA') await triggerEmail(r.code, 'pergamena');
-      }
-      showToast("Completato l'invio delle mail in coda.", "success");
-    };
-
-    window.exportToExcel = () => {
+    function exportToExcel() {
       let csv = "Codice;Cognome;Nome;Email;Turno;Indirizzo;Stato;Inclusione\n";
       state.registrations.forEach(r => csv += `${r.code};${r.cognome};${r.nome};${r.email};${r.dateStr};${r.studyPath};${r.status};${r.inclusione?'Si':'No'}\n`);
       const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); link.download = "iscritti_primolevi.csv"; link.click();
-    };
+    }
+    window.exportToExcel = exportToExcel;
 
-    window.handleCreateTurno = async (e) => {
+    async function handleCreateTurno(e) {
       e.preventDefault();
       const newId = "date-" + Date.now();
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', newId), {
@@ -1332,70 +1422,67 @@
         studyPath: document.getElementById('newTurnoPath').value
       });
       showToast("Turno aggiunto!", "success"); e.target.reset();
-    };
+    }
+    window.handleCreateTurno = handleCreateTurno;
 
-    window.renderAdminDatesList = () => {
+    function renderAdminDatesList() {
       const tbody = document.getElementById('adminDatesTableBody');
       if(!tbody) return;
       const sortedDates = [...state.dates].sort((a, b) => new Date(a.date) - new Date(b.date) || a.timeSlot.localeCompare(b.timeSlot));
       tbody.innerHTML = sortedDates.map(d => {
         const booked = state.registrations.filter(r => r.dateId === d.id).reduce((sum, r) => sum + parseInt(r.totalPeople||1), 0);
         return `
-        <tr class="border-b hover:bg-slate-50 transition">
-          <td class="p-3 font-bold text-slate-800">${new Date(d.date).toLocaleDateString('it-IT')}</td>
+        <tr class="border-b hover:bg-slate-50 transition text-slate-700">
+          <td class="p-3 font-bold">${new Date(d.date).toLocaleDateString('it-IT')}</td>
           <td class="p-3 font-mono font-bold">${d.timeSlot}</td>
-          <td class="p-3 text-indigo-700 font-bold text-xs">${d.studyPath}</td>
-          <td class="p-3 font-semibold text-slate-600">${d.aula}</td>
-          <td class="p-3 text-center font-bold text-slate-800">${booked} / ${d.maxSeats}</td>
+          <td class="p-3 text-indigo-700 font-bold text-[10px]">${d.studyPath}</td>
+          <td class="p-3 font-semibold">${d.aula}</td>
+          <td class="p-3 text-center font-bold text-slate-900">${booked} / ${d.maxSeats}</td>
           <td class="p-3 text-right">
             <div class="flex justify-end gap-2">
-              <button onclick="window.openEditDateModal('${d.id}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i></button>
-              <button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2.5 text-rose-500 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              <button onclick="window.openEditDateModal('${d.id}')" class="p-2 text-sky-600 hover:bg-sky-50 rounded-xl transition border border-transparent hover:border-sky-200"><i data-lucide="edit" class="w-4 h-4"></i></button>
+              <button onclick="window.triggerDeleteTurno('${d.id}')" class="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition border border-transparent hover:border-rose-200"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </td>
         </tr>
       `}).join('');
       lucide.createIcons();
-    };
+    }
+    window.renderAdminDatesList = renderAdminDatesList;
 
-    window.triggerDeleteTurno = async (id) => {
+    async function triggerDeleteTurno(id) {
       if(!confirm("Rimuovere questo turno dal calendario?")) return;
-      try {
-        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
-        showToast("Turno rimosso.", "success");
-      } catch(e) { showToast("Errore durante l'eliminazione", "error"); }
-    };
+      await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id));
+      showToast("Turno rimosso.", "success");
+    }
+    window.triggerDeleteTurno = triggerDeleteTurno;
 
-    window.savePromemoriaSettings = async () => {
+    async function savePromemoriaSettings() {
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'promemoria'), { days: parseInt(document.getElementById('settingsPromemoriaDays').value || 7) });
       showToast("Impostazioni salvate!", "success");
-    };
+    }
+    window.savePromemoriaSettings = savePromemoriaSettings;
 
-    async function checkAndSendPromemoria() {
+    function checkAndSendPromemoria() {
       if(!window.promemoriaDays) return;
       const today = new Date();
-      for (const reg of state.registrations) {
+      state.registrations.forEach(reg => {
          const targetDate = state.dates.find(d => d.id === reg.dateId)?.date;
-         if(!targetDate || reg.promemoriaSentDate) continue; 
+         if(!targetDate || reg.promemoriaSentDate) return; 
          
          const eventDate = new Date(targetDate);
          const diffTime = Math.abs(eventDate - today);
          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
          
          if(diffDays <= window.promemoriaDays && eventDate >= today) {
-            const canSend = await checkAndIncrementQuota();
-            if (canSend) {
-              const pdfBase64 = await generateReceiptPDF(reg, reg.code);
-              window.inviaEmailScript(CONFIRM_SCRIPT_URL, { ...reg, pdfBase64: pdfBase64, type: 'promemoria' });
-              await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { promemoriaSentDate: new Date().toLocaleString('it-IT') });
-            } else {
-              await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { promemoriaSentDate: "IN CODA" });
-            }
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', reg.code), { promemoriaSentDate: 'IN_CODA_Q2' });
          }
-      }
+      });
+      window.SmartEmailEngine.flushNow();
     }
+    window.checkAndSendPromemoria = checkAndSendPromemoria;
 
-    window.triggerResetDatabase = async () => {
+    async function triggerResetDatabase() {
       if (!confirm("ATTENZIONE: Svuotare archivio registrazioni?") || prompt("Scrivi RESET per confermare") !== "RESET") return;
       try {
         const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
@@ -1404,9 +1491,10 @@
         await Promise.all(promises);
         showToast("Archivio iscritti svuotato", "success");
       } catch(e) { showToast("Errore", "error"); }
-    };
+    }
+    window.triggerResetDatabase = triggerResetDatabase;
 
-    window.triggerResetDates = async () => {
+    async function triggerResetDates() {
       if (!confirm("ATTENZIONE: Eliminare tutti i turni dal calendario?") || prompt("Scrivi RESET per confermare") !== "RESET") return;
       try {
         const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dates'));
@@ -1415,9 +1503,10 @@
         await Promise.all(promises);
         showToast("Calendario turni svuotato", "success");
       } catch(e) { showToast("Errore", "error"); }
-    };
+    }
+    window.triggerResetDates = triggerResetDates;
 
-    window.renderConnectedDevices = () => {
+    function renderConnectedDevices() {
       const tbody = document.getElementById('connectedDevicesTableBody');
       if(!tbody) return;
       if(state.devices.length === 0) {
@@ -1434,12 +1523,14 @@
           </tr>
         `).join('');
       }
-    };
+    }
+    window.renderConnectedDevices = renderConnectedDevices;
 
     let compStream = null, compActive = false, lastScannedCode = null;
-    window.generateCompanionScannerQR = () => { new QRious({ element: document.getElementById('companionScannerQrCanvas'), value: window.location.origin + window.location.pathname + "?scanner=true", size: 150 }); }
+    function generateCompanionScannerQR() { new QRious({ element: document.getElementById('companionScannerQrCanvas'), value: window.location.origin + window.location.pathname + "?scanner=true", size: 150 }); }
+    window.generateCompanionScannerQR = generateCompanionScannerQR;
 
-    window.openCompanionScannerMode = async () => {
+    async function openCompanionScannerMode() {
       document.getElementById('wrapperMainSite').classList.add('hidden'); document.getElementById('wrapperCompanionScanner').classList.remove('hidden');
       try {
         const myDeviceId = getDeviceId();
@@ -1449,11 +1540,13 @@
         document.getElementById('companionVideo').srcObject = compStream; document.getElementById('companionVideo').play();
         compActive = true; requestAnimationFrame(tickComp);
       } catch(e) {}
-    };
+    }
+    window.openCompanionScannerMode = openCompanionScannerMode;
 
-    window.exitCompanionScanner = () => { compActive = false; compStream?.getTracks().forEach(t=>t.stop()); window.location.href = window.location.origin + window.location.pathname; };
+    function exitCompanionScanner() { compActive = false; compStream?.getTracks().forEach(t=>t.stop()); window.location.href = window.location.origin + window.location.pathname; }
+    window.exitCompanionScanner = exitCompanionScanner;
 
-    async function tickComp() {
+    function tickComp() {
       if(!compActive) return;
       const video = document.getElementById('companionVideo'), canvas = document.getElementById('companionCanvas'), ctx = canvas.getContext("2d", { willReadFrequently: true });
       if(video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -1477,15 +1570,8 @@
               document.getElementById('scannerScannedPath').innerText = reg.studyPath;
               document.getElementById('scannerSuccessOverlay').classList.remove('hidden');
               
-              const canSendIngresso = await checkAndIncrementQuota();
-              if(canSendIngresso) {
-                window.inviaEmailScript(ATTESTATO_ENTRATA_URL, reg);
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Ammesso', presenzaSentDate: new Date().toLocaleString('it-IT') });
-              } else {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Ammesso', presenzaSentDate: 'IN CODA' });
-              }
+              updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Ammesso', presenzaSentDate: 'IN_CODA_Q3' });
               
-              // SCHEDULA LA PERGAMENA E LA CONCLUSIONE CALCOLANDO 7 MINUTI DOPO LA FINE DELL'EVENTO
               const targetDateObj = state.dates.find(d => d.id === reg.dateId);
               let delayMs = 7 * 60 * 1000; 
               if (targetDateObj) {
@@ -1504,16 +1590,11 @@
               }
 
               setTimeout(async () => {
-                 const canSendUscita = await checkAndIncrementQuota();
-                 if (canSendUscita) {
-                    window.inviaEmailScript(ATTESTATO_USCITA_URL, reg);
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Concluso', pergamenaSentDate: new Date().toLocaleString('it-IT') });
-                 } else {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Concluso', pergamenaSentDate: 'IN CODA' });
-                 }
+                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', qrData), { status: 'Concluso', pergamenaSentDate: 'IN_CODA_Q3' });
+                 window.SmartEmailEngine.flushNow();
               }, delayMs);
 
-              setTimeout(() => { document.getElementById('scannerSuccessOverlay').classList.add('hidden'); lastScannedCode = null; }, 4000);
+              setTimeout(() => { document.getElementById('scannerSuccessOverlay').classList.add('hidden'); lastScannedCode = null; window.SmartEmailEngine.flushNow(); }, 4000);
             } else {
                setTimeout(() => lastScannedCode = null, 2000); 
             }
@@ -1525,6 +1606,8 @@
 
     function initBubbles() {
       const c = document.getElementById('bubbleContainer');
+      if(!c) return;
+      c.innerHTML = '';
       for (let i = 0; i < 20; i++) {
         const b = document.createElement('div'); b.className = 'bubble';
         const s = Math.random() * 80 + 70; b.style.width = `${s}px`; b.style.height = `${s}px`;
@@ -1535,7 +1618,18 @@
         b.appendChild(img); c.appendChild(b);
       }
     }
-    window.onload = () => { startApp(); initBubbles(); lucide.createIcons(); };
+
+    function initApp() {
+      startApp();
+      initBubbles();
+      try { lucide.createIcons(); } catch(e) {}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>
