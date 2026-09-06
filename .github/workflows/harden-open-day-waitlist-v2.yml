@@ -1,0 +1,48 @@
+name: Hardening lista attesa Open Day
+
+on:
+  push:
+    paths:
+      - 'tools/harden_open_day_waitlist_v2.py'
+      - '.github/workflows/harden-open-day-waitlist-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Applica correzioni lista attesa
+        run: python tools/harden_open_day_waitlist_v2.py
+
+      - name: Verifica meccanismo e sintassi
+        run: |
+          grep -q "OPEN_DAY_WAITLIST_V1" index.html
+          grep -q "const WAITLIST_TYPE = 'lista_attesa'" index.html
+          grep -q "const booked = activeSeatsFor(d.id)" index.html
+          grep -q "if (isWaitlistRegistration(reg)) return" index.html
+          grep -q "Curvatura Economica" index.html
+          ! grep -q "Curvatura Economia)" index.html
+          grep -q "formNumAlunni" index.html
+          grep -q "formNumAccompagnatori" index.html
+          python - <<'PY'
+          import re
+          h=open('index.html',encoding='utf-8').read()
+          scripts=re.findall(r'<script type="module">(.*?)</script>',h,re.S)
+          assert scripts, 'Script module non trovato'
+          open('/tmp/open-day-module.mjs','w',encoding='utf-8').write(scripts[-1])
+          PY
+          node --check /tmp/open-day-module.mjs
+          echo OPEN_DAY_WAITLIST_V2_STATIC_CHECK_OK
+
+      - name: Commit finale e pulizia
+        run: |
+          git config user.name "giuseppeborzumati-cmyk"
+          git config user.email "giuseppe.borzumati@leviseregno.edu.it"
+          git add index.html
+          git rm tools/harden_open_day_waitlist_v2.py .github/workflows/harden-open-day-waitlist-v2.yml
+          git commit -m "Consolida lista attesa e conteggio posti Open Day"
+          git push
