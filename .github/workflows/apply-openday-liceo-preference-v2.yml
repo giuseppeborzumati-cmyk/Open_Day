@@ -1,0 +1,31 @@
+name: Applica indirizzo liceo Open Day v2
+on:
+  push:
+    paths:
+      - 'tools/apply_openday_liceo_preference_v2.py'
+      - '.github/workflows/apply-openday-liceo-preference-v2.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica modifica Open Day
+        run: python tools/apply_openday_liceo_preference_v2.py
+      - name: Verifica elementi richiesti
+        run: |
+          grep -q "OPEN_DAY_LICEO_PREFERENCE_V2" index.html
+          grep -q "formLiceoPreference" index.html
+          grep -q "liceoPreference" index.html
+          grep -q "Preferenza liceo" index.html
+          grep -q "while (queue.length && available > 0)" index.html
+          echo OPEN_DAY_LICEO_LIST_CHECK_OK
+      - name: Pubblica e rimuove strumenti temporanei
+        run: |
+          git config user.name "giuseppeborzumati-cmyk"
+          git config user.email "giuseppe.borzumati@leviseregno.edu.it"
+          git add index.html
+          git rm tools/apply_openday_liceo_preference_v2.py .github/workflows/apply-openday-liceo-preference-v2.yml
+          git commit -m "Aggiunge scelta indirizzo liceo e preferenza nella lista Open Day"
+          git push
