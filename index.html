@@ -138,7 +138,7 @@
           <div class="grid md:grid-cols-2 gap-6">
             <div class="glass-card p-6 rounded-2xl border-l-4 border-indigo-600 shadow-sm md:col-span-2">
               <div class="flex justify-between items-start border-b border-slate-100 pb-3">
-                <h4 class="font-outfit font-extrabold text-slate-950 text-xl">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</h4>
+                <h4 class="font-outfit font-extrabold text-slate-950 text-xl">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)</h4>
                 <span class="inline-block bg-indigo-100 text-indigo-800 text-[10px] font-black px-2 py-0.5 rounded ml-2">LICEO</span>
               </div>
               <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -541,7 +541,7 @@
               <div class="space-y-1.5">
                 <label class="text-[10px] uppercase font-bold text-slate-500">Percorso di Studio Abbinato *</label>
                 <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold text-slate-700">
-                  <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
+                  <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)</option>
                   <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
                   <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
                   <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
@@ -686,7 +686,7 @@
         <div>
           <label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Indirizzo</label>
           <select required id="editDatePath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
-            <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)</option>
+            <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)</option>
             <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
             <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
             <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
@@ -772,6 +772,9 @@
     const waitlistOwnerId = `OD-WEB-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     let openDayWaitlistMode = false;
     let openDayWaitlistReconcileTimer = null;
+    function canonicalOpenDayStudyPath(value) {
+      return String(value || '').replace(/Curvatura Economia/g, 'Curvatura Economica');
+    }
 
     // --- SOSTITUISCI QUESTI LINK CON I TUOI SCRIPT GOOGLE REALI ---
     const CONFIRM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx934SuTzxYNzb82Tn9_kwPfTbAQFBQv5kGoqtIBP1GAlPdnICUAG2tFSYAnKhmf1P6Ow/exec"; 
@@ -1418,10 +1421,10 @@
     }
 
     const defaultDates = [
-      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
-      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
-      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
-      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economia)" },
+      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
+      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
+      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
+      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
       { id: "date-5", date: "2026-12-14", timeSlot: "09:00 - 11:00", aula: "Laboratori Sede", maxSeats: 100, studyPath: "LOG - Logistica e Trasporti" },
       { id: "date-6", date: "2026-12-14", timeSlot: "11:30 - 13:30", aula: "Laboratori Sede", maxSeats: 100, studyPath: "CAT - Costruzioni, Ambiente e Territorio" }
     ];
@@ -1432,7 +1435,7 @@
         if(s.empty) {
           defaultDates.forEach(d => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', d.id), d));
         } else {
-          s.forEach(d => state.dates.push({id: d.id, ...d.data()})); 
+          s.forEach(d => { const raw = {id: d.id, ...d.data()}; state.dates.push({...raw, studyPath: canonicalOpenDayStudyPath(raw.studyPath)}); }); 
         }
         window.renderHomeDates(); 
         if (state.currentView === 'admin') window.renderAdminDatesList();
@@ -1441,7 +1444,7 @@
       });
       onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'), s => {
         state.registrations = []; 
-        s.forEach(d => state.registrations.push({id: d.id, ...d.data()})); 
+        s.forEach(d => { const raw = {id: d.id, ...d.data()}; state.registrations.push({...raw, studyPath: canonicalOpenDayStudyPath(raw.studyPath)}); }); 
         window.renderHomeDates(); 
         if (state.currentView === 'admin') { window.renderRegistrations(); window.updateStatistics(); window.renderAdminDatesList(); renderOpenDayWaitlistAdmin(); }
         scheduleOpenDayWaitlistReconcile();
@@ -1519,8 +1522,9 @@
       const statusCount = { 'Iscritto': 0, 'Ammesso': 0, 'Concluso': 0, 'Assente': 0 };
       let totalPeople = 0;
       let totalInclusione = 0;
+      const activeStatsRegistrations = state.registrations.filter(r => !isWaitlistRegistration(r));
 
-      state.registrations.forEach(r => {
+      activeStatsRegistrations.forEach(r => {
          const p = r.studyPath.split(' - ')[0] || r.studyPath; 
          pathsCount[p] = (pathsCount[p] || 0) + parseInt(r.totalPeople || 1);
          if(statusCount[r.status] !== undefined) statusCount[r.status]++;
@@ -1530,7 +1534,7 @@
 
       const iscrittiEl = document.getElementById('statTotalIscritti');
       if (iscrittiEl) {
-        iscrittiEl.innerText = state.registrations.length;
+        iscrittiEl.innerText = activeStatsRegistrations.length;
         document.getElementById('statTotalEntrati').innerText = statusCount['Ammesso'];
         document.getElementById('statTotalCertificati').innerText = statusCount['Concluso'];
         document.getElementById('statTotalAssenti').innerText = statusCount['Assente'];
@@ -1539,7 +1543,7 @@
 
       let maxPath = "-"; let maxVal = 0;
       for (const [p, v] of Object.entries(pathsCount)) { if (v > maxVal) { maxVal = v; maxPath = p; } }
-      const totalRegistrations = state.registrations.length;
+      const totalRegistrations = activeStatsRegistrations.length;
       const presenti = statusCount['Ammesso'] + statusCount['Concluso'];
       const tassoPresenza = totalRegistrations > 0 ? Math.round((presenti / totalRegistrations) * 100) : 0;
 
@@ -1670,7 +1674,7 @@
       const reg = codeTerm ? state.registrations.find(x => x.code === codeTerm.toUpperCase()) : state.registrations.find(x => x.cognome.toLowerCase() === cogTerm && x.nome.toLowerCase() === nomTerm);
       if(!reg) return showToast("Nessuna prenotazione trovata.", "error");
       const btn = document.getElementById('btnSubmitCancellation'); btn.innerHTML = `<span class="animate-pulse">Annullamento in corso...</span>`; btn.disabled = true;
-      try { await window.inviaEmailScript(CANCEL_SCRIPT_URL, reg); await window.triggerManualDelete(reg.code, true); await promoteOpenDayWaitlist(reg.dateId); document.getElementById('cancelModalFormView').classList.add('hidden'); document.getElementById('cancelModalSuccessView').classList.remove('hidden'); }
+      try { await window.inviaEmailScript(CANCEL_SCRIPT_URL, reg); await window.triggerManualDelete(reg.code, true); document.getElementById('cancelModalFormView').classList.add('hidden'); document.getElementById('cancelModalSuccessView').classList.remove('hidden'); }
       catch(err) { showToast("Errore durante l'annullamento.", "error"); }
       btn.innerHTML = `Conferma Annullamento`; btn.disabled = false;
     }
@@ -1738,7 +1742,7 @@
           timeSlot: document.getElementById('editDateTime').value.trim(),
           aula: document.getElementById('editDateAula').value.trim(),
           maxSeats: parseInt(document.getElementById('editDateSeats').value),
-          studyPath: document.getElementById('editDatePath').value
+          studyPath: canonicalOpenDayStudyPath(document.getElementById('editDatePath').value)
         });
         showToast("Turno aggiornato con successo!");
         window.closeModal('editDateModal');
@@ -1851,7 +1855,7 @@
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', newId), {
         id: newId, date: document.getElementById('newTurnoDate').value, timeSlot: document.getElementById('newTurnoTime').value.trim(),
         aula: document.getElementById('newTurnoAula').value.trim(), maxSeats: parseInt(document.getElementById('newTurnoSeats').value || 100),
-        studyPath: document.getElementById('newTurnoPath').value
+        studyPath: canonicalOpenDayStudyPath(document.getElementById('newTurnoPath').value)
       });
       showToast("Turno aggiunto!", "success"); e.target.reset();
     }
@@ -1862,14 +1866,16 @@
       if(!tbody) return;
       const sortedDates = [...state.dates].sort((a, b) => new Date(a.date) - new Date(b.date) || a.timeSlot.localeCompare(b.timeSlot));
       tbody.innerHTML = sortedDates.map(d => {
-        const booked = state.registrations.filter(r => r.dateId === d.id).reduce((sum, r) => sum + parseInt(r.totalPeople||1), 0);
+        const booked = activeSeatsFor(d.id);
+        const waitQueue = waitlistQueueFor(d.id);
+        const waitPeople = waitQueue.reduce((sum, r) => sum + seatsOf(r), 0);
         return `
         <tr class="border-b hover:bg-slate-50 transition text-slate-700">
           <td class="p-3 font-bold">${new Date(d.date).toLocaleDateString('it-IT')}</td>
           <td class="p-3 font-mono font-bold">${d.timeSlot}</td>
           <td class="p-3 text-indigo-700 font-bold text-xs">${d.studyPath}</td>
           <td class="p-3 font-semibold">${d.aula}</td>
-          <td class="p-3 text-center font-bold text-slate-900">${booked} / ${d.maxSeats}</td>
+          <td class="p-3 text-center font-bold text-slate-900"><div>${booked} / ${d.maxSeats}</div>${waitQueue.length ? `<div class="mt-1 text-[9px] font-black text-violet-700">Attesa: ${waitQueue.length} richieste / ${waitPeople} persone</div>` : ``}</td>
           <td class="p-3 text-right">
             <div class="flex justify-end gap-2">
               <button onclick="window.openEditDateModal('${d.id}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-transparent hover:border-sky-200 cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i></button>
@@ -1899,6 +1905,7 @@
       if(!window.promemoriaDays) return;
       const today = new Date();
       state.registrations.forEach(reg => {
+         if (isWaitlistRegistration(reg)) return;
          const targetDate = state.dates.find(d => d.id === reg.dateId)?.date;
          if(!targetDate || reg.promemoriaSentDate) return; 
          
