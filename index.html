@@ -775,7 +775,7 @@
 
 
     // OPEN_DAY_LICEO_PREFERENCE_V2 - scelta indirizzo liceale integrata con prenotazione e lista d'attesa
-    // OPEN_DAY_WAITLIST_V1 - FIFO per turno con scorrimento automatico
+    // OPEN_DAY_WAITLIST_V2 - capienza per persone, scorrimento cronologico compatibile e anti-overbooking
     const WAITLIST_TYPE = 'lista_attesa';
     const ACTIVE_TYPE = 'prenotazione';
     const WAITLIST_LOCK_COLLECTION = 'openday_waitlist_locks';
@@ -1082,11 +1082,32 @@
     const waitlistQueueFor = (dateId, source = state.registrations) => source
       .filter(r => r.dateId === dateId && isWaitlistRegistration(r))
       .sort((a,b) => waitlistStamp(a) - waitlistStamp(b));
+    const isSeatActiveRegistration = (r) => {
+      if (!r || isWaitlistRegistration(r)) return false;
+      if (String(r.type || '').toLowerCase() === 'cancellazione') return false;
+      if (normalizeWaitlistText(r.status) === 'annullato') return false;
+      return true;
+    };
     const activeRegistrationsFor = (dateId, source = state.registrations) => source
-      .filter(r => r.dateId === dateId && !isWaitlistRegistration(r));
+      .filter(r => r.dateId === dateId && isSeatActiveRegistration(r));
     const seatsOf = (r) => Math.max(1, Number(r?.totalPeople || 1) || 1);
     const activeSeatsFor = (dateId, source = state.registrations) => activeRegistrationsFor(dateId, source)
       .reduce((sum, r) => sum + seatsOf(r), 0);
+    const waitlistFitPlan = (dateId, availableSeats, source = state.registrations) => {
+      let remaining = Math.max(0, Number(availableSeats || 0));
+      const selected = [];
+      const waiting = [];
+      for (const reg of waitlistQueueFor(dateId, source)) {
+        const needed = seatsOf(reg);
+        if (needed <= remaining) {
+          selected.push(reg);
+          remaining -= needed;
+        } else {
+          waiting.push(reg);
+        }
+      }
+      return { selected, waiting, remaining };
+    };
 
     function escWaitlist(v) {
       return String(v ?? '')
@@ -1158,7 +1179,7 @@
       pdf.setFillColor(254,242,242); pdf.setDrawColor(248,113,113); pdf.roundedRect(15,205,180,36,3,3,'FD');
       pdf.setTextColor(153,27,27); pdf.setFont('helvetica','bold'); pdf.setFontSize(11); pdf.text('COME FUNZIONA', 22,216);
       pdf.setFont('helvetica','normal'); pdf.setFontSize(8.5);
-      const note = 'La lista segue rigorosamente l’ordine cronologico. Se si libera capienza, il sistema ammette automaticamente il primo gruppo utile in coda. La presente ricevuta non consente l’ingresso finché non arriva la conferma definitiva.';
+      const note = 'La lista segue l’ordine cronologico compatibile con i posti realmente liberi. Se un gruppo richiede più posti di quelli disponibili resta in attesa; il sistema può ammettere la prima richiesta successiva che entra nella capienza, senza superare mai il limite del turno. La presente ricevuta non consente l’ingresso finché non arriva la conferma definitiva.';
       pdf.text(pdf.splitTextToSize(note,160),22,224);
       pdf.setFontSize(7.5); pdf.setTextColor(120,120,130); pdf.text(`Generato il ${new Date().toLocaleString('it-IT')}`,15,285);
       return pdf.output('datauristring').split(',')[1];
@@ -1221,41 +1242,58 @@
       const promoted = [];
       try {
         let slot = state.dates.find(d => d.id === dateId);
-        if (!slot) {
-          const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', dateId));
-          if (snap.exists()) slot = { id: snap.id, ...snap.data() };
-        }
+        const slotSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', dateId));
+        if (slotSnap.exists()) slot = { id: slotSnap.id, ...slotSnap.data() };
         if (!slot) return false;
 
         const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
         const fresh = []; snap.forEach(d => fresh.push({ id: d.id, ...d.data() }));
-        let available = Math.max(0, Number(slot.maxSeats || 0) - activeSeatsFor(dateId, fresh));
+        const maxSeats = Math.max(1, Number(slot.maxSeats || 1));
+        let occupied = activeSeatsFor(dateId, fresh);
+        let available = Math.max(0, maxSeats - occupied);
         const queue = waitlistQueueFor(dateId, fresh);
+        const originalPosition = new Map(queue.map((r, i) => [r.code, i + 1]));
 
-        while (queue.length && available > 0) {
-          const next = queue[0];
-          const needed = seatsOf(next);
-          if (needed > available) break;
-          queue.shift();
+        for (const queued of queue) {
+          if (available <= 0) break;
+          const ref = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', queued.code);
+          const liveSnap = await getDoc(ref);
+          if (!liveSnap.exists()) continue;
+          const live = { id: liveSnap.id, ...liveSnap.data() };
+          if (!isWaitlistRegistration(live) || live.dateId !== dateId) continue;
+
+          const needed = seatsOf(live);
+          if (needed > maxSeats || needed > available) continue;
+
+          // Invariante assoluta: l'ammissione è possibile solo se i posti occupati
+          // dopo la promozione restano <= capienza autorizzata del turno.
+          if (occupied + needed > maxSeats) continue;
+
           const patch = {
             type: ACTIVE_TYPE,
             status: 'Iscritto',
             iscrizioneConRiserva: false,
             waitlistPromotedAt: Date.now(),
             waitlistPromotionStatus: 'Ammesso da scorrimento',
-            waitlistPromotionSource: 'automatico_fifo',
-            waitlistPositionAtPromotion: 1
+            waitlistPromotionSource: 'automatico_capienza_compatibile',
+            waitlistPositionAtPromotion: originalPosition.get(live.code) || null,
+            waitlistSeatsAtPromotion: needed,
+            waitlistAvailableBeforePromotion: available
           };
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', next.code), patch);
-          promoted.push({ ...next, ...patch });
-          available -= needed;
+          await updateDoc(ref, patch);
+          promoted.push({ ...live, ...patch });
+          occupied += needed;
+          available = Math.max(0, maxSeats - occupied);
         }
       } finally {
         await releaseOpenDayWaitlistLock(dateId);
       }
 
       for (const reg of promoted) await sendOpenDayPromotionEmail(reg);
-      if (promoted.length) window.showToast?.(`${promoted.length} iscrizione/i ammesse automaticamente dalla lista d'attesa.`, 'info');
+      if (promoted.length) {
+        const people = promoted.reduce((sum, r) => sum + seatsOf(r), 0);
+        window.showToast?.(`${promoted.length} richiesta/e (${people} persone) ammesse automaticamente senza superare la capienza.`, 'info');
+      }
       return promoted.length > 0;
     }
     window.promoteOpenDayWaitlist = promoteOpenDayWaitlist;
@@ -1355,7 +1393,7 @@
           </div>
           <div class="glass-card p-6 rounded-3xl border border-violet-200 bg-white space-y-4">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
-              <div><h3 class="text-xl font-black text-violet-950 font-outfit">Lista d'attesa Open Day</h3><p class="text-xs text-slate-500 font-bold mt-1">Ordine FIFO automatico: posizione calcolata per singolo turno. Nessun nominativo viene saltato.</p></div>
+              <div><h3 class="text-xl font-black text-violet-950 font-outfit">Lista d'attesa Open Day</h3><p class="text-xs text-slate-500 font-bold mt-1">Ordine cronologico compatibile con la capienza: un gruppo viene ammesso solo se entra nei posti liberi. I gruppi troppo grandi restano in coda e non causano mai sovrannumero.</p></div>
               <button onclick="window.reconcileAllOpenDayWaitlists()" class="px-4 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-black rounded-xl text-xs uppercase tracking-wider">Ricalcola scorrimento</button>
             </div>
             <div class="grid md:grid-cols-2 gap-3">
@@ -1531,15 +1569,30 @@
       container.innerHTML = sortedDates.map(dateVal => {
         const sessions = groups[dateVal].sort((a, b) => a.timeSlot === b.timeSlot ? a.studyPath.localeCompare(b.studyPath) : a.timeSlot.localeCompare(b.timeSlot));
         const slotsHtml = sessions.map(s => {
+          const maxSeats = Math.max(1, Number(s.maxSeats || 1));
           const activeSeats = activeSeatsFor(s.id);
           const queue = waitlistQueueFor(s.id);
-          const available = Math.max(0, Number(s.maxSeats || 0) - activeSeats);
+          const waitPeople = queue.reduce((sum, r) => sum + seatsOf(r), 0);
+          const available = Math.max(0, maxSeats - activeSeats);
+          const fitPlan = waitlistFitPlan(s.id, available);
+          const fitPeople = fitPlan.selected.reduce((sum, r) => sum + seatsOf(r), 0);
           const mustWait = queue.length > 0 || available <= 0;
+          let statusLabel = '';
+          if (!queue.length && available > 0) statusLabel = `🔥 ${available} POSTI LIBERI`;
+          else if (!queue.length) statusLabel = '⛔ POSTI ESAURITI';
+          else if (available <= 0) statusLabel = `⏳ COMPLETO • CODA ${queue.length} RICH. / ${waitPeople} PERSONE`;
+          else if (fitPlan.selected.length) statusLabel = `⏳ ${available} LIBERI • ${fitPlan.selected.length} RICH. COMPATIBILI (${fitPeople} POSTI)`;
+          else statusLabel = `⏳ ${available} LIBERI • GRUPPI IN ATTESA NON COMPATIBILI`;
+          const statusClass = mustWait ? 'text-violet-700 bg-violet-50 border-violet-200' : 'text-emerald-600 bg-emerald-50 border-emerald-200';
           return `
             <div class="p-4 bg-white/80 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs font-semibold shadow-sm transition hover:border-indigo-300">
-              <div class="w-full sm:w-2/3"><span class="font-black text-slate-900 block text-[12px] sm:text-[13px] leading-tight mb-1 whitespace-normal">${s.studyPath}</span><span class="inline-block text-[10px] text-indigo-700 font-bold bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-lg mb-1">Ore ${s.timeSlot} • Sede: ${s.aula}</span></div>
-              <div class="flex items-center gap-2 w-full sm:w-auto">
-                ${mustWait ? `<span class="text-[9px] font-black text-violet-700 bg-violet-50 border border-violet-200 px-2 py-1.5 rounded-lg whitespace-nowrap">⏳ ${queue.length ? `IN ATTESA: ${queue.length}` : 'POSTI ESAURITI'}</span>` : `<span class="text-[9px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1.5 rounded-lg whitespace-nowrap">🔥 ${available} LIBERI</span>`}
+              <div class="w-full sm:w-2/3">
+                <span class="font-black text-slate-900 block text-[12px] sm:text-[13px] leading-tight mb-1 whitespace-normal">${s.studyPath}</span>
+                <span class="inline-block text-[10px] text-indigo-700 font-bold bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-lg mb-1">Ore ${s.timeSlot} • Sede: ${s.aula}</span>
+                <span class="block text-[10px] text-slate-600 font-black mt-1">Capienza turno: ${activeSeats}/${maxSeats} occupati • ${available} liberi${queue.length ? ` • Lista d'attesa: ${queue.length} richieste / ${waitPeople} persone` : ''}</span>
+              </div>
+              <div class="flex flex-col sm:items-end gap-2 w-full sm:w-auto">
+                <span class="text-[9px] font-black border px-2 py-1.5 rounded-lg whitespace-normal text-center ${statusClass}">${statusLabel}</span>
                 <button onclick="${mustWait ? `window.startWaitlistProcess('${s.id}')` : `window.startBookingProcess('${s.id}')`}" class="w-full sm:w-auto px-4 py-2.5 ${mustWait?'bg-violet-600 hover:bg-violet-500 text-white':'bg-indigo-600 hover:bg-indigo-500 text-white'} rounded-lg uppercase font-black text-[10px] shadow-sm transition tracking-wider flex items-center justify-center gap-1 shrink-0">${mustWait ? `LISTA D'ATTESA${queue.length ? ` (${queue.length})` : ''}` : 'ISCRIVITI <i data-lucide="arrow-right" class="w-3 h-3"></i>'}</button>
               </div>
             </div>`;
@@ -1660,9 +1713,13 @@
         const fresh = []; freshSnap.forEach(d => fresh.push({id:d.id, ...d.data()}));
         const duplicate = fresh.some(r => r.dateId === dateId && normalizeWaitlistText(r.email) === normalizeWaitlistText(email) && normalizeWaitlistText(r.cognome) === normalizeWaitlistText(cognome) && normalizeWaitlistText(r.nome) === normalizeWaitlistText(nome));
         if (duplicate) throw new Error('DUPLICATE');
+        const liveDateSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', dateId));
+        const liveSession = liveDateSnap.exists() ? { ...targetSession, ...liveDateSnap.data(), id: dateId } : targetSession;
+        const maxSeats = Math.max(1, Number(liveSession.maxSeats || 1));
+        if (!Number.isFinite(totalPeople) || totalPeople < 1) throw new Error('INVALID_GROUP_SIZE');
+        if (totalPeople > maxSeats) throw new Error('GROUP_EXCEEDS_CAPACITY');
         const activeSeats = activeSeatsFor(dateId, fresh);
         const queue = waitlistQueueFor(dateId, fresh);
-        const maxSeats = Math.max(1, Number(targetSession.maxSeats || 1));
         const shouldWait = openDayWaitlistMode || queue.length > 0 || (activeSeats + totalPeople > maxSeats);
         const code = await uniqueOpenDayCode();
         const timestamp = Date.now();
@@ -1675,7 +1732,7 @@ Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; docume
         prepareOpenDayConfirmation(regData);
         if (shouldWait) { const position = queue.length + 1; await sendOpenDayWaitlistEmail(regData, position); showToast(`Richiesta registrata con riserva. Posizione indicativa: ${position}.`, 'info'); } else window.SmartEmailEngine.flushNow();
         window.navigateTo('confirmation');
-      } catch(err) { console.error('OpenDay booking/waitlist', err); if (err.message === 'DUPLICATE') showToast("Esiste già una richiesta per questo studente nello stesso turno.", "error"); else if (err.message === 'LICEO_PREFERENCE_REQUIRED') showToast("Seleziona l'indirizzo liceale: Scienze Applicate oppure Curvatura Economica.", "error"); else showToast("Errore durante il salvataggio. Riprova.", "error"); }
+      } catch(err) { console.error('OpenDay booking/waitlist', err); if (err.message === 'DUPLICATE') showToast("Esiste già una richiesta per questo studente nello stesso turno.", "error"); else if (err.message === 'LICEO_PREFERENCE_REQUIRED') showToast("Seleziona l'indirizzo liceale: Scienze Applicate oppure Curvatura Economica.", "error"); else if (err.message === 'GROUP_EXCEEDS_CAPACITY') showToast("Il numero di persone richiesto supera la capienza massima autorizzata per questo turno. Riduci il numero di posti.", "error"); else if (err.message === 'INVALID_GROUP_SIZE') showToast("Indica almeno una persona per la prenotazione.", "error"); else showToast("Errore durante il salvataggio. Riprova.", "error"); }
       finally { await releaseOpenDayWaitlistLock(dateId); submitBtn.dataset.saving = '0'; submitBtn.disabled = false; setProgress(100, openDayWaitlistMode ? "Richiesta in lista registrata" : "Prenotazione registrata"); }
     }
     window.handleBookingSubmit = handleBookingSubmit;
@@ -1748,16 +1805,44 @@ Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; docume
     async function saveEditReg(e) {
       e.preventDefault();
       const code = document.getElementById('editRegCode').value;
+      const current = state.registrations.find(r => r.code === code);
+      if (!current) return showToast("Iscrizione non trovata.", "error");
+      const newSeats = parseInt(document.getElementById('editRegPosti').value);
+      if (!Number.isFinite(newSeats) || newSeats < 1) return showToast("I posti devono essere almeno 1.", "error");
+      const dateId = current.dateId;
+      let locked = false;
       try {
+        if (dateId) {
+          locked = await acquireOpenDayWaitlistLock(dateId);
+          if (!locked) throw new Error('LOCKED');
+        }
+        const freshSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
+        const fresh = []; freshSnap.forEach(d => fresh.push({ id: d.id, ...d.data() }));
+        const liveCurrent = fresh.find(r => r.code === code) || current;
+        if (dateId && !isWaitlistRegistration(liveCurrent)) {
+          const dateSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', dateId));
+          const slot = dateSnap.exists() ? { id: dateSnap.id, ...dateSnap.data() } : state.dates.find(d => d.id === dateId);
+          if (!slot) throw new Error('DATE_NOT_FOUND');
+          const maxSeats = Math.max(1, Number(slot.maxSeats || 1));
+          const otherSeats = activeSeatsFor(dateId, fresh.filter(r => r.code !== code));
+          if (otherSeats + newSeats > maxSeats) throw new Error('CAPACITY_EXCEEDED');
+        }
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), {
           cognome: toTitleCase(document.getElementById('editRegCognome').value.trim()),
           nome: toTitleCase(document.getElementById('editRegNome').value.trim()),
           email: document.getElementById('editRegEmail').value.trim(),
-          totalPeople: parseInt(document.getElementById('editRegPosti').value)
+          totalPeople: newSeats
         });
-        showToast("Iscrizione modificata con successo!");
+        showToast("Iscrizione modificata rispettando la capienza del turno!");
         window.closeModal('editRegModal');
-      } catch(err) { showToast("Errore durante la modifica.", "error"); }
+      } catch(err) {
+        if (err.message === 'CAPACITY_EXCEEDED') showToast("Modifica bloccata: con questi posti il turno supererebbe la capienza autorizzata.", "error");
+        else if (err.message === 'LOCKED') showToast("Turno in aggiornamento. Riprova tra pochi secondi.", "warning");
+        else showToast("Errore durante la modifica.", "error");
+      } finally {
+        if (locked) await releaseOpenDayWaitlistLock(dateId);
+      }
+      if (dateId) await promoteOpenDayWaitlist(dateId).catch(() => false);
     }
     window.saveEditReg = saveEditReg;
 
@@ -1777,17 +1862,31 @@ Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; docume
     async function saveEditDate(e) {
       e.preventDefault();
       const id = document.getElementById('editDateId').value;
+      const newMaxSeats = parseInt(document.getElementById('editDateSeats').value);
+      if (!Number.isFinite(newMaxSeats) || newMaxSeats < 1) return showToast("La capienza deve essere almeno 1.", "error");
+      const locked = await acquireOpenDayWaitlistLock(id);
+      if (!locked) return showToast("Turno in aggiornamento. Riprova tra pochi secondi.", "warning");
       try {
+        const freshSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
+        const fresh = []; freshSnap.forEach(d => fresh.push({ id: d.id, ...d.data() }));
+        const occupied = activeSeatsFor(id, fresh);
+        if (newMaxSeats < occupied) throw new Error('CAPACITY_BELOW_OCCUPIED');
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', id), {
           date: document.getElementById('editDateValue').value,
           timeSlot: document.getElementById('editDateTime').value.trim(),
           aula: document.getElementById('editDateAula').value.trim(),
-          maxSeats: parseInt(document.getElementById('editDateSeats').value),
+          maxSeats: newMaxSeats,
           studyPath: canonicalOpenDayStudyPath(document.getElementById('editDatePath').value)
         });
-        showToast("Turno aggiornato con successo!");
+        showToast(`Turno aggiornato: ${occupied}/${newMaxSeats} posti già occupati.`);
         window.closeModal('editDateModal');
-      } catch(err) { showToast("Errore durante la modifica.", "error"); }
+      } catch(err) {
+        if (err.message === 'CAPACITY_BELOW_OCCUPIED') showToast("Capienza non valida: non puoi impostare meno posti di quelli già confermati.", "error");
+        else showToast("Errore durante la modifica.", "error");
+      } finally {
+        await releaseOpenDayWaitlistLock(id);
+      }
+      await promoteOpenDayWaitlist(id).catch(() => false);
     }
     window.saveEditDate = saveEditDate;
 
@@ -1908,16 +2007,24 @@ Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; docume
       if(!tbody) return;
       const sortedDates = [...state.dates].sort((a, b) => new Date(a.date) - new Date(b.date) || a.timeSlot.localeCompare(b.timeSlot));
       tbody.innerHTML = sortedDates.map(d => {
+        const maxSeats = Math.max(1, Number(d.maxSeats || 1));
         const booked = activeSeatsFor(d.id);
+        const available = Math.max(0, maxSeats - booked);
         const waitQueue = waitlistQueueFor(d.id);
         const waitPeople = waitQueue.reduce((sum, r) => sum + seatsOf(r), 0);
+        const fitPlan = waitlistFitPlan(d.id, available);
+        const fitPeople = fitPlan.selected.reduce((sum, r) => sum + seatsOf(r), 0);
         return `
         <tr class="border-b hover:bg-slate-50 transition text-slate-700">
           <td class="p-3 font-bold">${new Date(d.date).toLocaleDateString('it-IT')}</td>
           <td class="p-3 font-mono font-bold">${d.timeSlot}</td>
           <td class="p-3 text-indigo-700 font-bold text-xs">${d.studyPath}</td>
           <td class="p-3 font-semibold">${d.aula}</td>
-          <td class="p-3 text-center font-bold text-slate-900"><div>${booked} / ${d.maxSeats}</div>${waitQueue.length ? `<div class="mt-1 text-[9px] font-black text-violet-700">Attesa: ${waitQueue.length} richieste / ${waitPeople} persone</div>` : ``}</td>
+          <td class="p-3 text-center font-bold text-slate-900">
+            <div>${booked} / ${maxSeats} occupati</div>
+            <div class="mt-1 text-[9px] font-black ${available ? 'text-emerald-700' : 'text-rose-700'}">Liberi: ${available}</div>
+            ${waitQueue.length ? `<div class="mt-1 text-[9px] font-black text-violet-700">Attesa: ${waitQueue.length} richieste / ${waitPeople} persone</div><div class="mt-1 text-[9px] font-black ${fitPlan.selected.length ? 'text-sky-700' : 'text-amber-700'}">${fitPlan.selected.length ? `Compatibili ora: ${fitPlan.selected.length} richieste / ${fitPeople} persone` : (available ? `Nessun gruppo in coda entra nei ${available} posti liberi` : 'Scorrimento fermo: turno completo')}</div>` : ``}
+          </td>
           <td class="p-3 text-right">
             <div class="flex justify-end gap-2">
               <button onclick="window.openEditDateModal('${d.id}')" class="p-2.5 text-sky-600 bg-sky-50 hover:bg-sky-100 border border-transparent hover:border-sky-200 cursor-pointer"><i data-lucide="edit" class="w-4 h-4"></i></button>
