@@ -246,6 +246,15 @@
 
           <form id="bookingForm" onsubmit="window.handleBookingSubmit(event)" class="space-y-5 font-semibold text-sm text-slate-600">
             <input type="hidden" id="formEventId">
+            <div id="openDayLiceoPreferenceBlock" class="hidden p-4 rounded-2xl border border-indigo-200 bg-indigo-50/70 space-y-2">
+              <label for="formLiceoPreference" class="text-[11px] font-black text-indigo-800 uppercase tracking-wider">Indirizzo liceale preferito *</label>
+              <select id="formLiceoPreference" class="w-full p-3 rounded-xl border border-indigo-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-800">
+                <option value="">Seleziona il percorso</option>
+                <option value="scienze_applicate">Liceo Scientifico - Opzione Scienze Applicate</option>
+                <option value="curvatura_economica">Liceo Scientifico - Opzione Scienze Applicate - Curvatura Economica</option>
+              </select>
+              <p class="text-[10px] text-indigo-700 font-semibold leading-relaxed">Il turno Open Day resta unico: questa scelta serve a indicare con precisione l'indirizzo liceale di interesse e viene mantenuta anche nell'eventuale lista d'attesa.</p>
+            </div>
             <div class="grid grid-cols-2 gap-5">
               <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Cognome Alunno *</label><input required type="text" id="formCognome" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Es. Rossi"></div>
               <div class="space-y-1.5"><label class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Nome Alunno *</label><input required type="text" id="formNome" class="w-full p-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Es. Mario"></div>
@@ -765,7 +774,8 @@
     const appId = 'openday-primolevi-seregno';
 
 
-    // OPEN_DAY_WAITLIST_V1 - stesso meccanismo FIFO del progetto MiniStage
+    // OPEN_DAY_LICEO_PREFERENCE_V2 - scelta indirizzo liceale integrata con prenotazione e lista d'attesa
+    // OPEN_DAY_WAITLIST_V1 - FIFO per turno con scorrimento automatico
     const WAITLIST_TYPE = 'lista_attesa';
     const ACTIVE_TYPE = 'prenotazione';
     const WAITLIST_LOCK_COLLECTION = 'openday_waitlist_locks';
@@ -774,6 +784,31 @@
     let openDayWaitlistReconcileTimer = null;
     function canonicalOpenDayStudyPath(value) {
       return String(value || '').replace(/Curvatura Economia/g, 'Curvatura Economica');
+    }
+    const OPEN_DAY_LICEO_COMBINED = 'LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)';
+    const OPEN_DAY_LICEO_PREF_STANDARD = 'scienze_applicate';
+    const OPEN_DAY_LICEO_PREF_CURVATURA = 'curvatura_economica';
+    function isOpenDayLiceoPath(value) {
+      return /Liceo Scientifico/i.test(canonicalOpenDayStudyPath(value));
+    }
+    function openDayLiceoPreferenceKey(value) {
+      if (value && typeof value === 'object') return String(value.liceoPreference || '').trim();
+      return String(value || '').trim();
+    }
+    function openDayLiceoPreferenceLabel(value) {
+      const key = openDayLiceoPreferenceKey(value);
+      if (key === OPEN_DAY_LICEO_PREF_STANDARD) return 'Liceo Scientifico - Opzione Scienze Applicate';
+      if (key === OPEN_DAY_LICEO_PREF_CURVATURA) return 'Liceo Scientifico - Opzione Scienze Applicate - Curvatura Economica';
+      return '';
+    }
+    function updateOpenDayLiceoPreferenceField(studyPath) {
+      const block = document.getElementById('openDayLiceoPreferenceBlock');
+      const select = document.getElementById('formLiceoPreference');
+      if (!block || !select) return;
+      const liceo = isOpenDayLiceoPath(studyPath);
+      block.classList.toggle('hidden', !liceo);
+      select.required = liceo;
+      if (!liceo) select.value = '';
     }
 
     // --- SOSTITUISCI QUESTI LINK CON I TUOI SCRIPT GOOGLE REALI ---
@@ -833,7 +868,8 @@
       
       addField('Studente:', `${data.cognome} ${data.nome}`, startY);
       addField('Codice Ingresso:', code, startY + lineH);
-      addField('Indirizzo Scelto:', docObj.splitTextToSize(data.studyPath, 110), startY + lineH*2);
+      const selectedStudyPath = openDayLiceoPreferenceLabel(data) || data.studyPath;
+      addField('Indirizzo Scelto:', docObj.splitTextToSize(selectedStudyPath, 110), startY + lineH*2);
       addField('Data e Orario:', data.dateStr, startY + lineH*3);
       addField('Posti Riservati:', `${data.totalPeople} Persona/e`, startY + lineH*4);
       addField('Scuola Prov.:', docObj.splitTextToSize(data.provenienza, 110), startY + lineH*5);
@@ -1108,6 +1144,7 @@
         ['Studente', `${reg.cognome || ''} ${reg.nome || ''}`.trim()],
         ['Codice richiesta', reg.code],
         ['Percorso', reg.studyPath],
+        ...(openDayLiceoPreferenceLabel(reg) ? [['Preferenza liceo', openDayLiceoPreferenceLabel(reg)]] : []),
         ['Turno', reg.dateStr],
         ['Persone richieste', String(reg.totalPeople || 1)],
         ['Posizione indicativa', String(position || 'in aggiornamento')]
@@ -1326,7 +1363,7 @@
               <select id="waitlistPathFilter" onchange="window.renderOpenDayWaitlistAdmin()" class="p-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold"><option value="all">Tutti gli indirizzi</option></select>
             </div>
             <div class="overflow-x-auto border border-slate-200 rounded-2xl">
-              <table class="w-full text-left text-xs min-w-[900px]"><thead class="bg-violet-50 text-violet-950"><tr><th class="p-3">Pos.</th><th class="p-3">Codice</th><th class="p-3">Studente</th><th class="p-3">Contatto</th><th class="p-3">Persone</th><th class="p-3">Turno</th><th class="p-3">Indirizzo</th></tr></thead><tbody id="openDayWaitlistTableBody"></tbody></table>
+              <table class="w-full text-left text-xs min-w-[900px]"><thead class="bg-violet-50 text-violet-950"><tr><th class="p-3">Pos.</th><th class="p-3">Codice</th><th class="p-3">Studente</th><th class="p-3">Contatto</th><th class="p-3">Persone</th><th class="p-3">Turno</th><th class="p-3">Indirizzo</th><th class="p-3">Preferenza liceo</th></tr></thead><tbody id="openDayWaitlistTableBody"></tbody></table>
             </div>
           </div>`;
         admin.appendChild(section);
@@ -1363,8 +1400,8 @@
       const body = document.getElementById('openDayWaitlistTableBody');
       if (body) body.innerHTML = waits.map(r => {
         const pos = waitlistQueueFor(r.dateId).findIndex(x=>x.code===r.code)+1;
-        return `<tr class="border-t border-slate-100"><td class="p-3"><span class="inline-flex min-w-9 justify-center bg-violet-100 text-violet-800 font-black px-2 py-1 rounded-lg">${pos}</span></td><td class="p-3 font-mono font-black text-indigo-700">${escWaitlist(r.code)}</td><td class="p-3 font-black text-slate-900">${escWaitlist(r.cognome)} ${escWaitlist(r.nome)}</td><td class="p-3"><div>${escWaitlist(r.email)}</div><div class="text-[10px] text-slate-400">${new Date(waitlistStamp(r)).toLocaleString('it-IT')}</div></td><td class="p-3 font-black">${seatsOf(r)}</td><td class="p-3">${escWaitlist(r.dateStr)}</td><td class="p-3 max-w-[260px]">${escWaitlist(r.studyPath)}</td></tr>`;
-      }).join('') || '<tr><td colspan="7" class="p-8 text-center text-slate-400 font-bold">Nessuna iscrizione in lista d\'attesa.</td></tr>';
+        return `<tr class="border-t border-slate-100"><td class="p-3"><span class="inline-flex min-w-9 justify-center bg-violet-100 text-violet-800 font-black px-2 py-1 rounded-lg">${pos}</span></td><td class="p-3 font-mono font-black text-indigo-700">${escWaitlist(r.code)}</td><td class="p-3 font-black text-slate-900">${escWaitlist(r.cognome)} ${escWaitlist(r.nome)}</td><td class="p-3"><div>${escWaitlist(r.email)}</div><div class="text-[10px] text-slate-400">${new Date(waitlistStamp(r)).toLocaleString('it-IT')}</div></td><td class="p-3 font-black">${seatsOf(r)}</td><td class="p-3">${escWaitlist(r.dateStr)}</td><td class="p-3 max-w-[260px]">${escWaitlist(r.studyPath)}</td><td class="p-3 max-w-[280px] font-bold text-indigo-800">${escWaitlist(openDayLiceoPreferenceLabel(r) || '—')}</td></tr>`;
+      }).join('') || '<tr><td colspan="8" class="p-8 text-center text-slate-400 font-bold">Nessuna iscrizione in lista d\'attesa.</td></tr>';
     }
     window.renderOpenDayWaitlistAdmin = renderOpenDayWaitlistAdmin;
 
@@ -1575,6 +1612,7 @@
       setOpenDayBookingMode(false);
       document.getElementById('formEventId').value = sid;
       document.getElementById('lblBookingPath').innerText = target.studyPath;
+      updateOpenDayLiceoPreferenceField(target.studyPath);
       document.getElementById('lblBookingDate').innerText = `${new Date(target.date).toLocaleDateString('it-IT')} • Ore ${target.timeSlot}`;
       document.getElementById('lblBookingAula').innerText = target.aula;
       window.navigateTo('booking');
@@ -1615,6 +1653,8 @@
         const cognome = toTitleCase(document.getElementById('formCognome').value.trim());
         const nome = toTitleCase(document.getElementById('formNome').value.trim());
         const email = document.getElementById('formEmail').value.trim();
+        const liceoPreference = isOpenDayLiceoPath(targetSession.studyPath) ? String(document.getElementById('formLiceoPreference')?.value || '').trim() : '';
+        if (isOpenDayLiceoPath(targetSession.studyPath) && !openDayLiceoPreferenceLabel(liceoPreference)) throw new Error('LICEO_PREFERENCE_REQUIRED');
         const totalPeople = parseInt(document.getElementById('formNumAlunni').value || 1) + parseInt(document.getElementById('formNumAccompagnatori').value || 0);
         const freshSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
         const fresh = []; freshSnap.forEach(d => fresh.push({id:d.id, ...d.data()}));
@@ -1626,15 +1666,16 @@
         const shouldWait = openDayWaitlistMode || queue.length > 0 || (activeSeats + totalPeople > maxSeats);
         const code = await uniqueOpenDayCode();
         const timestamp = Date.now();
-        const regData = { code, cognome, nome, provenienza: toTitleCase(document.getElementById('formProvenienza').value.trim()), email, totalPeople, dateId: targetSession.id, studyPath: targetSession.studyPath, dateStr: `${new Date(targetSession.date).toLocaleDateString('it-IT')} • ${targetSession.timeSlot}`, status: shouldWait ? 'Con riserva' : 'Iscritto', type: shouldWait ? WAITLIST_TYPE : ACTIVE_TYPE, inclusione: document.getElementById('formInclusione').checked, timestamp };
+        const regData = { code, cognome, nome, provenienza: toTitleCase(document.getElementById('formProvenienza').value.trim()), email, totalPeople, dateId: targetSession.id, studyPath: targetSession.studyPath, liceoPreference, dateStr: `${new Date(targetSession.date).toLocaleDateString('it-IT')} • ${targetSession.timeSlot}`, status: shouldWait ? 'Con riserva' : 'Iscritto', type: shouldWait ? WAITLIST_TYPE : ACTIVE_TYPE, inclusione: document.getElementById('formInclusione').checked, timestamp };
         if (shouldWait) Object.assign(regData, { waitlistRequestedAt: timestamp, waitlistStatus: 'Iscrizione con riserva', iscrizioneConRiserva: true }); else regData.passSentDate = 'IN_CODA_Q1';
         state.currentBooking = regData;
         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), regData);
-        document.getElementById('ticketCode').innerText = code; document.getElementById('ticketStudent').innerText = `${regData.cognome} ${regData.nome}`; document.getElementById('ticketPath').innerText = regData.studyPath; document.getElementById('ticketDate').innerText = regData.dateStr;
+        document.getElementById('ticketCode').innerText = code; document.getElementById('ticketStudent').innerText = `${regData.cognome} ${regData.nome}`; document.getElementById('ticketPath').innerText = openDayLiceoPreferenceLabel(regData) ? `${regData.studyPath}
+Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; document.getElementById('ticketDate').innerText = regData.dateStr;
         prepareOpenDayConfirmation(regData);
         if (shouldWait) { const position = queue.length + 1; await sendOpenDayWaitlistEmail(regData, position); showToast(`Richiesta registrata con riserva. Posizione indicativa: ${position}.`, 'info'); } else window.SmartEmailEngine.flushNow();
         window.navigateTo('confirmation');
-      } catch(err) { console.error('OpenDay booking/waitlist', err); if (err.message === 'DUPLICATE') showToast("Esiste già una richiesta per questo studente nello stesso turno.", "error"); else showToast("Errore durante il salvataggio. Riprova.", "error"); }
+      } catch(err) { console.error('OpenDay booking/waitlist', err); if (err.message === 'DUPLICATE') showToast("Esiste già una richiesta per questo studente nello stesso turno.", "error"); else if (err.message === 'LICEO_PREFERENCE_REQUIRED') showToast("Seleziona l'indirizzo liceale: Scienze Applicate oppure Curvatura Economica.", "error"); else showToast("Errore durante il salvataggio. Riprova.", "error"); }
       finally { await releaseOpenDayWaitlistLock(dateId); submitBtn.dataset.saving = '0'; submitBtn.disabled = false; setProgress(100, openDayWaitlistMode ? "Richiesta in lista registrata" : "Prenotazione registrata"); }
     }
     window.handleBookingSubmit = handleBookingSubmit;
@@ -1777,6 +1818,7 @@
           </td>
           <td class="p-4 text-xs align-top">
             <div class="font-bold text-slate-800 text-[10px] truncate max-w-[150px] whitespace-normal" title="${r.studyPath}">${r.studyPath}</div>
+            ${openDayLiceoPreferenceLabel(r) ? `<div class="text-[10px] text-emerald-700 font-black mt-1 whitespace-normal max-w-[180px]">${openDayLiceoPreferenceLabel(r)}</div>` : ''}
             <div class="text-[11px] text-indigo-600 font-black mt-1">${r.dateStr}</div>
           </td>
           <td class="p-4 text-center align-top"><input type="checkbox" disabled ${r.inclusione ? 'checked' : ''} class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 bg-white border-slate-300"></td>
