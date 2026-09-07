@@ -550,7 +550,7 @@
               <div class="space-y-1.5">
                 <label class="text-[10px] uppercase font-bold text-slate-500">Percorso di Studio Abbinato *</label>
                 <select required id="newTurnoPath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold text-slate-700">
-                  <option value="LS - Liceo Scientifico opzione Scienze Applicate % Liceo Scienze Applicate - Curvatura Economica">LS - Liceo Scientifico opzione Scienze Applicate % Liceo Scienze Applicate - Curvatura Economica</option>
+                  <option value="LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica">LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica</option>
                   <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
                   <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
                   <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
@@ -695,7 +695,7 @@
         <div>
           <label class="text-[10px] font-black uppercase text-slate-500 block mb-1">Indirizzo</label>
           <select required id="editDatePath" class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
-            <option value="LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)">LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)</option>
+            <option value="LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica">LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica</option>
             <option value="RIM - Relazioni Internazionali per il Marketing">RIM - Relazioni Internazionali per il Marketing</option>
             <option value="LOG - Logistica e Trasporti">LOG - Logistica e Trasporti</option>
             <option value="CAT - Costruzioni, Ambiente e Territorio">CAT - Costruzioni, Ambiente e Territorio</option>
@@ -785,7 +785,7 @@
     function canonicalOpenDayStudyPath(value) {
       return String(value || '').replace(/Curvatura Economia/g, 'Curvatura Economica');
     }
-    const OPEN_DAY_LICEO_COMBINED = 'LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)';
+    const OPEN_DAY_LICEO_COMBINED = 'LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica';
     const OPEN_DAY_LICEO_PREF_STANDARD = 'scienze_applicate';
     const OPEN_DAY_LICEO_PREF_CURVATURA = 'curvatura_economica';
     function isOpenDayLiceoPath(value) {
@@ -1496,10 +1496,10 @@
     }
 
     const defaultDates = [
-      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
-      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
-      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
-      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico (Scienze Applicate & Curvatura Economica)" },
+      { id: "date-1", date: "2026-11-14", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica" },
+      { id: "date-2", date: "2026-11-14", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica" },
+      { id: "date-3", date: "2026-11-28", timeSlot: "09:00 - 11:00", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica" },
+      { id: "date-4", date: "2026-11-28", timeSlot: "11:30 - 13:30", aula: "Aula Magna Sede", maxSeats: 120, studyPath: "LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica" },
       { id: "date-5", date: "2026-12-14", timeSlot: "09:00 - 11:00", aula: "Laboratori Sede", maxSeats: 100, studyPath: "LOG - Logistica e Trasporti" },
       { id: "date-6", date: "2026-12-14", timeSlot: "11:30 - 13:30", aula: "Laboratori Sede", maxSeats: 100, studyPath: "CAT - Costruzioni, Ambiente e Territorio" }
     ];
