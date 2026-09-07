@@ -1,0 +1,41 @@
+name: Fix OpenDay email delivery
+on:
+  push:
+    paths:
+      - 'tools/fix_openday_email_delivery_v1.py'
+      - '.github/workflows/fix-openday-email-delivery-v1.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply email reliability patch
+        run: python tools/fix_openday_email_delivery_v1.py
+      - name: Verify patched source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          h = Path('index.html').read_text(encoding='utf-8')
+          required = [
+            'async flushNow()',
+            "const latestSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'))",
+            'await window.inviaEmailScript(item.url, payload);',
+            'normalizedPayload.codice_prenotazione',
+            'else await window.SmartEmailEngine.flushNow();',
+            'else if (q3.length > 0 && availableQuota > 0)'
+          ]
+          for item in required:
+              assert item in h, item
+          assert "fetch(item.url, { method: 'POST'" not in h
+          print('OPENDAY_EMAIL_STATIC_CHECK_OK')
+          PY
+      - name: Commit final files
+        run: |
+          git config user.name "giuseppeborzumati-cmyk"
+          git config user.email "giuseppe.borzumati@leviseregno.edu.it"
+          git add index.html
+          git rm tools/fix_openday_email_delivery_v1.py .github/workflows/fix-openday-email-delivery-v1.yml
+          git commit -m "Corregge invio email Open Day"
+          git push
