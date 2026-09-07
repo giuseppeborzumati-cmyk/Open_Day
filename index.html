@@ -1619,8 +1619,9 @@
         state.user = u;
         if(u) {
           setupRealtimeListeners();
-          // Il motore non dipende piu dall'apertura dell'area Docenti.
-          window.SmartEmailEngine.start();
+          // In modalita Scanner il motore resta continuo anche senza area Docenti.
+          // Sulla home pubblica non elaboriamo code amministrative.
+          if (window.location.search.includes('scanner=true')) window.SmartEmailEngine.start();
         }
       });
       if (window.location.search.includes('scanner=true')) window.openCompanionScannerMode();
