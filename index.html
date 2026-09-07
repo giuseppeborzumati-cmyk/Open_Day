@@ -920,9 +920,9 @@
         this.log("Motore E-mail Fermato.", "warning");
       },
 
-      flushNow() {
+      async flushNow() {
         this.log("Esecuzione forzata manuale...");
-        this.processQueues();
+        return this.processQueues();
       },
 
       log(msg, type="info") {
@@ -937,6 +937,18 @@
       async processQueues() {
         if (this.isProcessing) return;
         this.isProcessing = true;
+
+        // Ricarica sempre la coda direttamente da Firestore prima di elaborarla.
+        // Evita che una prenotazione appena salvata resti bloccata in IN_CODA
+        // perché il listener realtime non ha ancora aggiornato state.registrations.
+        try {
+          const latestSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'registrations'));
+          const latestRegistrations = [];
+          latestSnap.forEach(d => latestRegistrations.push({ id: d.id, ...d.data() }));
+          state.registrations = latestRegistrations;
+        } catch (e) {
+          this.log("Aggiornamento coda da Firebase non riuscito: uso lo snapshot locale.", "warning");
+        }
 
         const today = new Date().toLocaleDateString('it-IT');
         let quotaSnap;
@@ -985,7 +997,7 @@
            batchToProcess = q2.slice(0, this.batchSize);
            this.log(`Elaborazione Batch Q2: ${batchToProcess.length} elementi.`);
         } 
-        else if (q3.length > 0 && availableQuota > this.safeLimit) {
+        else if (q3.length > 0 && availableQuota > 0) {
            batchToProcess = q3.slice(0, this.batchSize);
            this.log(`Elaborazione Batch Q3: ${batchToProcess.length} elementi.`);
         } 
@@ -1018,8 +1030,9 @@
              payload.pdfBase64 = pdfBase64;
           }
 
-          fetch(item.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-            .catch(e => { });
+          // Attende almeno il completamento della richiesta HTTP del browser.
+          // Con no-cors la risposta Google resta opaca, ma un errore di rete non viene più ignorato.
+          await window.inviaEmailScript(item.url, payload);
           
           await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', item.reg.code), { [fieldMap[item.type]]: new Date().toLocaleString('it-IT') });
           
@@ -1074,9 +1087,18 @@
     window.checkAndIncrementQuota = checkAndIncrementQuota;
 
     async function inviaEmailScript(url, payload) {
-      try {
-        await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-      } catch (err) { console.error("Errore fetch sincrono:", err); }
+      // Compatibilità con gli Apps Script storici: alcuni leggono code/dateStr/studyPath,
+      // altri codice_prenotazione/data/attivita.
+      const normalizedPayload = { ...(payload || {}) };
+      if (!normalizedPayload.codice_prenotazione && normalizedPayload.code) normalizedPayload.codice_prenotazione = normalizedPayload.code;
+      if (!normalizedPayload.data && normalizedPayload.dateStr) normalizedPayload.data = normalizedPayload.dateStr;
+      if (!normalizedPayload.attivita && normalizedPayload.studyPath) normalizedPayload.attivita = `Open Day - ${normalizedPayload.studyPath}`;
+      return fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(normalizedPayload)
+      });
     }
     window.inviaEmailScript = inviaEmailScript;
 
@@ -1739,7 +1761,7 @@
         document.getElementById('ticketCode').innerText = code; document.getElementById('ticketStudent').innerText = `${regData.cognome} ${regData.nome}`; document.getElementById('ticketPath').innerText = openDayLiceoPreferenceLabel(regData) ? `${regData.studyPath}
 Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; document.getElementById('ticketDate').innerText = regData.dateStr;
         prepareOpenDayConfirmation(regData);
-        if (shouldWait) { const position = queue.length + 1; await sendOpenDayWaitlistEmail(regData, position); showToast(`Richiesta registrata con riserva. Posizione indicativa: ${position}.`, 'info'); } else window.SmartEmailEngine.flushNow();
+        if (shouldWait) { const position = queue.length + 1; await sendOpenDayWaitlistEmail(regData, position); showToast(`Richiesta registrata con riserva. Posizione indicativa: ${position}.`, 'info'); } else await window.SmartEmailEngine.flushNow();
         window.navigateTo('confirmation');
       } catch(err) { console.error('OpenDay booking/waitlist', err); if (err.message === 'DUPLICATE') showToast("Esiste già una richiesta per questo studente nello stesso turno.", "error"); else if (err.message === 'LICEO_PREFERENCE_REQUIRED') showToast("Seleziona l'indirizzo liceale: Scienze Applicate oppure Curvatura Economica.", "error"); else if (err.message === 'GROUP_EXCEEDS_CAPACITY') showToast("Il numero di persone richiesto supera la capienza massima autorizzata per questo turno. Riduci il numero di posti.", "error"); else if (err.message === 'INVALID_GROUP_SIZE') showToast("Indica almeno una persona per la prenotazione.", "error"); else showToast("Errore durante il salvataggio. Riprova.", "error"); }
       finally { await releaseOpenDayWaitlistLock(dateId); submitBtn.dataset.saving = '0'; submitBtn.disabled = false; setProgress(100, openDayWaitlistMode ? "Richiesta in lista registrata" : "Prenotazione registrata"); }
@@ -1979,8 +2001,8 @@ Preferenza: ${openDayLiceoPreferenceLabel(regData)}` : regData.studyPath; docume
       const fieldMap = { 'pass':'passSentDate', 'promemoria':'promemoriaSentDate', 'presenza':'presenzaSentDate', 'pergamena':'pergamenaSentDate' };
       const priority = (type === 'pass') ? 'Q1' : (type === 'promemoria' ? 'Q2' : 'Q3');
       await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'registrations', code), { [fieldMap[type]]: `IN_CODA_${priority}` });
-      showToast("Email accodata. Verrà gestita dal Motore AI in background.", "info");
-      window.SmartEmailEngine.flushNow();
+      showToast("Email accodata. Invio in elaborazione...", "info");
+      await window.SmartEmailEngine.flushNow();
     }
     window.triggerEmailQueue = triggerEmailQueue;
 
