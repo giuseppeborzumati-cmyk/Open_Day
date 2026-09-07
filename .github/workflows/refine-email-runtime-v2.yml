@@ -1,0 +1,54 @@
+name: Refine OpenDay Email Runtime v2
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-email-runtime-v2.yml'
+permissions:
+  contents: write
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restrict continuous engine to controlled contexts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old="""        if(u) {\n          setupRealtimeListeners();\n          // Il motore non dipende piu dall'apertura dell'area Docenti.\n          window.SmartEmailEngine.start();\n        }"""
+          new="""        if(u) {\n          setupRealtimeListeners();\n          // In modalita Scanner il motore resta continuo anche senza area Docenti.\n          // Sulla home pubblica non elaboriamo code amministrative.\n          if (window.location.search.includes('scanner=true')) window.SmartEmailEngine.start();\n        }"""
+          assert old in s, 'blocco startApp non trovato'
+          s=s.replace(old,new,1)
+          for token in [
+            'AKfycbx934SuTzxYNzb82Tn9_kwPfTbAQFBQv5kGoqtIBP1GAlPdnICUAG2tFSYAnKhmf1P6Ow',
+            'AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw',
+            'AKfycbyW546zDa6kAI5cAaJkL-se9ngljm4c3UhlFuMxMPMmNVO-f5QsdUCqeotfJe0aFy7MBA',
+            'AKfycbz8MnsiM0QnbbkMqiSFCOVMpbFQamKaSy8lm7E-LdyeuOIEbmA_BqRINa4Pt7Nq7HFt']:
+            assert token in s
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Syntax check
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          h=Path('index.html').read_text(encoding='utf-8')
+          blocks=re.findall(r'<script type="module">(.*?)</script>', h, re.S)
+          assert blocks
+          Path('/tmp/app.mjs').write_text('\n'.join(blocks), encoding='utf-8')
+          PY
+          node --check /tmp/app.mjs
+          grep -q "if (window.location.search.includes('scanner=true')) window.SmartEmailEngine.start();" index.html
+          grep -q 'let delayMs = 5 \* 60 \* 1000' index.html
+      - name: Commit and clean
+        shell: bash
+        run: |
+          git config user.name "giuseppeborzumati-cmyk"
+          git config user.email "giuseppe.borzumati@leviseregno.edu.it"
+          git add index.html
+          git rm .github/workflows/refine-email-runtime-v2.yml
+          git commit -m "Limita il motore email continuo a Docenti e Scanner"
+          git push
