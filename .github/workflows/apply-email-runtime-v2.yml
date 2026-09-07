@@ -1,0 +1,49 @@
+name: Apply OpenDay Email Runtime v2
+on:
+  push:
+    paths:
+      - 'tools/fix_openday_email_runtime_v2.py'
+      - '.github/workflows/apply-email-runtime-v2.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply reliability patch
+        run: python tools/fix_openday_email_runtime_v2.py
+      - name: Verify source and URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'AKfycbx934SuTzxYNzb82Tn9_kwPfTbAQFBQv5kGoqtIBP1GAlPdnICUAG2tFSYAnKhmf1P6Ow' index.html
+          grep -q 'AKfycbx2BNhnVfV2Mu0YMjHy-wcagr5-_nHui8nZqMLZXfjPD1iEsKRKSX4k6URFD1t_kmq_Jw' index.html
+          grep -q 'AKfycbyW546zDa6kAI5cAaJkL-se9ngljm4c3UhlFuMxMPMmNVO-f5QsdUCqeotfJe0aFy7MBA' index.html
+          grep -q 'AKfycbz8MnsiM0QnbbkMqiSFCOVMpbFQamKaSy8lm7E-LdyeuOIEbmA_BqRINa4Pt7Nq7HFt' index.html
+          grep -q 'acquireOpenDayEmailDeliveryLease' index.html
+          grep -q 'openDayEventEndPlusFive' index.html
+          grep -q 'let delayMs = 5 \* 60 \* 1000' index.html
+          grep -q 'else if (q2.length > 0 && availableQuota > 0)' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          h=Path('index.html').read_text(encoding='utf-8')
+          blocks=re.findall(r'<script type="module">(.*?)</script>', h, re.S)
+          assert blocks, 'modulo JS non trovato'
+          Path('/tmp/openday-app.mjs').write_text('\n'.join(blocks), encoding='utf-8')
+          print('MODULE_BLOCKS', len(blocks))
+          PY
+          node --check /tmp/openday-app.mjs
+          echo OPENDAY_EMAIL_RUNTIME_STATIC_OK
+      - name: Commit production files and remove diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "giuseppeborzumati-cmyk"
+          git config user.email "giuseppe.borzumati@leviseregno.edu.it"
+          git add index.html
+          git rm -f tools/fix_openday_email_runtime_v2.py .github/workflows/apply-email-runtime-v2.yml
+          if [ -f .github/workflows/openday-email-audit.yml ]; then git rm -f .github/workflows/openday-email-audit.yml; fi
+          git commit -m "Rende continuo e affidabile il motore email Open Day"
+          git push
