@@ -1,4 +1,4 @@
-name: Normalizza denominazione Liceo Open Day
+name: Normalizza Liceo Open Day
 
 on:
   push:
@@ -9,77 +9,22 @@ permissions:
   contents: write
 
 jobs:
-  normalize:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Uniforma denominazione Liceo in index.html
-        shell: bash
+      - name: Applica correzione
+        run: python tools/normalize_liceo_label.py
+      - name: Verifica correzione
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
-
-          old = 'LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica'
-          old_entity = 'LS - Liceo Scientifico opzione Scienze Applicate &amp; Liceo Scienze Applicate - Curvatura Economica'
-          new = 'LS - Liceo Scientifico opzione Scienze Applicate e Liceo Scienze Applicate - Curvatura Economica'
-
-          text = text.replace(old_entity, new).replace(old, new)
-          text = text.replace(new + '/h4>', new + '</h4>')
-
-          old_fn = """    function canonicalOpenDayStudyPath(value) {
-      return String(value || '').replace(/Curvatura Economia/g, 'Curvatura Economica');
-    }"""
-          new_fn = """    function canonicalOpenDayStudyPath(value) {
-      let normalized = String(value || '').replace(/Curvatura Economia/g, 'Curvatura Economica');
-      if (/Liceo Scientifico/i.test(normalized) && /Curvatura Economica/i.test(normalized)) {
-        const amp = String.fromCharCode(38);
-        normalized = normalized.split(amp + 'amp;').join(' e ').split(amp).join(' e ');
-        normalized = normalized.replace(/\\s+/g, ' ').trim();
-        if (/^LS\\s*-\\s*Liceo Scientifico opzione Scienze Applicate\\s+e\\s+Liceo Scienze Applicate\\s*-\\s*Curvatura Economica$/i.test(normalized)) {
-          normalized = 'LS - Liceo Scientifico opzione Scienze Applicate e Liceo Scienze Applicate - Curvatura Economica';
-        }
-      }
-      return normalized;
-    }"""
-          if old_fn not in text:
-              raise SystemExit('canonicalOpenDayStudyPath: blocco atteso non trovato')
-          text = text.replace(old_fn, new_fn, 1)
-
-          assert old not in text, 'Denominazione con ampersand ancora presente'
-          assert old_entity not in text, 'Denominazione HTML con ampersand ancora presente'
-          assert new in text, 'Nuova denominazione assente'
-          assert new + '/h4>' not in text, 'Tag H4 ancora malformato'
-          assert new + '</h4>' in text, 'Intestazione H4 corretta non trovata'
-
-          path.write_text(text, encoding='utf-8')
-          print('Nuova denominazione occorrenze:', text.count(new))
-          print('Normalizzazione legacy Firebase attiva:', "String.fromCharCode(38)" in text)
-          PY
-
-      - name: Verifica finale denominazione
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          s = Path('index.html').read_text(encoding='utf-8')
-          new = 'LS - Liceo Scientifico opzione Scienze Applicate e Liceo Scienze Applicate - Curvatura Economica'
-          old = 'LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica'
-          assert s.count(new) >= 6
-          assert old not in s
-          assert 'Curvatura Economica/h4>' not in s
-          print('OPEN_DAY_LICEO_LABEL_OK')
-          PY
-
-      - name: Pubblica correzione e rimuove workflow temporaneo
-        shell: bash
+          grep -Fq "LS - Liceo Scientifico opzione Scienze Applicate e Liceo Scienze Applicate - Curvatura Economica" index.html
+          ! grep -Fq "LS - Liceo Scientifico opzione Scienze Applicate & Liceo Scienze Applicate - Curvatura Economica" index.html
+          ! grep -Fq "Curvatura Economica/h4>" index.html
+      - name: Pubblica e pulisce
         run: |
           git config user.name "giuseppeborzumati-cmyk"
           git config user.email "giuseppe.borzumati@leviseregno.edu.it"
           git add index.html
-          git rm .github/workflows/normalize-liceo-label.yml
+          git rm tools/normalize_liceo_label.py .github/workflows/normalize-liceo-label.yml
           git commit -m "Uniforma denominazione Liceo Open Day"
           git push
